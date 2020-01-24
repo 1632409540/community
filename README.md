@@ -1,5 +1,4 @@
 ## 丽院论坛
-https://github.com/1632409540/community
 
 ##资料
 git@github.com:1632409540/community.git
