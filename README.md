@@ -5,11 +5,12 @@
 [Spring 文档](https://spring.io/guides)  
 [Spring Web 文档](https://spring.io/guides/gs/serving-web-content/)  
 [es](https://elasticsearch.cn/explore)  
-[Github OAuth](https://developer.github.com/apps/building-oauth-apps/creating-an-oauth-app/)
-
+[Github OAuth](https://developer.github.com/apps/building-oauth-apps/creating-an-oauth-app/)  
+[flyway](https://flywaydb.org/)
 ## 工具
 [Git](https://git-scm.com/)  
 [Visual Paradigm](https://www.visual-paradigm.com)  
+
 
 ## 脚本
 ```sql
@@ -23,6 +24,7 @@
       GMT_CREATE   BIGINT,
       GMT_MODIFIED BIGINT
     );
+    ALTER TABLE USER ADD bio varchar(256) NULL;
 ```
 
 ## 异常处理
