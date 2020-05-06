@@ -1,0 +1,91 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${sectionName}"></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script src="/js/jquery.min.js"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/css/community.css">
+    <script src="/js/bootstrap.min.js" type="application/javascript"></script>
+
+
+</head>
+<body>
+<div th:insert="~{navigation :: nav}"></div>
+<div class="container-fluid main profile">
+    <div class="row">
+        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+            <h2 th:text="${sectionName}"></h2>
+            <hr>
+            <div th:if="${section=='questions'}">
+                <div class="media" th:each="question:${paginationDTO.getQuestions()}">
+                    <div class="media-left">
+                        <a href="#">
+                            <img class="media-object img-rounded" th:src="${question.user.getAvatarUrl()}">
+                        </a>
+                    </div>
+                    <div class="media-body">
+                    <span class="text-desc">
+                        <span class="label label-default" th:text="${question.getTag()}">0</span>
+                        • es_observer 回复了问题
+                        •<span th:text="${question.getComuntCount()}">0</span>人关注
+                        • <span th:text="${question.getComuntCount()}">0</span> 个回复
+                        • <span th:text="${question.getViewCount()}">0</span> 次浏览
+                        • <span th:text="${question.getLikeCount()}">0</span> 人喜欢
+                        •<span th:text="${#dates.format(question.gmtCreate,'yyyy-MM-dd hh:mm')}">0</span>
+                    </span>
+                        <a><h4 class="media-heading" th:text="${question.title}"></h4></a>
+                    </div>
+                </div>
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        <li th:if="${paginationDTO.getShowFirstPage()}">
+                            <a th:href="@{/profile/questions(page=${1})}" >
+                                <span aria-hidden="true">&lt;&lt;</span>
+                            </a>
+                        </li >
+                        <li th:if="${paginationDTO.getShowPrevious()}">
+                            <a th:href="@{/profile/questions(page=${paginationDTO.getPage()-1})}" >
+                                &lt;
+                            </a>
+                        </li >
+
+                        <li th:each="page:${paginationDTO.getPages()}" th:class="${paginationDTO.page==page}?'active':''">
+                            <a th:href="@{/profile/questions(page=${page})}" >
+                                <span th:text="${page}"></span>
+                            </a>
+                        </li>
+                        <li th:if="${paginationDTO.getShowNextPage()}">
+                            <a th:href="@{/profile/questions(page=${paginationDTO.getPage()+1})}">
+                                &gt;
+                            </a>
+                        </li>
+                        <li th:if="${paginationDTO.getShowEndPage()}">
+                            <a th:href="@{/profile/questions(page=${paginationDTO.getTotalPage()})}" >
+                                <span aria-hidden="true">&gt;&gt;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
+        </div>
+        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12" >
+            <div class="list-group section">
+                <a href="/profile/questions" class="list-group-item " th:class="${section=='questions'}?'list-group-item active':'list-group-item'">
+                    我的问题
+                </a>
+                <a href="/profile/replies" class="list-group-item" th:class="${section=='replies'}?'list-group-item active':'list-group-item'">
+                    最新回复<span class="badge">3</span>
+                </a>
+                <a href="#" class="list-group-item">Morbi leo risus</a>
+                <a href="#" class="list-group-item">Porta ac consectetur ac</a>
+                <a href="#" class="list-group-item">Vestibulum at eros</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

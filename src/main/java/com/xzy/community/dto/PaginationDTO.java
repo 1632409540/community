@@ -9,14 +9,14 @@ public class PaginationDTO {
     private List<QuestionDTO> questions;
     private Boolean showPrevious;
     private Boolean showFirstPage;
-    private Boolean showNext;
+    private Boolean showNextPage;
     private Boolean showEndPage;
-    private Integer currentPage;
     private Integer totalPage;
     private Integer page;
     private List<Integer> pages =new LinkedList<>();
 
     public void setPagination(Integer totalCount, Integer page, Integer size) {
+        this.page=page;
         if(totalCount%size==0){
             totalPage=totalCount/size;
         }else {
@@ -34,13 +34,13 @@ public class PaginationDTO {
         }
 
         //是否显示首页
-        if(page>=3){
+        if(page>=5){
             showFirstPage=true;
         }else {
             showFirstPage=false;
         }
         //是否显示尾页
-        if(page<=totalPage-3){
+        if(page<=totalPage-5){
             showEndPage=true;
         }else {
             showEndPage=false;
@@ -52,10 +52,10 @@ public class PaginationDTO {
             showPrevious=false;
         }
         //是否显示下一页
-        if(page<totalCount){
-            showNext=true;
+        if(page<totalPage){
+            showNextPage=true;
         }else {
-            showNext=false;
+            showNextPage=false;
         }
     }
 }

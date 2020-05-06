@@ -15,9 +15,15 @@ public interface QuestionMapper {
             "values (#{title},#{description},#{gmtCreate},#{gmtModified},#{creator},#{tag})")
     public void create(Question question);
 
-    @Select("select * from question limit #{offSize},#{size}")
+    @Select("select * from question order by gmt_create desc limit #{offSize},#{size} ")
     List<Question> list(@Param("offSize") Integer offSize,@Param("size") Integer size);
 
     @Select("select count(1) from question")
     Integer count();
+
+    @Select("select * from question where creator=#{id} order by gmt_create desc limit #{offSize},#{size} ")
+    List<Question> listByUserId(@Param("id") Integer id,@Param("offSize") Integer offSize,@Param("size") Integer size);
+
+    @Select("select count(1) from question where creator=#{id}")
+    Integer countByUserId(@Param("id") Integer id);
 }
