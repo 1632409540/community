@@ -1,5 +1,5 @@
 body{
-    background-color: #8c8c8c;
+    background-color: #efefef;
 }
 
 .main{
@@ -9,4 +9,14 @@ body{
 .btn-publish{
     float: right;
     margin-bottom: 15px;
+}
+
+.media-object{
+    width: 40px;
+    height: 40px;
+}
+.text-desc{
+    font-size: 12px;
+    font-weight: normal;
+    color: #999999;
 }
