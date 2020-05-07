@@ -9,6 +9,7 @@
 [Github OAuth](https://developer.github.com/apps/building-oauth-apps/creating-an-oauth-app/)  
 [thymeleaf](https://www.thymeleaf.org/)  
 [H2](http://www.h2database.com/html/main.html)  
+[MyBatis Generator](http://mybatis.org/generator/)  
 
 ## 工具
 [Git](https://git-scm.com/)  
@@ -31,6 +32,10 @@
       GMT_MODIFIED BIGINT
     );
     ALTER TABLE USER ADD bio varchar(256) NULL;
+```
+```bash
+mvn flyway:migrate
+mvn -Dmybatis.generator.overwrite=true mybatis-generator:generate
 ```
 
 ## 异常处理
