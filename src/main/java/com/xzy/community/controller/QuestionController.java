@@ -17,16 +17,10 @@ public class QuestionController {
     @GetMapping("/question/{id}")
     public String question(@PathVariable(name = "id")Integer id,
                             Model model){
+        questionService.addViewCount(id);
         QuestionDTO questionDTO=questionService.findById(id);
         model.addAttribute("question",questionDTO);
         return "question";
     }
 
-//    @GetMapping("/question/edit/{id}")
-//    public String edit(@PathVariable(name = "id")Integer id,
-//                           Model model){
-//        QuestionDTO questionDTO=questionService.findById(id);
-//        model.addAttribute("question",questionDTO);
-//        return "question";
-//    }
 }

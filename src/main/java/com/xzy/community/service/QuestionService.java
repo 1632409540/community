@@ -2,6 +2,10 @@ package com.xzy.community.service;
 
 import com.xzy.community.dto.PaginationDTO;
 import com.xzy.community.dto.QuestionDTO;
+import com.xzy.community.exception.CustomizeErrorCode;
+import com.xzy.community.exception.CustomizeErrorCode2;
+import com.xzy.community.exception.CustomizeException;
+import com.xzy.community.mapper.QuestionAddViewCountMapper;
 import com.xzy.community.mapper.QuestionMapper;
 import com.xzy.community.mapper.UserMapper;
 import com.xzy.community.model.Question;
@@ -22,6 +26,8 @@ public class QuestionService {
     private UserMapper userMapper;
     @Autowired
     private QuestionMapper questionMapper;
+    @Autowired
+    private QuestionAddViewCountMapper addViewCountMapper;
 
     public PaginationDTO list(Integer page, Integer size) {
         Integer offSize=size*(page-1);
@@ -69,6 +75,9 @@ public class QuestionService {
 
     public QuestionDTO findById(Integer id) {
         Question question=questionMapper.selectByPrimaryKey(id);
+        if(question==null){
+            throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+        }
         QuestionDTO questionDTO=new QuestionDTO();
         BeanUtils.copyProperties(question,questionDTO);
         User user=userMapper.selectByPrimaryKey(question.getCreator());
@@ -78,6 +87,7 @@ public class QuestionService {
 
     public void createOrUpdate(Question question) {
         Question dbQuestion= questionMapper.selectByPrimaryKey(question.getId());
+
         if(dbQuestion!=null){
             Question updateQuestion=new Question();
 
@@ -88,9 +98,21 @@ public class QuestionService {
 
             QuestionExample example=new QuestionExample();
             example.createCriteria().andIdEqualTo(question.getId());
-            questionMapper.updateByExampleSelective(updateQuestion,example);
+            int update=questionMapper.updateByExampleSelective(updateQuestion,example);
+            if(update!=1){
+                throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+            }
         }else {
-            questionMapper.insert(question);
+            int insert=questionMapper.insert(question);
+            if(insert!=1){
+                throw new CustomizeException(CustomizeErrorCode2.QUESTION_INSERT_ERROR);
+            }
         }
+    }
+    public void addViewCount(Integer id) {
+        Question question=new Question();
+        question.setId(id);
+        question.setViewCount(1);
+        addViewCountMapper.addViewCount(question);
     }
 }
