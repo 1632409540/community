@@ -7,7 +7,9 @@ import org.apache.ibatis.session.RowBounds;
 
 import java.util.List;
 
-public interface QuestionAddViewCountMapper {
+public interface QuestionAddCountMapper {
 
     int addViewCount(Question record);
+    int addCommentCount(Question question);
+
 }

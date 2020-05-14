@@ -22,7 +22,7 @@ public class PublishController {
     private QuestionService questionService;
 
     @GetMapping("/publish/{id}")
-    public String editPublish(@PathVariable(name = "id")Integer id,
+    public String editPublish(@PathVariable(name = "id")Long id,
                               Model model){
 
         QuestionDTO question = questionService.findById(id);
@@ -42,7 +42,7 @@ public class PublishController {
             @RequestParam(value = "title",required = false)String title,
             @RequestParam(value = "description",required = false)String description,
             @RequestParam(value = "tag",required = false)String tag,
-            @RequestParam(value = "id",required = false)Integer id,
+            @RequestParam(value = "id",required = false)Long id,
             HttpServletRequest request,
             Model model
     ){
@@ -77,7 +77,7 @@ public class PublishController {
         question.setGmtModified(question.getGmtCreate());
         question.setLikeCount(0);
         question.setViewCount(0);
-        question.setComuntCount(0);
+        question.setCommentCount(0);
         question.setId(id);
         questionService.createOrUpdate(question);
        return "redirect:/";

@@ -1,5 +1,6 @@
 package com.xzy.community.controller;
 
+import com.xzy.community.exception.CustomizeErrorCode;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,13 +26,14 @@ public class CustomizeErrorController implements ErrorController {
                                    Model model){
         HttpStatus status=getStatus(request);
         if(status.is4xxClientError()){
-            model.addAttribute("message","你的请求出错了吧，要不然换个姿势？");
+            model.addAttribute("message",CustomizeErrorCode.REQUEST_ERROR.getMessage());
         }
         if(status.is5xxServerError()){
-            model.addAttribute("message","服务器冒烟了，请稍后再试试！！！");
+            model.addAttribute("message", CustomizeErrorCode.SYSTEM_ERROR.getMessage());
         }
         return new ModelAndView("error");
     }
+
     private HttpStatus getStatus(HttpServletRequest request){
         Integer statusCode= (Integer) request.getAttribute("javax.servlet.error.status_code");
         if(statusCode==null){

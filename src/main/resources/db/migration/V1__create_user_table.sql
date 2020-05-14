@@ -1,7 +1,6 @@
  create table USER
     (
-      ID           INTEGER default NEXT VALUE FOR "PUBLIC"."SYSTEM_SEQUENCE_7E96F4B6_5A61_411E_80A2_B1BCEBB73D5D"
-        primary key,
+      ID           BIGINT AUTO_INCREMENT PRIMARY KEY,
       ACCOUNT_ID   VARCHAR(100),
       NAME         VARCHAR(50),
       TOKEN        CHAR(36),

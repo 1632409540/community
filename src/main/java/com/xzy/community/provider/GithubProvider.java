@@ -3,6 +3,8 @@ package com.xzy.community.provider;
 import com.alibaba.fastjson.JSON;
 import com.xzy.community.dto.AccessTokenDTO;
 import com.xzy.community.dto.GithubUser;
+import com.xzy.community.dto.ResultDTO;
+import com.xzy.community.exception.CustomizeErrorCode;
 import okhttp3.*;
 import org.springframework.stereotype.Component;
 

@@ -16,22 +16,22 @@
 [Visual Paradigm](https://www.visual-paradigm.com)  
 [flyway](https://flywaydb.org/)  
 [lombok](https://projectlombok.org/)  
+[JSON Editor Online](http://jsoneditoronline.org/#left=local.vusika)  
+[postman 及教程](https://www.jianshu.com/p/97ba64888894)
 
 
 
 ## 脚本
 ```sql
-    create table USER
+ create table USER
     (
-      ID           INTEGER default NEXT VALUE FOR "PUBLIC"."SYSTEM_SEQUENCE_7E96F4B6_5A61_411E_80A2_B1BCEBB73D5D"
-        primary key,
+      ID           BIGINT AUTO_INCREMENT PRIMARY KEY,
       ACCOUNT_ID   VARCHAR(100),
       NAME         VARCHAR(50),
       TOKEN        CHAR(36),
       GMT_CREATE   BIGINT,
       GMT_MODIFIED BIGINT
     );
-    ALTER TABLE USER ADD bio varchar(256) NULL;
 ```
 ```bash
 mvn flyway:migrate

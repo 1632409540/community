@@ -8,8 +8,15 @@
     <link rel="stylesheet" href="css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="css/community.css">
     <script src="js/bootstrap.min.js" type="application/javascript"></script>
-
-
+    <script>
+        window.onload = function () {
+            var closable=window.localStorage.getItem("closable");
+            if(closable=="true"){
+                window.close();
+                window.localStorage.removeItem("closable");
+            }
+        }
+    </script>
 </head>
 <body>
 <div th:insert="~{navigation :: nav}"></div>
@@ -31,10 +38,9 @@
 
                         <span class="label label-default" th:text="${question.getTag()}">0</span>
                         • es_observer 回复了问题
-                        •<span th:text="${question.getComuntCount()}">0</span>人关注
-                        • <span th:text="${question.getComuntCount()}">0</span> 个回复
+                        •<span th:text="${question.getLikeCount()}">0</span>人关注
+                        • <span th:text="${question.getCommentCount()}">0</span> 个回复
                         • <span th:text="${question.getViewCount()}">0</span> 次浏览
-                        • <span th:text="${question.getLikeCount()}">0</span> 人喜欢
                         •<span th:text="${#dates.format(question.gmtCreate,'yyyy-MM-dd hh:mm')}">0</span></span>
                 </div>
             </div>

@@ -29,6 +29,7 @@ public class UserService {
            User updateUser=new User();
            updateUser.setToken(user.getToken());
            updateUser.setName(user.getName());
+           updateUser.setBio(user.getBio());
            updateUser.setGmtModified(user.getGmtCreate());
            updateUser.setAvatarUrl(user.getAvatarUrl());
            UserExample userExample2=new UserExample();
