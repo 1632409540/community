@@ -4,6 +4,10 @@
 function send() {
     var questionId = $("#question_id").val();
     var content = $("#comment_content").val();
+    if(!content){
+        alert("回复内容不能为空！！！");
+        return;
+    }
     $.ajax({
         type: "POST",
         url: "/comment",
@@ -16,6 +20,7 @@ function send() {
         success: function (response) {
             if (response.code == 200) {
                 $("#comment_section").hide();
+                window.location.reload();
             } else {
                 if (response.code == 2004) {
                     var isAccepted = confirm(response.message);

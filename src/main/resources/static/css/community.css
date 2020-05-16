@@ -38,3 +38,26 @@ body{
     float: right;
     margin-bottom: 10px;
 }
+.comment-sp{
+    margin-top: 0px;
+}
+.comments{
+    margin-bottom: 15px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #e0e0e0;
+}
+.menu{
+    color: #999999;
+    margin-top: 5px;
+}
+.menu .icon{
+    margin-left: 6px;
+    font-size: 15px;
+    cursor: pointer;
+}
+.menu .icon:hover{
+    color: #28a4c9;
+}
+.question-title{
+    margin-top: 25px;
+}

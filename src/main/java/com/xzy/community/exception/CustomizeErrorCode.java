@@ -11,6 +11,7 @@ public enum CustomizeErrorCode implements ICustomizeErrorCode{
     SEND_AJAX_ERROR(2009,"发送AjarPOST请求失败！"),
     LOGIN_FAULT_ERROR(2010,"登录失败，请稍后试试！"),
     REQUEST_ERROR(2011,"你的请求出错了吧，要不然换个姿势？"),
+    COMMENT_IS_EMPTY(2012,"回复内容不能为空！"),
     COMMENT_NOT_FOUND(2007,"你回复的评论不存在，要不要换一个试试？"),
     SYSTEM_ERROR(2005,"服务器冒烟了，请稍后再试试！！！");
     private String message;
