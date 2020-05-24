@@ -44,24 +44,59 @@
                 <h4><span th:text="${question.commentCount}">0</span>个回复</h4>
 
                 <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12 comment-sp">
-
+                <!--问题回复-->
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 comments" th:if="${question.commentCount>0}" th:each="comment:${comments}">
                     <div class="media-left">
                         <a href="#">
                             <img class="media-object img-rounded" th:src="${comment.user.getAvatarUrl()}">
                         </a>
                     </div>
-                    <div class="media-body">
-                    <span class="text-desc">
-                        <span th:text="${comment.user.name}">0</span>
-                   </span>
+                    <div class="media-body" th:id="${'comment-body-'+comment.id}">
+                        <span class="text-desc">
+                            <span th:text="${comment.user.name}">0</span>
+                        </span>
                         <div th:text="${comment.content}"></div>
                         <div class="menu">
-                            <span class="glyphicon glyphicon-thumbs-up icon" aria-hidden="true"><span th:text="${comment.likeCount}"></span></span>
-                            <span class="glyphicon glyphicon-comment icon" aria-hidden="true"></span>
+                            <!--点赞-->
+                            <span class="glyphicon glyphicon-thumbs-up icon" aria-hidden="true" onclick="">
+                            </span>
+                            <span th:text="${comment.likeCount}"></span>
+                            <!--点击打开二级回复-->
+                            <span class="glyphicon glyphicon-comment icon" onclick="collapseComment(this)"
+                                  th:id="cansel-${comment.id}" th:data-id="${comment.id}" aria-hidden="true">
+                            </span>
+                            <span th:text="${comment.commentCount}">0</span>
                             <span class="pull-right" th:text="${#dates.format(comment.gmtCreate,'yyyy-MM-dd')}"></span>
                         </div>
-
+                        <!--二级回复-->
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 collapse sub-comments"
+                             th:id="${'comment-'+comment.id}">
+                            <!--<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 comments"-->
+                                 <!--th:if="${question.commentCount>0}" th:each="comment:${comments}">-->
+                                <!--<div class="media-left">-->
+                                    <!--<a href="#">-->
+                                        <!--<img class="media-object img-rounded" th:src="${comment.user.getAvatarUrl()}">-->
+                                    <!--</a>-->
+                                <!--</div>-->
+                                <!--<div class="media-body">-->
+                                    <!--<span class="text-desc">-->
+                                        <!--<span th:text="${comment.user.name}">0</span>-->
+                                    <!--</span>-->
+                                    <!--<div th:text="${comment.content}"></div>-->
+                                    <!--<div class="menu">-->
+                                        <!--<span class="pull-right" th:text="${#dates.format(comment.gmtCreate,'yyyy-MM-dd')}"></span>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <!--&lt;!&ndash;二级评论回复&ndash;&gt;-->
+                            <!--<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">-->
+                                <!--<input type="text" class="form-control" placeholder="评论一下......" th:id="${'input-'+comment.id}"/>-->
+                                <!--<div class="btn-comment">-->
+                                    <!--<button type="button" class="btn btn-success btn-sm" onclick="secondComment(this)" th:data-id="${comment.id}">回复</button>-->
+                                    <!--<button type="button" class="btn btn-default btn-sm" onclick="collapseComment(this)" th:data-id="${comment.id}">取消</button>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        </div>
                     </div>
                 </div>
                 <h4>回复问题</h4>

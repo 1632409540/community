@@ -1,21 +1,16 @@
 package com.xzy.community.service;
 
-import ch.qos.logback.core.db.dialect.DBUtil;
 import com.xzy.community.dto.CommentDTO;
 import com.xzy.community.enums.CommentTypeEnum;
 import com.xzy.community.exception.CustomizeErrorCode;
 import com.xzy.community.exception.CustomizeException;
-import com.xzy.community.mapper.CommentMapper;
-import com.xzy.community.mapper.QuestionAddCountMapper;
-import com.xzy.community.mapper.QuestionMapper;
-import com.xzy.community.mapper.UserMapper;
+import com.xzy.community.mapper.*;
 import com.xzy.community.model.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.beans.Transient;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,7 +22,9 @@ public class CommentService {
     @Autowired
     private QuestionMapper questionMapper;
     @Autowired
-    private QuestionAddCountMapper addCountMapper;
+    private QuestionAddCountMapper questionAddCountMapper;
+    @Autowired
+    private CommentAddCountMapper commentAddCountMapper;
     @Autowired
     private UserMapper userMapper;
 
@@ -47,6 +44,9 @@ public class CommentService {
                 throw new CustomizeException(CustomizeErrorCode.COMMENT_NOT_FOUND);
             }
             commentMapper.insert(comment);
+            dbComment.setCommentCount(1);
+            commentAddCountMapper.addCommentCount(dbComment);
+
         }else {
             //回复问题
             Question question=questionMapper.selectByPrimaryKey(comment.getParentId());
@@ -55,15 +55,15 @@ public class CommentService {
             }
             commentMapper.insert(comment);
             question.setCommentCount(1);
-            addCountMapper.addCommentCount(question);
+            questionAddCountMapper.addCommentCount(question);
         }
     }
 
-    public List<CommentDTO> findCommentsById(Long id) {
+    public List<CommentDTO> findCommentsById(Long id, CommentTypeEnum type) {
         CommentExample example=new CommentExample();
         example.createCriteria()
                 .andParentIdEqualTo(id)
-                .andTypeEqualTo(CommentTypeEnum.QUESTION.getType());
+                .andTypeEqualTo(type.getType());
         example.setOrderByClause("gmt_create desc");
         List<Comment> comments=commentMapper.selectByExample(example);
 

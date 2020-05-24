@@ -26,7 +26,7 @@ public class QuestionService {
     @Autowired
     private QuestionMapper questionMapper;
     @Autowired
-    private QuestionAddCountMapper addCountMapper;
+    private QuestionAddCountMapper questionAddCountMapper;
 
     public PaginationDTO list(Integer page, Integer size) {
         Integer offSize=size*(page-1);
@@ -113,6 +113,6 @@ public class QuestionService {
         Question question=new Question();
         question.setId(id);
         question.setViewCount(1);
-        addCountMapper.addViewCount(question);
+        questionAddCountMapper.addViewCount(question);
     }
 }

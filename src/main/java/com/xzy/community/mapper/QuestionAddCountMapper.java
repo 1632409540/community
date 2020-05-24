@@ -1,5 +1,6 @@
 package com.xzy.community.mapper;
 
+import com.xzy.community.model.Comment;
 import com.xzy.community.model.Question;
 import com.xzy.community.model.QuestionExample;
 import org.apache.ibatis.annotations.Param;
@@ -11,5 +12,4 @@ public interface QuestionAddCountMapper {
 
     int addViewCount(Question record);
     int addCommentCount(Question question);
-
 }

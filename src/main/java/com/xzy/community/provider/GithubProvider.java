@@ -5,6 +5,7 @@ import com.xzy.community.dto.AccessTokenDTO;
 import com.xzy.community.dto.GithubUser;
 import com.xzy.community.dto.ResultDTO;
 import com.xzy.community.exception.CustomizeErrorCode;
+import com.xzy.community.exception.CustomizeException;
 import okhttp3.*;
 import org.springframework.stereotype.Component;
 
@@ -49,8 +50,9 @@ public class GithubProvider {
             return githubUser;
         } catch (IOException e) {
             e.printStackTrace();
+            throw new CustomizeException(CustomizeErrorCode.LOGIN_FAULT_ERROR);
         }
-        return null;
+        //return null;
     }
 
 }

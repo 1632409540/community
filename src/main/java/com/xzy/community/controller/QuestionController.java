@@ -1,8 +1,8 @@
 package com.xzy.community.controller;
 
-import com.xzy.community.dto.CommentCreateDTO;
 import com.xzy.community.dto.CommentDTO;
 import com.xzy.community.dto.QuestionDTO;
+import com.xzy.community.enums.CommentTypeEnum;
 import com.xzy.community.service.CommentService;
 import com.xzy.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class QuestionController {
                             Model model){
         questionService.addViewCount(id);
         QuestionDTO questionDTO=questionService.findById(id);
-        List<CommentDTO> commentDTOList =commentService.findCommentsById(id);
+        List<CommentDTO> commentDTOList =commentService.findCommentsById(id, CommentTypeEnum.QUESTION);
         model.addAttribute("question",questionDTO);
         model.addAttribute("comments",commentDTOList);
         return "question";
