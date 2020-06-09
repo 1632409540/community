@@ -8,6 +8,12 @@
     <link rel="stylesheet" href="css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="css/community.css">
     <script src="js/bootstrap.min.js" type="application/javascript"></script>
+
+    <script src="/js/jquery.min.js"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/css/community.css">
+    <script src="/js/bootstrap.min.js" type="application/javascript"></script>
     <script>
         window.onload = function () {
             var closable=window.localStorage.getItem("closable");
@@ -15,11 +21,12 @@
                 window.close();
                 window.localStorage.removeItem("closable");
             }
+            $("#index-navbar").insertAdjacentHTML()
         }
     </script>
 </head>
 <body>
-<div th:insert="~{navigation :: nav}"></div>
+<div id="index-navbar" th:insert="~{navigation :: nav}"></div>
 <div class="container-fluid main">
     <div class="row">
         <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
@@ -37,7 +44,7 @@
                     <span class="text-desc">
 
                         <span class="label label-default" th:text="${question.getTag()}">0</span>
-                        • es_observer 回复了问题
+                        • <span th:text="${question.user.name}">0</span>发起了问题
                         •<span th:text="${question.getLikeCount()}">0</span>人关注
                         • <span th:text="${question.getCommentCount()}">0</span> 个回复
                         • <span th:text="${question.getViewCount()}">0</span> 次浏览

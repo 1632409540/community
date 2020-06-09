@@ -45,6 +45,14 @@ public class CustomizeExceptionHandler {
                 model.addAttribute("message", CustomizeErrorCode.WRITE_RESULT_ERROR.getMessage());
             }
             return null;
+        }else {
+            ResultDTO resultDTO = null;
+            if (exception instanceof CustomizeException) {
+                resultDTO = ResultDTO.errorOf((CustomizeException) exception);
+            } else {
+                resultDTO = ResultDTO.errorOf(CustomizeErrorCode.SYSTEM_ERROR);
+            }
+            model.addAttribute("message",resultDTO.getMessage());
         }
         return new ModelAndView("error");
     }

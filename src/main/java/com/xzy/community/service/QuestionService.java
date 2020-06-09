@@ -18,6 +18,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class QuestionService {
@@ -94,7 +97,7 @@ public class QuestionService {
             updateQuestion.setTag(question.getTag());
 
             QuestionExample example=new QuestionExample();
-            example.createCriteria().andIdEqualTo(question.getId());
+            example.createCriteria().andIdEqualTo(dbQuestion.getId());
             int update=questionMapper.updateByExampleSelective(updateQuestion,example);
             if(update!=1){
                 throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
@@ -114,5 +117,50 @@ public class QuestionService {
         question.setId(id);
         question.setViewCount(1);
         questionAddCountMapper.addViewCount(question);
+    }
+
+    public PaginationDTO listByTag(String tag, Integer page, Integer size) {
+        Integer offSize=size*(page-1);
+        QuestionExample example=new QuestionExample();
+        example.createCriteria().andTagLike("%"+tag+"%");
+        example.setOrderByClause("gmt_create desc");
+        List<Question> questionList=questionMapper.selectByExampleWithBLOBsWithRowbounds(example,new RowBounds(offSize,size));
+
+        List<QuestionDTO> questionDTOList=new LinkedList<>();
+        PaginationDTO paginationDTO=new PaginationDTO();
+        for(Question question:questionList){
+            User user=userMapper.selectByPrimaryKey(question.getCreator());
+            QuestionDTO questionDTO=new QuestionDTO();
+            BeanUtils.copyProperties(question,questionDTO);
+            questionDTO.setUser(user);
+            questionDTOList.add(questionDTO);
+        }
+
+        paginationDTO.setQuestions(questionDTOList);
+        QuestionExample example2=new QuestionExample();
+        example.createCriteria().andTagLike("%"+tag+"%");
+        Integer totalCount=(int)questionMapper.countByExample(example);
+        paginationDTO.setPagination(totalCount,page,size);
+        return paginationDTO;
+    }
+
+    public List<Question> listByTags(String[] tags) {
+
+        List<QuestionDTO> likeQuestions=new LinkedList<>();
+        for (String tag:tags) {
+            PaginationDTO paginationDTO = listByTag(tag, 1, 10);
+            likeQuestions.addAll(paginationDTO.getQuestions());
+        }
+        Set<Long> collect = likeQuestions.stream().map(questionDTO -> questionDTO.getId()).collect(Collectors.toSet());
+        List<Long> questionIds=new LinkedList<>();
+        questionIds.addAll(collect);
+        QuestionExample questionExample=new QuestionExample();
+        questionExample.createCriteria().andIdIn(questionIds);
+        questionExample.setOrderByClause("gmt_create desc");
+        List<Question> questions = questionMapper.selectByExample(questionExample);
+        if(questions.size()>11){
+            questions.subList(0,10);
+        }
+        return questions;
     }
 }

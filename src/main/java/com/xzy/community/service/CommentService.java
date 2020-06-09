@@ -99,4 +99,14 @@ public class CommentService {
         }).collect(Collectors.toList());
         return commentDTOS;
     }
+
+    public Integer addLikeCount(Long id) {
+        Comment comment = commentMapper.selectByPrimaryKey(id);
+        if(comment!=null){
+            comment.setLikeCount(1);
+            commentAddCountMapper.addLikeCount(comment);
+        }
+        comment=commentMapper.selectByPrimaryKey(id);
+        return comment.getLikeCount();
+    }
 }

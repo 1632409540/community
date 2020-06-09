@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="/css/community.css">
+    <link rel="stylesheet" href="/js/community.js">
     <script src="/js/bootstrap.min.js" type="application/javascript"></script>
 
 
@@ -28,12 +29,19 @@
                     <div class="media-body">
                         <span class="text-desc">
                             <span class="label label-default" th:text="${question.getTag()}">0</span>
-                            • es_observer 回复了问题
+                            • <span th:text="${question.user.name}">0</span>发起了问题
                             •<span th:text="${question.getCommentCount()}">0</span>人关注
                             • <span th:text="${question.getCommentCount()}">0</span> 个回复
                             • <span th:text="${question.getViewCount()}">0</span> 次浏览
                             • <span th:text="${question.getLikeCount()}">0</span> 人喜欢
                             •<span th:text="${#dates.format(question.gmtCreate,'yyyy-MM-dd hh:mm')}">0</span>
+                            •<span>
+                                <a th:href="@{'/publish/'+${question.id}}">
+                                    <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                                    编辑
+                                </a>
+                            </span>
+
                         </span>
                             <a th:href="@{'/question/'+${question.id}}"><h5 class="media-heading" th:text="${question.title}"></h5></a>
                     </div>

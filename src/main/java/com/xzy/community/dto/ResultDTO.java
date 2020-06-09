@@ -38,4 +38,14 @@ public class ResultDTO <T>{
         resultDTO.setData(t);
         return resultDTO;
     }
+
+    public static ResultDTO successOf(Integer count){
+
+        ResultDTO resultDTO=new ResultDTO();
+        resultDTO.setCode(200);
+        resultDTO.setMessage("请求成功！");
+        resultDTO.setData(count);
+        return resultDTO;
+
+    }
 }

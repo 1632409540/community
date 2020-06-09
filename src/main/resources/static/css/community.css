@@ -72,3 +72,54 @@ body{
 .question-title{
     margin-top: 25px;
 }
+
+.topic-tag a{
+    display: inline-block;
+    height: 20px;
+    line-height: 16px;
+    padding: 2px 5px;
+    background-color: #99cfff;
+    font-size: 12px;
+    color: #fff;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+.topic-tag .text {
+    color: #fff;
+    font-size: 12px;
+    margin-top: 0px;
+    margin-right: 1px;
+}
+.topic-tag .icon-tag{
+    color: #fff;
+    margin: 1px 1px;
+    size: 10px;
+}
+.tag-sp{
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+.topic-tag a:hover{text-decoration:none;
+    display: inline-block;
+    height: 22px;
+    line-height: 16px;
+    padding: 2px 5px;
+    background-color: #428bca;
+    font-size: 13px;
+    color: #fff;
+    border-radius: 4px;
+}
+a:hover{text-decoration:none;}
+a:active{text-decoration:none;}
+
+.related{
+    margin-bottom: 10px;
+    padding-left: 0px;
+}
+.sponsor{
+    margin-top: 20px;
+}
+.publish-select-tag{
+    display: none;
+    margin-top: 10px;
+}

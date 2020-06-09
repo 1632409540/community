@@ -116,8 +116,39 @@ function viewSecondComment(id,data) {
         '                                <input type="text" class="form-control" placeholder="评论一下......" id="input-'+id+'"/>\n' +
         '                                <div class="btn-comment">\n' +
         '                                    <button type="button" class="btn btn-success btn-sm" onclick="secondComment(this)" data-id="'+id+'">回复</button>\n' +
-        '                                    <button type="button" class="btn btn-default btn-sm" onclick="collapseComment('+thisComment+')" data-id="'+id+'">取消</button>\n' +
+        '                                    <button type="button" class="btn btn-default btn-sm" onclick=" ">取消</button>\n' +
         '                                </div>\n' +
         '                            </div>';
     $("#comment-"+id).html(text);
+}
+
+/**
+ * 回复点赞
+ */
+function commentThumbsUp(e) {
+    var id=e.getAttribute("data-id");
+    $.getJSON("/commentThumbsUp/"+id,function (data) {
+        //向html中展示数据
+        // console.log(data.data);
+        var likeCount=data.data+"";
+        $("#like-"+id).html(likeCount);
+    });
+}
+/**
+ * 添加标签
+ */
+function selectTag(e) {
+    var tags=$("#tag").val();
+    var tag=e.getAttribute("data-tag");
+    if(tags.indexOf(tag)==-1){
+        if(tags){
+            $("#tag").val(tags+","+tag);
+        }else {
+            $("#tag").val(tag);
+        }
+    }
+}
+
+function showSelectTag() {
+    $("#select-tag").show();
 }
