@@ -22,7 +22,6 @@
                 <div class="media-body">
                     <a th:href="@{'/question/'+${question.id}}"><h3 class="media-heading question-title" th:text="${question.title}"></h3></a>
                     <span class="text-desc">
-                        <span class="label label-default" th:text="${question.getTag()}"></span>
                         作者：<span th:text="${question.user.name}"></span>
                         |发布时间：<span th:text="${#dates.format(question.gmtCreate,'yyyy-MM-dd')}"></span>
                         |阅读数：<span th:text="${question.getViewCount()}"></span>

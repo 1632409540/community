@@ -2,7 +2,9 @@ package com.xzy.community.controller;
 
 import com.xzy.community.dto.PaginationDTO;
 import com.xzy.community.mapper.UserMapper;
+import com.xzy.community.model.Notification;
 import com.xzy.community.model.User;
+import com.xzy.community.service.NotificationService;
 import com.xzy.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,6 +19,8 @@ import javax.servlet.http.HttpServletRequest;
 public class ProfileController {
     @Autowired
     private QuestionService questionService;
+    @Autowired
+    private NotificationService notificationService;
 
     @GetMapping("/profile/{action}")
     public String profile(@PathVariable(name = "action")String action,
@@ -32,14 +36,15 @@ public class ProfileController {
         if("questions".contains(action)){
             model.addAttribute("section","questions");
             model.addAttribute("sectionName","我的提问");
+            PaginationDTO paginationDTO=questionService.list(user.getId(),page,size);
+            model.addAttribute("paginationDTO",paginationDTO);
         }
         if("replies".contains(action)){
             model.addAttribute("section","replies");
             model.addAttribute("sectionName","最新回复");
+            PaginationDTO paginationDTO=notificationService.list(user,page,size);
+            model.addAttribute("paginationDTO",paginationDTO);
         }
-
-        PaginationDTO paginationDTO=questionService.list(user.getId(),page,size);
-        model.addAttribute("paginationDTO",paginationDTO);
         return "profile";
     }
 }

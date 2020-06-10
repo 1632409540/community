@@ -123,3 +123,6 @@ a:active{text-decoration:none;}
     display: none;
     margin-top: 10px;
 }
+.label-default{
+    margin-left: 2px;
+}

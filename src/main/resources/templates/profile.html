@@ -20,7 +20,7 @@
             <h2 th:text="${sectionName}"></h2>
             <hr>
             <div th:if="${section=='questions'}">
-                <div class="media" th:each="question:${paginationDTO.getQuestions()}">
+                <div class="media" th:each="question:${paginationDTO.data}">
                     <div class="media-left">
                         <a href="#">
                             <img class="media-object img-rounded" th:src="${question.user.getAvatarUrl()}">
@@ -28,8 +28,7 @@
                     </div>
                     <div class="media-body">
                         <span class="text-desc">
-                            <span class="label label-default" th:text="${question.getTag()}">0</span>
-                            • <span th:text="${question.user.name}">0</span>发起了问题
+                            <span th:text="${question.user.name}">0</span>发布了问题
                             •<span th:text="${question.getCommentCount()}">0</span>人关注
                             • <span th:text="${question.getCommentCount()}">0</span> 个回复
                             • <span th:text="${question.getViewCount()}">0</span> 次浏览
@@ -77,6 +76,52 @@
                     </ul>
                 </nav>
             </div>
+            <div th:if="${section=='replies'}">
+                <div class="media" th:each="">
+                    <div class="media-body">
+                        <h5 class="media-heading">
+                            <a th:href="@{'/'}">
+                                <span>我</span>
+                            </a>
+                                <span>回复了问题</span>
+                            <!--<a th:href="@{'/question/'+${question.id}}">-->
+                            <a>
+                                <span>XXX</span>
+                            </a>
+                        </h5>
+                    </div>
+                </div>
+                <!--<nav aria-label="Page navigation">-->
+                    <!--<ul class="pagination">-->
+                        <!--<li th:if="${paginationDTO.getShowFirstPage()}">-->
+                            <!--<a th:href="@{/profile/questions(page=${1})}" >-->
+                                <!--<span aria-hidden="true">&lt;&lt;</span>-->
+                            <!--</a>-->
+                        <!--</li >-->
+                        <!--<li th:if="${paginationDTO.getShowPrevious()}">-->
+                            <!--<a th:href="@{/profile/questions(page=${paginationDTO.getPage()-1})}" >-->
+                                <!--&lt;-->
+                            <!--</a>-->
+                        <!--</li >-->
+
+                        <!--<li th:each="page:${paginationDTO.getPages()}" th:class="${paginationDTO.page==page}?'active':''">-->
+                            <!--<a th:href="@{/profile/questions(page=${page})}" >-->
+                                <!--<span th:text="${page}"></span>-->
+                            <!--</a>-->
+                        <!--</li>-->
+                        <!--<li th:if="${paginationDTO.getShowNextPage()}">-->
+                            <!--<a th:href="@{/profile/questions(page=${paginationDTO.getPage()+1})}">-->
+                                <!--&gt;-->
+                            <!--</a>-->
+                        <!--</li>-->
+                        <!--<li th:if="${paginationDTO.getShowEndPage()}">-->
+                            <!--<a th:href="@{/profile/questions(page=${paginationDTO.getTotalPage()})}" >-->
+                                <!--<span aria-hidden="true">&gt;&gt;</span>-->
+                            <!--</a>-->
+                        <!--</li>-->
+                    <!--</ul>-->
+                <!--</nav>-->
+            </div>
 
         </div>
         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12" >
@@ -85,11 +130,8 @@
                     我的问题
                 </a>
                 <a href="/profile/replies" class="list-group-item" th:class="${section=='replies'}?'list-group-item active':'list-group-item'">
-                    最新回复<span class="badge">3</span>
+                    最新回复<span class="badge" th:text="${unreadCount}">3</span>
                 </a>
-                <a href="#" class="list-group-item">Morbi leo risus</a>
-                <a href="#" class="list-group-item">Porta ac consectetur ac</a>
-                <a href="#" class="list-group-item">Vestibulum at eros</a>
             </div>
 
         </div>

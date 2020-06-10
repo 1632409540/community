@@ -32,12 +32,13 @@ public class QuestionService {
     private QuestionAddCountMapper questionAddCountMapper;
 
     public PaginationDTO list(Integer page, Integer size) {
+
         Integer offSize=size*(page-1);
         QuestionExample example=new QuestionExample();
         example.setOrderByClause("gmt_create desc");
         List<Question> questionList=questionMapper.selectByExampleWithBLOBsWithRowbounds(example,new RowBounds(offSize,size));
         List<QuestionDTO> questionDTOList=new LinkedList<>();
-        PaginationDTO paginationDTO=new PaginationDTO();
+        PaginationDTO<QuestionDTO> paginationDTO=new PaginationDTO<QuestionDTO>();
         for(Question question:questionList){
             UserExample userExample=new UserExample();
             User user=userMapper.selectByPrimaryKey(question.getCreator());
@@ -46,7 +47,7 @@ public class QuestionService {
             questionDTO.setUser(user);
             questionDTOList.add(questionDTO);
         }
-        paginationDTO.setQuestions(questionDTOList);
+        paginationDTO.setData(questionDTOList);
         Integer totalCount=(int)questionMapper.countByExample(new QuestionExample());
         paginationDTO.setPagination(totalCount,page,size);
         return paginationDTO;
@@ -59,7 +60,7 @@ public class QuestionService {
         example.setOrderByClause("gmt_create desc");
         List<Question> questionList=questionMapper.selectByExampleWithBLOBsWithRowbounds(example,new RowBounds(offSize,size));
         List<QuestionDTO> questionDTOList=new LinkedList<>();
-        PaginationDTO paginationDTO=new PaginationDTO();
+        PaginationDTO<QuestionDTO> paginationDTO=new PaginationDTO<QuestionDTO>();
         for(Question question:questionList){
             User user=userMapper.selectByPrimaryKey(question.getCreator());
             QuestionDTO questionDTO=new QuestionDTO();
@@ -67,7 +68,7 @@ public class QuestionService {
             questionDTO.setUser(user);
             questionDTOList.add(questionDTO);
         }
-        paginationDTO.setQuestions(questionDTOList);
+        paginationDTO.setData(questionDTOList);
         QuestionExample example2=new QuestionExample();
         example.createCriteria().andIdEqualTo(id);
         Integer totalCount=(int)questionMapper.countByExample(example);
@@ -127,7 +128,7 @@ public class QuestionService {
         List<Question> questionList=questionMapper.selectByExampleWithBLOBsWithRowbounds(example,new RowBounds(offSize,size));
 
         List<QuestionDTO> questionDTOList=new LinkedList<>();
-        PaginationDTO paginationDTO=new PaginationDTO();
+        PaginationDTO<QuestionDTO> paginationDTO=new PaginationDTO<QuestionDTO>();
         for(Question question:questionList){
             User user=userMapper.selectByPrimaryKey(question.getCreator());
             QuestionDTO questionDTO=new QuestionDTO();
@@ -136,7 +137,7 @@ public class QuestionService {
             questionDTOList.add(questionDTO);
         }
 
-        paginationDTO.setQuestions(questionDTOList);
+        paginationDTO.setData(questionDTOList);
         QuestionExample example2=new QuestionExample();
         example.createCriteria().andTagLike("%"+tag+"%");
         Integer totalCount=(int)questionMapper.countByExample(example);
@@ -148,8 +149,8 @@ public class QuestionService {
 
         List<QuestionDTO> likeQuestions=new LinkedList<>();
         for (String tag:tags) {
-            PaginationDTO paginationDTO = listByTag(tag, 1, 10);
-            likeQuestions.addAll(paginationDTO.getQuestions());
+            PaginationDTO<QuestionDTO> paginationDTO = listByTag(tag, 1, 10);
+            likeQuestions.addAll(paginationDTO.getData());
         }
         Set<Long> collect = likeQuestions.stream().map(questionDTO -> questionDTO.getId()).collect(Collectors.toSet());
         List<Long> questionIds=new LinkedList<>();

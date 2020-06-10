@@ -31,6 +31,10 @@
                         <a href="/publish">提问</a>
                     </li>
                     <li class="dropdown"  th:if="${session.user !=null}">
+                        <a href="/profile/replies">通知<span class="badge" style="margin-top: -2px;">3</span></a>
+
+                    </li>
+                    <li class="dropdown"  th:if="${session.user !=null}">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
                            aria-haspopup="true" aria-expanded="false">
                             <span th:text="${session.user.getName()}">我的</span>
