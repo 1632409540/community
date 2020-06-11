@@ -60,7 +60,6 @@ public class CommentController {
     @RequestMapping(value = "/commentThumbsUp/{id}", method = RequestMethod.GET)
     public ResultDTO<Integer> question(@PathVariable(name = "id")Long id){
         Integer likeCount=commentService.addLikeCount(id);
-
         return ResultDTO.successOf(likeCount);
     }
 }

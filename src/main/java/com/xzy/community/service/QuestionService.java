@@ -40,7 +40,6 @@ public class QuestionService {
         List<QuestionDTO> questionDTOList=new LinkedList<>();
         PaginationDTO<QuestionDTO> paginationDTO=new PaginationDTO<QuestionDTO>();
         for(Question question:questionList){
-            UserExample userExample=new UserExample();
             User user=userMapper.selectByPrimaryKey(question.getCreator());
             QuestionDTO questionDTO=new QuestionDTO();
             BeanUtils.copyProperties(question,questionDTO);

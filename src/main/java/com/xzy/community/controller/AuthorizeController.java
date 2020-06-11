@@ -5,6 +5,7 @@ import com.xzy.community.dto.GithubUser;
 import com.xzy.community.mapper.UserMapper;
 import com.xzy.community.model.User;
 import com.xzy.community.provider.GithubProvider;
+import com.xzy.community.service.NotificationService;
 import com.xzy.community.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,6 +31,8 @@ public class AuthorizeController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private NotificationService notificationService;
 
     @GetMapping("/callback")
     public String callback(@RequestParam(name = "code")String code,

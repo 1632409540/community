@@ -31,7 +31,7 @@
                         <a href="/publish">提问</a>
                     </li>
                     <li class="dropdown"  th:if="${session.user !=null}">
-                        <a href="/profile/replies">通知<span class="badge" style="margin-top: -2px;">3</span></a>
+                        <a href="/profile/replies">通知<span class="badge" style="margin-top: -2px;" th:if="${session.unreadCount>0}" th:text="${session.unreadCount}">3</span></a>
 
                     </li>
                     <li class="dropdown"  th:if="${session.user !=null}">

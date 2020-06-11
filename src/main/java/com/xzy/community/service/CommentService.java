@@ -53,12 +53,13 @@ public class CommentService {
             dbComment.setCommentCount(1);
             commentAddCountMapper.addCommentCount(dbComment);
             //回复的问题
-            Question question=questionMapper.selectByPrimaryKey(comment.getParentId());
+            Question question=questionMapper.selectByPrimaryKey(dbComment.getParentId());
+
             if(question==null){
                 throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
             }
             //创建通知
-            createNotify(comment,NotificationTypeEnum.REPLAY_COMMENT.getType(),dbComment.getParentId(),notifier.getName(),question.getTitle());
+            createNotify(comment,NotificationTypeEnum.REPLAY_COMMENT.getType(),dbComment.getCommentator(),notifier.getName(),question.getId(),question.getTitle());
 
         }else {
             //回复问题
@@ -70,21 +71,22 @@ public class CommentService {
             question.setCommentCount(1);
             questionAddCountMapper.addCommentCount(question);
             //创建通知
-            createNotify(comment,NotificationTypeEnum.REPLAY_COMMENT.getType(),question.getCreator(),notifier.getName(),question.getTitle());
+            createNotify(comment,NotificationTypeEnum.REPLAY_QUESTION.getType(),question.getCreator(),notifier.getName(),question.getId(),question.getTitle());
 
         }
 
     }
-    private void createNotify(Comment comment,Integer type,Long reciver,String notifier,String title){
+    private void createNotify(Comment comment,Integer type,Long reciver,String notifier,Long questionId,String title){
         Notification notification=new Notification();
         notification.setType(type);
         notification.setReceiver(reciver);
         notification.setGmtCreate(System.currentTimeMillis());
-        notification.setOuterId(comment.getParentId());
         notification.setNotifier(comment.getCommentator());
         notification.setStatus(NotificationStatusEnum.UNRead.getStatus());
         notification.setNotifierName(notifier);
+        notification.setOuterId(questionId);
         notification.setOuterTitle(title);
+
         notificationMapper.insert(notification);
     }
     public List<CommentDTO> findCommentsById(Long id, CommentTypeEnum type) {

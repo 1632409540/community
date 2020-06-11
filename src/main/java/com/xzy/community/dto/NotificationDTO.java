@@ -9,7 +9,9 @@ public class NotificationDTO {
     private Long notifier;
     private String notifierName;
     private String type;
+    private Long outerId;
     private String outerTitle;
-    private Integer Status;
-    private String gmtCreate;
+    private Long gmtCreate;
+    private Integer status;
+
 }
