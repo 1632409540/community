@@ -34,7 +34,8 @@ public class CommentService {
     private NotificationMapper notificationMapper;
 
     @Transactional
-    public void insert(Comment comment,User notifier) {
+    public void insert(Comment comment,User sessionUser) {
+
         if(comment.getParentId()==null||comment.getParentId()==0){
             throw new CustomizeException(CustomizeErrorCode.TARGET_PARAM_NOT_FOUNT);
         }
@@ -59,7 +60,7 @@ public class CommentService {
                 throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
             }
             //创建通知
-            createNotify(comment,NotificationTypeEnum.REPLAY_COMMENT.getType(),dbComment.getCommentator(),notifier.getName(),question.getId(),question.getTitle());
+            createNotify(comment,NotificationTypeEnum.REPLAY_COMMENT.getType(),dbComment.getCommentator(),sessionUser.getName(),question.getId(),question.getTitle());
 
         }else {
             //回复问题
@@ -71,12 +72,14 @@ public class CommentService {
             question.setCommentCount(1);
             questionAddCountMapper.addCommentCount(question);
             //创建通知
-            createNotify(comment,NotificationTypeEnum.REPLAY_QUESTION.getType(),question.getCreator(),notifier.getName(),question.getId(),question.getTitle());
-
+            createNotify(comment,NotificationTypeEnum.REPLAY_QUESTION.getType(),question.getCreator(),sessionUser.getName(),question.getId(),question.getTitle());
         }
 
     }
     private void createNotify(Comment comment,Integer type,Long reciver,String notifier,Long questionId,String title){
+        if(comment.getCommentator()==reciver){
+            return;
+        }
         Notification notification=new Notification();
         notification.setType(type);
         notification.setReceiver(reciver);
