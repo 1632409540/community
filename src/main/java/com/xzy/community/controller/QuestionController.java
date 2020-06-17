@@ -55,7 +55,6 @@ public class QuestionController {
                            Model model){
 
         PaginationDTO paginationDTO=questionService.listByTag(tag,page,size);
-
         model.addAttribute("paginationDTO",paginationDTO);
         return "index";
     }

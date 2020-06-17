@@ -22,8 +22,8 @@ public class ProfileController {
     @Autowired
     private NotificationService notificationService;
 
-    @GetMapping("/profile/{action}")
-    public String profile(@PathVariable(name = "action")String action,
+    @GetMapping("/profile/{section}")
+    public String profile(@PathVariable(name = "section")String section,
                           Model model,
                           HttpServletRequest request,
                           @RequestParam(name = "page",defaultValue = "1")Integer page,
@@ -33,13 +33,13 @@ public class ProfileController {
         if(user==null){
             return "redirect:/";
         }
-        if("questions".contains(action)){
+        if("questions".contains(section)){
             model.addAttribute("section","questions");
             model.addAttribute("sectionName","我的提问");
             PaginationDTO paginationDTO=questionService.list(user.getId(),page,size);
             model.addAttribute("paginationDTO",paginationDTO);
         }
-        if("replies".contains(action)){
+        if("replies".contains(section)){
             model.addAttribute("section","replies");
             model.addAttribute("sectionName","最新回复");
             PaginationDTO paginationDTO=notificationService.list(user,page,size);

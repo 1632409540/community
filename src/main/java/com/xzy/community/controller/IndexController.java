@@ -18,14 +18,16 @@ public class IndexController {
     private QuestionService questionService;
 
     @GetMapping("/")
-    public String greeting(@RequestParam(name="name", required=false,
-            defaultValue="World") String name, Model model,
+    public String index(@RequestParam(name="name", required=false, defaultValue="World") String name,
+                           Model model,
                            HttpServletRequest request,
                            @RequestParam(name = "page",defaultValue = "1")Integer page,
-                           @RequestParam(name = "size",defaultValue = "7")Integer size
+                           @RequestParam(name = "size",defaultValue = "10")Integer size,
+                           @RequestParam(name ="search",required = false) String search
                            ) {
+        PaginationDTO paginationDTO=questionService.list(search,page,size);
         model.addAttribute("name", name);
-        PaginationDTO paginationDTO=questionService.list(page,size);
+        model.addAttribute("search", search);
         model.addAttribute("paginationDTO",paginationDTO);
         return "index";
     }

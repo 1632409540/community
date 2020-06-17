@@ -2,6 +2,7 @@ package com.xzy.community.service;
 
 import com.xzy.community.dto.PaginationDTO;
 import com.xzy.community.dto.QuestionDTO;
+import com.xzy.community.dto.QuestionQueryDTO;
 import com.xzy.community.exception.CustomizeErrorCode;
 import com.xzy.community.exception.CustomizeException;
 import com.xzy.community.mapper.QuestionAddCountMapper;
@@ -11,15 +12,13 @@ import com.xzy.community.model.Question;
 import com.xzy.community.model.QuestionExample;
 import com.xzy.community.model.User;
 import com.xzy.community.model.UserExample;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,23 +30,44 @@ public class QuestionService {
     @Autowired
     private QuestionAddCountMapper questionAddCountMapper;
 
-    public PaginationDTO list(Integer page, Integer size) {
+    public PaginationDTO list( String search,Integer page, Integer size) {
+
+        if(StringUtils.isNotBlank(search)){
+            String[] searchs=search.split(" ");
+            search= Arrays.stream(searchs).collect(Collectors.joining("|"));
+        }
+
+        QuestionQueryDTO questionQueryDTO=new QuestionQueryDTO();
+        questionQueryDTO.setSearch(search);
+        questionQueryDTO.setPage(page);
+        questionQueryDTO.setSize(size);
+        Integer totalCount=questionAddCountMapper.countBySearch(questionQueryDTO);
 
         Integer offSize=size*(page-1);
         QuestionExample example=new QuestionExample();
         example.setOrderByClause("gmt_create desc");
-        List<Question> questionList=questionMapper.selectByExampleWithBLOBsWithRowbounds(example,new RowBounds(offSize,size));
-        List<QuestionDTO> questionDTOList=new LinkedList<>();
-        PaginationDTO<QuestionDTO> paginationDTO=new PaginationDTO<QuestionDTO>();
-        for(Question question:questionList){
+        List<Question> questionList=questionAddCountMapper.selectBySearch(questionQueryDTO);
+//        List<QuestionDTO> questionDTOList=new LinkedList<>();
+
+//        PaginationDTO<QuestionDTO> paginationDTO=new PaginationDTO<QuestionDTO>();
+
+//        for(Question question:questionList){
+//            User user=userMapper.selectByPrimaryKey(question.getCreator());
+//            QuestionDTO questionDTO=new QuestionDTO();
+//            BeanUtils.copyProperties(question,questionDTO);
+//            questionDTO.setUser(user);
+//            questionDTOList.add(questionDTO);
+//        }
+        List<QuestionDTO> questionDTOList=questionList.stream().map(question -> {
             User user=userMapper.selectByPrimaryKey(question.getCreator());
             QuestionDTO questionDTO=new QuestionDTO();
             BeanUtils.copyProperties(question,questionDTO);
             questionDTO.setUser(user);
-            questionDTOList.add(questionDTO);
-        }
+            return  questionDTO;
+        }).collect(Collectors.toList());
+
+        PaginationDTO<QuestionDTO> paginationDTO=new PaginationDTO<QuestionDTO>();
         paginationDTO.setData(questionDTOList);
-        Integer totalCount=(int)questionMapper.countByExample(new QuestionExample());
         paginationDTO.setPagination(totalCount,page,size);
         return paginationDTO;
     }

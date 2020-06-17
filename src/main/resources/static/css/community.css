@@ -126,3 +126,7 @@ a:active{text-decoration:none;}
 .label-default{
     margin-left: 2px;
 }
+.footer{
+    padding: 10px 25%;
+    color: #666666;
+}
