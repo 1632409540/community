@@ -1,1 +1,1 @@
-ALTER TABLE QUESTION ALTER COLUMN CREATOR BIGINT;
+alter table question alter column creator bigint;

@@ -30,23 +30,29 @@ public class QuestionService {
     @Autowired
     private QuestionAddCountMapper questionAddCountMapper;
 
-    public PaginationDTO list( String search,Integer page, Integer size) {
+    public PaginationDTO list(Long id, String search,String tag,Integer page, Integer size) {
 
+        Integer offSize=size*(page-1);
         if(StringUtils.isNotBlank(search)){
             String[] searchs=search.split(" ");
             search= Arrays.stream(searchs).collect(Collectors.joining("|"));
         }
-
+        if(StringUtils.isNotBlank(tag)){
+            String[] tags=tag.split(",");
+            tag= Arrays.stream(tags).collect(Collectors.joining("|"));
+        }
         QuestionQueryDTO questionQueryDTO=new QuestionQueryDTO();
+        questionQueryDTO.setId(id);
         questionQueryDTO.setSearch(search);
-        questionQueryDTO.setPage(page);
+        questionQueryDTO.setTag(tag);
+        questionQueryDTO.setPage(offSize);
         questionQueryDTO.setSize(size);
-        Integer totalCount=questionAddCountMapper.countBySearch(questionQueryDTO);
+        Integer totalCount=questionAddCountMapper.countBySearchAndTagExceptId(questionQueryDTO);
 
-        Integer offSize=size*(page-1);
+
         QuestionExample example=new QuestionExample();
         example.setOrderByClause("gmt_create desc");
-        List<Question> questionList=questionAddCountMapper.selectBySearch(questionQueryDTO);
+        List<Question> questionList=questionAddCountMapper.selectBySearchAndTagExceptId(questionQueryDTO);
 //        List<QuestionDTO> questionDTOList=new LinkedList<>();
 
 //        PaginationDTO<QuestionDTO> paginationDTO=new PaginationDTO<QuestionDTO>();
@@ -137,50 +143,5 @@ public class QuestionService {
         question.setId(id);
         question.setViewCount(1);
         questionAddCountMapper.addViewCount(question);
-    }
-
-    public PaginationDTO listByTag(String tag, Integer page, Integer size) {
-        Integer offSize=size*(page-1);
-        QuestionExample example=new QuestionExample();
-        example.createCriteria().andTagLike("%"+tag+"%");
-        example.setOrderByClause("gmt_create desc");
-        List<Question> questionList=questionMapper.selectByExampleWithBLOBsWithRowbounds(example,new RowBounds(offSize,size));
-
-        List<QuestionDTO> questionDTOList=new LinkedList<>();
-        PaginationDTO<QuestionDTO> paginationDTO=new PaginationDTO<QuestionDTO>();
-        for(Question question:questionList){
-            User user=userMapper.selectByPrimaryKey(question.getCreator());
-            QuestionDTO questionDTO=new QuestionDTO();
-            BeanUtils.copyProperties(question,questionDTO);
-            questionDTO.setUser(user);
-            questionDTOList.add(questionDTO);
-        }
-
-        paginationDTO.setData(questionDTOList);
-        QuestionExample example2=new QuestionExample();
-        example.createCriteria().andTagLike("%"+tag+"%");
-        Integer totalCount=(int)questionMapper.countByExample(example);
-        paginationDTO.setPagination(totalCount,page,size);
-        return paginationDTO;
-    }
-
-    public List<Question> listByTags(String[] tags) {
-
-        List<QuestionDTO> likeQuestions=new LinkedList<>();
-        for (String tag:tags) {
-            PaginationDTO<QuestionDTO> paginationDTO = listByTag(tag, 1, 10);
-            likeQuestions.addAll(paginationDTO.getData());
-        }
-        Set<Long> collect = likeQuestions.stream().map(questionDTO -> questionDTO.getId()).collect(Collectors.toSet());
-        List<Long> questionIds=new LinkedList<>();
-        questionIds.addAll(collect);
-        QuestionExample questionExample=new QuestionExample();
-        questionExample.createCriteria().andIdIn(questionIds);
-        questionExample.setOrderByClause("gmt_create desc");
-        List<Question> questions = questionMapper.selectByExample(questionExample);
-        if(questions.size()>11){
-            questions.subList(0,10);
-        }
-        return questions;
     }
 }

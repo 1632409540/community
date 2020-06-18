@@ -1,1 +1,1 @@
-ALTER TABLE NOTIFICATION ALTER COLUMN NITIFIER RENAME TO NOTIFIER;
+alter table notification alter column nitifier rename to notifier;

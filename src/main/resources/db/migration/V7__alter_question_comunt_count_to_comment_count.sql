@@ -1,1 +1,1 @@
-ALTER TABLE QUESTION ALTER COLUMN COMUNT_COUNT RENAME TO COMMENT_COUNT;
+alter table question alter column comunt_count rename to comment_count;

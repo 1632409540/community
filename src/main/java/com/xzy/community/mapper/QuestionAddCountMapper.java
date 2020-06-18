@@ -14,7 +14,7 @@ public interface QuestionAddCountMapper {
     int addViewCount(Question record);
     int addCommentCount(Question question);
 
-    Integer countBySearch(QuestionQueryDTO questionQueryDTO);
+    Integer countBySearchAndTagExceptId(QuestionQueryDTO questionQueryDTO);
 
-    List<Question> selectBySearch(QuestionQueryDTO questionQueryDTO);
+    List<Question> selectBySearchAndTagExceptId(QuestionQueryDTO questionQueryDTO);
 }

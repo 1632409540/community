@@ -29,33 +29,17 @@ public class QuestionController {
                            @RequestParam(name = "page",defaultValue = "1")Integer page,
                            @RequestParam(name = "size",defaultValue = "7")Integer size,
                             Model model){
-        questionService.addViewCount(id);
+
         QuestionDTO questionDTO=questionService.findById(id);
         List<CommentDTO> commentDTOList =commentService.findCommentsById(id, CommentTypeEnum.QUESTION);
         model.addAttribute("question",questionDTO);
         String[] tags=questionDTO.getTag().split(",");
         model.addAttribute("tags",tags);
         model.addAttribute("comments",commentDTOList);
-        List<Question> questions = questionService.listByTags(tags);
-        for (Question q: questions) {
-            if(q.getId()==id){
-                questions.remove(q);
-                break;
-            }
-        }
-        model.addAttribute("likeQuestions",questions);
+        PaginationDTO paginationDTO= questionService.list(id, null,questionDTO.getTag(),page,size);
+        model.addAttribute("likeQuestions",paginationDTO);
+        questionService.addViewCount(id);
         return "question";
     }
 
-    @GetMapping("/questionTag/{tag}")
-    public String tag(@PathVariable(name = "tag")String tag,
-                      HttpServletRequest request,
-                      @RequestParam(name = "page",defaultValue = "1")Integer page,
-                      @RequestParam(name = "size",defaultValue = "7")Integer size,
-                           Model model){
-
-        PaginationDTO paginationDTO=questionService.listByTag(tag,page,size);
-        model.addAttribute("paginationDTO",paginationDTO);
-        return "index";
-    }
 }

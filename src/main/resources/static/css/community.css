@@ -1,10 +1,11 @@
 body{
     background-color: #efefef;
+    background-image: url('../images/timg.jpg');
 }
 
 .main{
     background-color: white;
-    margin: 30px;
+    margin: 30px 100px;
 }
 .btn-publish{
     float: right;
@@ -129,4 +130,10 @@ a:active{text-decoration:none;}
 .footer{
     padding: 10px 25%;
     color: #666666;
+}
+.left-border{
+    border-left:1px #e0e0e0 solid;
+}
+.right-border{
+    border-right:1px #e0e0e0 solid;
 }

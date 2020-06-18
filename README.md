@@ -1,4 +1,4 @@
-## 丽院论坛
+## Lsu丽院社区
 
 ## 资料
 [Github community](https://github.com/1632409540/community)  
@@ -39,6 +39,3 @@ mvn flyway:migrate
 mvn -Dmybatis.generator.overwrite=true mybatis-generator:generate
 ```
 
-## 异常处理
-
-[h2:Wrong user name or password](https://blog.csdn.net/tripleDemo/article/details/98888281)

@@ -1,13 +1,13 @@
-CREATE TABLE question
+create table question
 (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    id bigint auto_increment primary key,
     title varchar(50),
     description text,
-    gmt_create BIGINT,
-    gmt_modified BIGINT,
+    gmt_create bigint,
+    gmt_modified bigint,
     creator int,
-    comunt_count int DEFAULT 0,
-    view_count int DEFAULT 0,
-    like_count int DEFAULT 0,
+    comunt_count int default 0,
+    view_count int default 0,
+    like_count int default 0,
     tag varchar(256)
 );

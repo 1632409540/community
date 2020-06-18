@@ -1,1 +1,1 @@
- ALTER TABLE USER ADD bio varchar(256) NULL;
+ alter table user add bio varchar(256) null;
