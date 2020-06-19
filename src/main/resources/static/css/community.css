@@ -5,7 +5,10 @@ body{
 
 .main{
     background-color: white;
-    margin: 30px 100px;
+    margin: 30px 10%;
+}
+.navigation{
+    margin: 0px 9%;
 }
 .btn-publish{
     float: right;

@@ -27,7 +27,7 @@ public class QuestionController {
     @GetMapping("/question/{id}")
     public String question(@PathVariable(name = "id")Long id,
                            @RequestParam(name = "page",defaultValue = "1")Integer page,
-                           @RequestParam(name = "size",defaultValue = "7")Integer size,
+                           @RequestParam(name = "size",defaultValue = "11")Integer size,
                             Model model){
 
         QuestionDTO questionDTO=questionService.findById(id);
