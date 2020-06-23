@@ -16,7 +16,7 @@
     <script src="/js/editormd.min.js"></script>
     <script src="/js/lib/marked.min.js"></script>
     <script src="/js/lib/prettify.min.js"></script>
-
+    <link rel="icon" type="image/x-icon" href="/images/logo.jpg" />
 
 </head>
 <body>
@@ -28,10 +28,12 @@
                 <div class="media-body">
                     <a th:href="@{'/question/'+${question.id}}"><h3 class="media-heading question-title" th:text="${question.title}"></h3></a>
                     <span class="text-desc">
-                        作者：<span th:text="${question.user.name}"></span>
-                        |发布时间：<span th:text="${#dates.format(question.gmtCreate,'yyyy-MM-dd')}"></span>
+                        <a class="index-tag" th:href="@{/(tag=${tags[0]})}" th:text="${tags[0]}"></a>
+                        |作者：<span th:text="${question.user.name}"></span>
+                        |发布时间：<span th:text="${#dates.format(question.gmtCreate,'yyyy-MM-dd HH:mm:ss')}"></span>
                         |阅读数：<span th:text="${question.getViewCount()}"></span>
                         </span>
+
                 </div>
                 <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12 tag-sp">
 
@@ -52,7 +54,7 @@
                 <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12 tag-sp"   th:if="${session.user!=null&&session.user.id==question.creator}">
 
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
-                    <span class="topic-tag " th:each="tag:${tags}">
+                    <span class="topic-tag" th:each="tag:${tags}">
                         <a th:href="@{/(tag=${tag})}">
                             <span class="glyphicon glyphicon-tags icon-tag" aria-hidden="true"></span>
                             <span class="text" th:text="${tag}">data</span>
@@ -154,10 +156,8 @@
             </div>
             <hr class="col-lg-10 col-md-12 col-sm-12 col-xs-12 ">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" >
-                <h4>站长微信</h4>
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 related">
-                    <img src="/images/myweixin.jpg" alt="..." class="img-rounded">
-                </div>
+                <h4>官方微信公众号推荐</h4>
+                <img src="/images/elastic.jpg" alt="..." class="col-lg-12 col-md-12 col-sm-12 col-xs-12 related">
             </div>
             <hr class="col-lg-10 col-md-12 col-sm-12 col-xs-12 ">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" >
@@ -168,11 +168,9 @@
             </div>
             <hr class="col-lg-10 col-md-12 col-sm-12 col-xs-12 ">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" >
-                <h4>问题状态</h4>
-                <h4 th:if="${question.commentCount<=0}">最新活动：<span th:text="${#dates.format(question.gmtCreate,'yyyy-MM-dd HH:mm:ss')}" ></span></h4>
-                <h4 th:if="${question.commentCount>0}">最新活动：<span th:text="${#dates.format(comments.get(0).getGmtCreate(),'yyyy-MM-dd HH:mm:ss')}" ></span></h4>
-                <h4>浏览: <span th:text="${question.viewCount}"></span></h4>
-                <h4>关注: <span th:text="${question.likeCount}"></span>人</h4>
+                <h4>友情链接</h4>
+                <h4><a href="https://elasticsearch.cn/">--Elastic中文社区--</a></h4>
+
             </div>
         </div>
     </div>

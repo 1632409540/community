@@ -24,9 +24,9 @@ public class CommentService {
     @Autowired
     private QuestionMapper questionMapper;
     @Autowired
-    private QuestionAddCountMapper questionAddCountMapper;
+    private QuestionExtMapper questionExtMapper;
     @Autowired
-    private CommentAddCountMapper commentAddCountMapper;
+    private CommentExtMapper commentExtMapper;
     @Autowired
     private UserMapper userMapper;
 
@@ -52,7 +52,7 @@ public class CommentService {
             }
             commentMapper.insert(comment);
             dbComment.setCommentCount(1);
-            commentAddCountMapper.addCommentCount(dbComment);
+            commentExtMapper.addCommentCount(dbComment);
             //回复的问题
             Question question=questionMapper.selectByPrimaryKey(dbComment.getParentId());
 
@@ -70,7 +70,7 @@ public class CommentService {
             }
             commentMapper.insert(comment);
             question.setCommentCount(1);
-            questionAddCountMapper.addCommentCount(question);
+            questionExtMapper.addCommentCount(question);
             //创建通知
             createNotify(comment,NotificationTypeEnum.REPLAY_QUESTION.getType(),question.getCreator(),sessionUser.getName(),question.getId(),question.getTitle());
         }
@@ -128,7 +128,7 @@ public class CommentService {
         Comment comment = commentMapper.selectByPrimaryKey(id);
         if(comment!=null){
             comment.setLikeCount(1);
-            commentAddCountMapper.addLikeCount(comment);
+            commentExtMapper.addLikeCount(comment);
         }
         comment=commentMapper.selectByPrimaryKey(id);
         return comment.getLikeCount();

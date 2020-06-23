@@ -5,8 +5,6 @@ import com.xzy.community.dto.CommentDTO;
 import com.xzy.community.dto.ResultDTO;
 import com.xzy.community.enums.CommentTypeEnum;
 import com.xzy.community.exception.CustomizeErrorCode;
-import com.xzy.community.mapper.CommentAddCountMapper;
-import com.xzy.community.mapper.CommentMapper;
 import com.xzy.community.model.Comment;
 import com.xzy.community.model.User;
 import com.xzy.community.service.CommentService;

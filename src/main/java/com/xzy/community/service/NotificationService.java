@@ -23,8 +23,6 @@ public class NotificationService {
 
     @Autowired
     private NotificationMapper notificationMapper;
-    @Autowired
-    private UserMapper userMapper;
 
     public PaginationDTO list(User user, Integer page, Integer size) {
 

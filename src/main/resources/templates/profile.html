@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/css/community.css">
     <link rel="stylesheet" href="/js/community.js">
     <script src="/js/bootstrap.min.js" type="application/javascript"></script>
-
+    <link rel="icon" type="image/x-icon" href="/images/logo.jpg" />
 
 </head>
 <body>
@@ -29,7 +29,6 @@
                     <div class="media-body">
                         <span class="text-desc">
                             <span th:text="${question.user.name}">0</span>发布了问题
-                            •<span th:text="${question.getCommentCount()}">0</span>人关注
                             • <span th:text="${question.getCommentCount()}">0</span> 个回复
                             • <span th:text="${question.getViewCount()}">0</span> 次浏览
                             • <span th:text="${question.getLikeCount()}">0</span> 人喜欢

@@ -1,12 +1,13 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Lsu丽院社区</title>
+    <title>Lsu社区</title>
     <script src="/js/jquery.min.js"></script>
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="/css/community.css">
     <script src="/js/bootstrap.min.js" type="application/javascript"></script>
+    <link rel="icon" type="image/x-icon" href="/images/logo.jpg" />
     <script>
         window.onload = function () {
             var closable=window.localStorage.getItem("closable");
@@ -22,8 +23,11 @@
 <div class="container-fluid main">
     <div class="row">
         <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 right-border">
-            <h2 th:if="${tag==null||tag==''}" h><span class="glyphicon glyphicon-list" aria-hidden="true"></span> &nbsp;发现</h2>
-            <h2 th:if="${tag!=null&&tag!=''}" h><span class="glyphicon glyphicon-tags" aria-hidden="true"></span> &nbsp;<span th:text="${tag}">发现</span></h2>
+            <h2 th:if="${tag==null||tag==''}" ><span class="glyphicon glyphicon-list" aria-hidden="true"></span> &nbsp;发现</h2>
+            <h2 th:if="${tag!=null&&tag!=''}" >
+                <span class="glyphicon glyphicon-tags" aria-hidden="true"></span> &nbsp;
+                <span th:text="${tag}"></span>
+            </h2>
 
             <div class="media" th:each="question:${paginationDTO.getData()}">
                 <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12 tag-sp">
@@ -34,12 +38,9 @@
                 </div>
                 <div class="media-body">
                     <a th:href="@{'/question/'+${question.id}}"><h4 class="media-heading" th:text="${question.title}"></h4></a>
-
                     <span class="text-desc">
-
-                        <span class="label label-default" th:each="tag:${question.getTag().split(',')}" th:text="${tag}">0</span>
+                        <a class="index-tag" th:each="tag,tagStat:${question.getTag().split(',')}" th:href="@{/(tag=${tag})}" th:text="${tag}" th:if="${tagStat.index==0}"></a>
                         • <span th:text="${question.user.name}">0</span>发起了问题
-                        •<span th:text="${question.getLikeCount()}">0</span>人关注
                         • <span th:text="${question.getCommentCount()}">0</span> 个回复
                         • <span th:text="${question.getViewCount()}">0</span> 次浏览
                         •<span th:text="${#dates.format(question.gmtCreate,'yyyy-MM-dd hh:mm')}">0</span></span>
@@ -77,8 +78,33 @@
             </nav>
         </div>
         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12" >
+            <h3>活动推荐</h3>
+            <a  href="https://developer.aliyun.com/topic/elasticsearch?ref=escn">
+                <img class="col-lg-12 col-md-12 col-sm-12 col-xs-12 related" src="/images/Elas.jpg" alt="..." >
+            </a>
+            <hr class="col-lg-10 col-md-12 col-sm-12 col-xs-12 ">
             <h3>热门话题</h3>
-
+            <div class="media" th:each="topic,topicStart:${hotTopic.getData()}" th:if="${topicStart.index<5}">
+                <div class="media-left" >
+                    <a th:href="@{/(tag=${topic.tag})}">
+                        <img class="media-object img-rounded" src="/images/tag.jpg" >
+                    </a>
+                </div>
+                <div class="media-body">
+                    <a th:href="@{/(tag=${topic.tag})}" class="index-topic-tag">
+                        <span class="text" th:text="${topic.tag}">data</span>
+                    </a>
+                    <br/>
+                    <span class="text-desc">
+                        <span th:text="${topic.questionCount}">0</span> 个问题
+                        • <span th:text="${topic.commentCount}">0</span> 次回复
+                    </span>
+                </div>
+            </div>
+            <hr class="col-lg-10 col-md-12 col-sm-12 col-xs-12 ">
+            <a  href="https://www.ucloud.cn/site/global.html">
+                <img class="col-lg-12 col-md-12 col-sm-12 col-xs-12 related" src="/images/UCloud.jpg" alt="..." >
+            </a>
         </div>
     </div>
 </div>

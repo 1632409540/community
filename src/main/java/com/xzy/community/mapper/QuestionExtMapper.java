@@ -9,7 +9,7 @@ import org.apache.ibatis.session.RowBounds;
 
 import java.util.List;
 
-public interface QuestionAddCountMapper {
+public interface QuestionExtMapper {
 
     int addViewCount(Question record);
     int addCommentCount(Question question);
@@ -17,4 +17,6 @@ public interface QuestionAddCountMapper {
     Integer countBySearchAndTagExceptId(QuestionQueryDTO questionQueryDTO);
 
     List<Question> selectBySearchAndTagExceptId(QuestionQueryDTO questionQueryDTO);
+
+    int getCommentCountByTag(String tag);
 }

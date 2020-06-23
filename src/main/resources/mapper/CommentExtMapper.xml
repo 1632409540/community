@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.xzy.community.mapper.CommentAddCountMapper">
+<mapper namespace="com.xzy.community.mapper.CommentExtMapper">
   <resultMap id="BaseResultMap" type="com.xzy.community.model.Comment">
     <!--
       WARNING - @mbg.generated

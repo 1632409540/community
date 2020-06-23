@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.xzy.community.mapper.QuestionAddCountMapper">
+<mapper namespace="com.xzy.community.mapper.QuestionExtMapper">
   <resultMap id="BaseResultMap" type="com.xzy.community.model.Question">
     <!--
       WARNING - @mbg.generated
@@ -60,4 +60,7 @@
     order by gmt_create desc limit #{page},#{size}
   </select>
 
+  <select id="getCommentCountByTag" parameterType="java.lang.String" resultType="java.lang.Integer">
+    select sum(COMMENT_COUNT) from QUESTION where TAG like #{tag}
+  </select>
 </mapper>

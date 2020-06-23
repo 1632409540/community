@@ -1,17 +1,17 @@
 package com.xzy.community.service;
 
+import com.xzy.community.dto.HotTopicDTO;
 import com.xzy.community.dto.PaginationDTO;
 import com.xzy.community.dto.QuestionDTO;
 import com.xzy.community.dto.QuestionQueryDTO;
 import com.xzy.community.exception.CustomizeErrorCode;
 import com.xzy.community.exception.CustomizeException;
-import com.xzy.community.mapper.QuestionAddCountMapper;
+import com.xzy.community.mapper.QuestionExtMapper;
 import com.xzy.community.mapper.QuestionMapper;
 import com.xzy.community.mapper.UserMapper;
 import com.xzy.community.model.Question;
 import com.xzy.community.model.QuestionExample;
 import com.xzy.community.model.User;
-import com.xzy.community.model.UserExample;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.BeanUtils;
@@ -28,7 +28,7 @@ public class QuestionService {
     @Autowired
     private QuestionMapper questionMapper;
     @Autowired
-    private QuestionAddCountMapper questionAddCountMapper;
+    private QuestionExtMapper questionExtMapper;
 
     public PaginationDTO list(Long id, String search,String tag,Integer page, Integer size) {
 
@@ -47,23 +47,13 @@ public class QuestionService {
         questionQueryDTO.setTag(tag);
         questionQueryDTO.setPage(offSize);
         questionQueryDTO.setSize(size);
-        Integer totalCount=questionAddCountMapper.countBySearchAndTagExceptId(questionQueryDTO);
+        Integer totalCount= questionExtMapper.countBySearchAndTagExceptId(questionQueryDTO);
 
 
         QuestionExample example=new QuestionExample();
         example.setOrderByClause("gmt_create desc");
-        List<Question> questionList=questionAddCountMapper.selectBySearchAndTagExceptId(questionQueryDTO);
-//        List<QuestionDTO> questionDTOList=new LinkedList<>();
+        List<Question> questionList= questionExtMapper.selectBySearchAndTagExceptId(questionQueryDTO);
 
-//        PaginationDTO<QuestionDTO> paginationDTO=new PaginationDTO<QuestionDTO>();
-
-//        for(Question question:questionList){
-//            User user=userMapper.selectByPrimaryKey(question.getCreator());
-//            QuestionDTO questionDTO=new QuestionDTO();
-//            BeanUtils.copyProperties(question,questionDTO);
-//            questionDTO.setUser(user);
-//            questionDTOList.add(questionDTO);
-//        }
         List<QuestionDTO> questionDTOList=questionList.stream().map(question -> {
             User user=userMapper.selectByPrimaryKey(question.getCreator());
             QuestionDTO questionDTO=new QuestionDTO();
@@ -142,6 +132,50 @@ public class QuestionService {
         Question question=new Question();
         question.setId(id);
         question.setViewCount(1);
-        questionAddCountMapper.addViewCount(question);
+        questionExtMapper.addViewCount(question);
+    }
+
+    public HotTopicDTO getHotTopic() {
+        HotTopicDTO hotTopicDTO=new HotTopicDTO();
+        QuestionExample example=new QuestionExample();
+        List<Question> questions = questionMapper.selectByExample(example);
+        HashMap<String,Integer> map=new HashMap<String,Integer>();
+        for (Question question : questions) {
+            String[] split = StringUtils.split(question.getTag(), ",");
+            for (String tag:split) {
+                if(map.containsKey(tag)){
+                    map.put(tag,map.get(tag)+1);
+                }else {
+                    map.put(tag,1);
+                }
+            }
+        }
+        Map<String, Integer> sortedMap = this.sortByValue(map, true);
+
+        LinkedList<HotTopicDTO> data =new LinkedList<>();
+        Iterator<Map.Entry< String,Integer>> it = sortedMap.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<String,Integer> entry = it.next();
+            HotTopicDTO hotTopicDTO1=new HotTopicDTO();
+            hotTopicDTO1.setTag(entry.getKey());
+            hotTopicDTO1.setQuestionCount(entry.getValue());
+            int count =questionExtMapper.getCommentCountByTag("%"+entry.getKey()+"%");
+            hotTopicDTO1.setCommentCount(count);
+            data.add(hotTopicDTO1);
+        }
+        hotTopicDTO.setData(data);
+        return hotTopicDTO;
+    }
+
+    public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map, boolean isDesc) {
+        Map<K, V> result = new LinkedHashMap<>();
+        if (isDesc) {
+            map.entrySet().stream().sorted(Map.Entry.<K, V>comparingByValue().reversed())
+                    .forEach(e -> result.put(e.getKey(), e.getValue()));
+        } else {
+            map.entrySet().stream().sorted(Map.Entry.<K, V>comparingByValue())
+                    .forEachOrdered(e -> result.put(e.getKey(), e.getValue()));
+        }
+        return result;
     }
 }
