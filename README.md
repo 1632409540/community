@@ -1,4 +1,4 @@
-## Lsu丽院社区
+## Lsu社区
 
 ## 资料
 [Github community](https://github.com/1632409540/community)  
@@ -34,7 +34,7 @@
       GMT_MODIFIED BIGINT
     );
 ```
-```bash
+```bash``**__**``
 mvn flyway:migrate
 mvn -Dmybatis.generator.overwrite=true mybatis-generator:generate
 ```
