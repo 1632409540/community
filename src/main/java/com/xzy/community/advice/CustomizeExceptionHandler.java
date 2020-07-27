@@ -1,7 +1,6 @@
 package com.xzy.community.advice;
 
 import com.alibaba.fastjson.JSON;
-import com.sun.org.apache.regexp.internal.RE;
 import com.xzy.community.dto.ResultDTO;
 import com.xzy.community.exception.CustomizeErrorCode;
 import com.xzy.community.exception.CustomizeException;

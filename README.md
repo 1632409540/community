@@ -34,7 +34,7 @@
       GMT_MODIFIED BIGINT
     );
 ```
-```bash``**__**``
+```bash
 mvn flyway:migrate
 mvn -Dmybatis.generator.overwrite=true mybatis-generator:generate
 ```
