@@ -1,1 +1,1 @@
-alter table question alter column creator bigint;
+alter table question  modify creator bigint ;

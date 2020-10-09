@@ -1,1 +1,1 @@
-alter table question alter column comunt_count rename to comment_count;
+alter table question change comunt_count comment_count int;

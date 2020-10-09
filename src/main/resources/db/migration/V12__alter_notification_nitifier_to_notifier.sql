@@ -1,1 +1,1 @@
-alter table notification alter column nitifier rename to notifier;
+alter table notification  change nitifier  notifier bigint;
