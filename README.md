@@ -1,5 +1,25 @@
 ## Lsu社区
 
+##部署  
+- Git
+- JDK
+- Maven  
+- MySQL
+##步骤  
+- yum update
+- yum install git
+- mkdir App
+- cd App
+- git clone xxxxxx
+- yum install maven
+- mvn -v
+- mvn clean compile package
+- more src/main/resource/application.properties
+- cp src/main/resource/application.properties src/main/resource/application-production.properties
+- vi src/main/resource/application-production.properties
+- mvn package
+
+
 ## 资料
 [Github community](https://github.com/1632409540/community)  
 [Spring 文档](https://spring.io/guides)  
