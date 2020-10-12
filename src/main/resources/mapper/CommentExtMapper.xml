@@ -19,12 +19,12 @@
   </resultMap>
 
   <update id="addLikeCount" parameterType="com.xzy.community.model.Comment">
-    update COMMENT
+    update comment
     set LIKE_COUNT = LIKE_COUNT + #{likeCount,jdbcType=INTEGER}
     where ID = #{id,jdbcType=INTEGER}
   </update>
   <update id="addCommentCount" parameterType="com.xzy.community.model.Comment">
-    update COMMENT
+    update comment
     set COMMENT_COUNT = COMMENT_COUNT + #{commentCount,jdbcType=INTEGER}
     where ID = #{id,jdbcType=INTEGER}
   </update>

@@ -19,18 +19,18 @@
   </resultMap>
 
   <update id="addViewCount" parameterType="com.xzy.community.model.Question">
-    update QUESTION
+    update question
     set VIEW_COUNT = VIEW_COUNT + #{viewCount,jdbcType=INTEGER}
     where ID = #{id,jdbcType=INTEGER}
   </update>
   <update id="addCommentCount" parameterType="com.xzy.community.model.Question">
-    update QUESTION
+    update question
     set COMMENT_COUNT = COMMENT_COUNT + #{commentCount,jdbcType=INTEGER}
     where ID = #{id,jdbcType=INTEGER}
   </update>
 
   <select id="countBySearchAndTagExceptId" parameterType="com.xzy.community.dto.QuestionQueryDTO" resultType="java.lang.Integer">
-    select count(*) from QUESTION
+    select count(*) from question
     <where>
       <if test="id !=null and id !=0">
         and id != #{id}
@@ -45,7 +45,7 @@
   </select>
 
   <select id="selectBySearchAndTagExceptId" parameterType="com.xzy.community.dto.QuestionQueryDTO" resultMap="BaseResultMap">
-    select * from QUESTION
+    select * from question
     <where>
       <if test="id !=null and id !=0">
         and id != #{id}
@@ -61,6 +61,6 @@
   </select>
 
   <select id="getCommentCountByTag" parameterType="java.lang.String" resultType="java.lang.Integer">
-    select sum(COMMENT_COUNT) from QUESTION where TAG like #{tag}
+    select sum(COMMENT_COUNT) from question where TAG like #{tag}
   </select>
 </mapper>

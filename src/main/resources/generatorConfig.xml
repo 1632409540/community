@@ -7,10 +7,15 @@
     <context id="DB2Tables" targetRuntime="MyBatis3">
 
         <plugin type="org.mybatis.generator.plugins.RowBoundsPlugin"></plugin>
-        <jdbcConnection driverClass="org.h2.Driver"
-                        connectionURL="jdbc:h2:E:/ideaIdeaProjects/community/src/main/resources/database/h2"
-                        userId="sa"
-                        password="123">
+        <!--<jdbcConnection driverClass="org.h2.Driver"-->
+                        <!--connectionURL="jdbc:h2:E:/ideaIdeaProjects/community/src/main/resources/database/h2"-->
+                        <!--userId="sa"-->
+                        <!--password="123">-->
+        <!--</jdbcConnection>-->
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                        connectionURL="jdbc:mysql://10.0.0.81/community?characterEncoding=utf8"
+                        userId="root"
+                        password="123456">
         </jdbcConnection>
 
         <javaTypeResolver >
