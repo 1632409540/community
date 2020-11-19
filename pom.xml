@@ -90,6 +90,11 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.9</version>
         </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>5.2.1</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -103,7 +108,7 @@
                 <artifactId>flyway-maven-plugin</artifactId>
                 <version>6.4.1</version>
                 <configuration>
-                    <url>jdbc:mysql://10.0.0.81/community</url>
+                    <url>jdbc:mysql://127.0.0.1/community</url>
                     <user>root</user>
                     <password>123456</password>
                 </configuration>
