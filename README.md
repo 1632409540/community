@@ -4,7 +4,8 @@
 - Git
 - JDK
 - Maven  
-- MySQL
+- MySQL  
+
 ##步骤  
 - yum update
 - yum install git
@@ -17,10 +18,8 @@
 - more src/main/resource/application.properties
 - cp src/main/resource/application.properties src/main/resource/application-production.properties
 - vi src/main/resource/application-production.properties
-- mvn package
-- java -jar -Dspring.profiles.active=production target/community-0.0.1-SNAPSHOT.jar
-- mvn flyway:migrate
-- mvn flyway:repair
+- mvn package -Dmaven.test.skip=true
+- java -jar -Dspring.profiles.active=production target/community-0.0.1-SNAPSHOT.jar  
 
 
 ## 资料
