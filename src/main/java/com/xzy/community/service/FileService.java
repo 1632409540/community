@@ -25,6 +25,7 @@ public class FileService {
 
             BufferedInputStream bis=new BufferedInputStream(fileStream);
             BufferedOutputStream bos=new BufferedOutputStream(new FileOutputStream(realPath+"\\"+generatedFileName));
+            System.out.println("realPath-->"+realPath);
             int len=0;
             while((len=bis.read())!=-1){
                 bos.write(len);
