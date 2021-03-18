@@ -18,26 +18,27 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class QuestionService {
-    @Autowired
+    @Resource
     private UserMapper userMapper;
-    @Autowired
+    @Resource
     private QuestionMapper questionMapper;
-    @Autowired
+    @Resource
     private QuestionExtMapper questionExtMapper;
 
     public PaginationDTO list(Long id, String search,String tag,Integer page, Integer size) {
 
         Integer offSize=size*(page-1);
-        if(StringUtils.isNotBlank(search)){
+        if(StringUtils.isNotEmpty(search)){
             String[] searchs=search.split(" ");
             search= Arrays.stream(searchs).collect(Collectors.joining("|"));
         }
-        if(StringUtils.isNotBlank(tag)){
+        if(StringUtils.isNotEmpty(tag)){
             String[] tags=tag.split(",");
             tag= Arrays.stream(tags).collect(Collectors.joining("|"));
         }

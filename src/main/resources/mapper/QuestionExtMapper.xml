@@ -35,10 +35,10 @@
       <if test="id !=null and id !=0">
         and id != #{id}
       </if>
-      <if test="search != null">
+      <if test="search != null and search.length > 0">
         and title regexp #{search}
       </if>
-      <if test="tag !=null">
+      <if test="tag !=null and tag.length > 0">
         and tag regexp #{tag}
       </if>
     </where>
@@ -50,10 +50,10 @@
       <if test="id !=null and id !=0">
         and id != #{id}
       </if>
-      <if test="search != null">
+      <if test="search != null and search.length > 0">
         and title regexp #{search}
       </if>
-      <if test="tag!=null">
+      <if test="tag!=null and tag.length > 0">
         and tag regexp #{tag}
       </if>
     </where>

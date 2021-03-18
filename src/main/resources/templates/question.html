@@ -26,7 +26,8 @@
         <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 right-border">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <div class="media-body">
-                    <a th:href="@{'/question/'+${question.id}}"><h3 class="media-heading question-title" th:text="${question.title}"></h3></a>
+                    <!--<a th:href="@{'/question/'+${question.id}}"><h3 class="media-heading question-title" th:text="${question.title}"></h3></a>-->
+                    <h3 class="media-heading question-title" th:text="${question.title}"></h3>
                     <span class="text-desc">
                         <a class="index-tag" th:href="@{/(tag=${tags[0]})}" th:text="${tags[0]}"></a>
                         |作者：<span th:text="${question.user.name}"></span>

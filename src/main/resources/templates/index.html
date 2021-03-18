@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Lsu社区</title>
+    <title>LSU社区</title>
     <script src="/js/jquery.min.js"></script>
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
@@ -24,6 +24,15 @@
     <div class="row">
         <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 right-border">
             <h2 th:if="${tag==null||tag==''}" ><span class="glyphicon glyphicon-list" aria-hidden="true"></span> &nbsp;发现</h2>
+            <!--&lt;!&ndash; tab切换 &ndash;&gt;-->
+            <!--<ul class="nav nav-tabs aw-nav-tabs active hidden-xs">-->
+                <!--<li class="active"><a href="/">最新</a></li>-->
+                <!--<li><a href="/" id="sort_control_hot">热门</a></li>-->
+                <!--<li><a href="/">推荐</a></li>-->
+                <!--<li><a href="/"><span style="color: #E51C37">消灭零回复</span></a></li>-->
+                <!--&lt;!&ndash;<h2 class="hidden-xs"><i class="icon icon-list"></i> 发现</h2>&ndash;&gt;-->
+            <!--</ul>-->
+            <!--&lt;!&ndash; end tab切换 &ndash;&gt;-->
             <h2 th:if="${tag!=null&&tag!=''}" >
                 <span class="glyphicon glyphicon-tags" aria-hidden="true"></span> &nbsp;
                 <span th:text="${tag}"></span>
@@ -108,6 +117,6 @@
         </div>
     </div>
 </div>
-<div th:insert="~{footer :: foot}"></div>
+<!--<div th:insert="~{footer :: foot}"></div>-->
 </body>
 </html>
