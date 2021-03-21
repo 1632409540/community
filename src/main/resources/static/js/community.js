@@ -101,7 +101,7 @@ function viewSecondComment(id,data) {
     var secondComments=data.data;
     var thisComment=$("#cansel-"+id);
     for(var index=0;index<secondComments.length;index++){
-        var unixtimestamp = new Date(secondComments[index].gmtCreate);
+        var unixtimestamp = new Date(secondComments[index].createDate);
         console.log(unixtimestamp);
         var year = unixtimestamp.getFullYear();
         var month = "0" + (unixtimestamp.getMonth() + 1);

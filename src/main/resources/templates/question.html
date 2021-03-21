@@ -31,7 +31,7 @@
                     <span class="text-desc">
                         <a class="index-tag" th:href="@{/(tag=${tags[0]})}" th:text="${tags[0]}"></a>
                         |作者：<span th:text="${question.user.name}"></span>
-                        |发布时间：<span th:text="${#dates.format(question.gmtCreate,'yyyy-MM-dd HH:mm:ss')}"></span>
+                        |发布时间：<span th:text="${#dates.format(question.createDate,'yyyy-MM-dd HH:mm:ss')}"></span>
                         |阅读数：<span th:text="${question.getViewCount()}"></span>
                         </span>
 
@@ -89,7 +89,7 @@
                                    th:data-id="${comment.id}"  aria-hidden="true">
                             </span>
                             <span th:text="${comment.commentCount}">0</span>
-                            <span class="pull-right" th:text="${#dates.format(comment.gmtCreate,'yyyy-MM-dd')}"></span>
+                            <span class="pull-right" th:text="${#dates.format(comment.createDate,'yyyy-MM-dd')}"></span>
                         </div>
                         <!--二级回复-->
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 collapse sub-comments"

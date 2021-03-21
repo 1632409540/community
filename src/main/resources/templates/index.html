@@ -52,7 +52,8 @@
                         • <span th:text="${question.user.name}">0</span>发起了问题
                         • <span th:text="${question.getCommentCount()}">0</span> 个回复
                         • <span th:text="${question.getViewCount()}">0</span> 次浏览
-                        •<span th:text="${#dates.format(question.gmtCreate,'yyyy-MM-dd hh:mm')}">0</span></span>
+                        • 发起于<span th:text="${#dates.format(question.createDate,'yyyy年MM月dd日 hh:mm')}">0</span></span>
+                        <!--•<span th:text="${question.createDate}">0</span></span>-->
                 </div>
             </div>
             <nav aria-label="Page navigation">
