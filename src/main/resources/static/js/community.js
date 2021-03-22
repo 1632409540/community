@@ -260,3 +260,33 @@ function Map() {
         return s;
     };
 }
+
+/**
+ * 发表
+ */
+function publish() {
+    var title = $('#title').val().trim();
+    var description = $('#description').val().trim();
+    var tag = $('#tag').val().trim();
+    if (title == ''){
+        alert("警告,标题不能为空！");
+        return;
+    }
+    $.ajax({
+        type: "POST",
+        url: "/publish",
+        contentType: 'application/json',
+        data: JSON.stringify({title:title,description:description,tag:tag,status: 1}),
+        dataType: "json",
+        success: function(response){
+            if (response.code == 200) {
+                alert("发表成功！");
+                //window.location.reload();
+                console.log("response==>",response);
+                //window.location.href = "question/"+response.data.id;
+            } else{
+                alert("出错啦, 服务器发生了一个错误");
+            }
+        }
+    });
+}

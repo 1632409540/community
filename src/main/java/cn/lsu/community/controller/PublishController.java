@@ -2,6 +2,7 @@ package cn.lsu.community.controller;
 
 import cn.lsu.community.dto.QuestionDTO;
 import cn.lsu.community.cache.TagCache;
+import cn.lsu.community.dto.ResultDTO;
 import cn.lsu.community.entity.Question;
 import cn.lsu.community.entity.User;
 import cn.lsu.community.service.Impl.QuestionServiceImpl;
@@ -10,10 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -42,32 +40,31 @@ public class PublishController {
         return "publish";
     }
 
-    @PostMapping("/Publish")
-    public String doPublish(
-            @RequestParam(value = "title",required = false)String title,
-            @RequestParam(value = "description",required = false)String description,
-            @RequestParam(value = "tag",required = false)String tag,
-            @RequestParam(value = "id",required = false)Long id,
+    @ResponseBody
+    @PostMapping("/publish")
+    public Object doPublish(
+            @RequestBody Question question,
             HttpServletRequest request,
             Model model
     ){
-        model.addAttribute("title",title);
-        model.addAttribute("description",description);
-        model.addAttribute("tag",tag);
+        model.addAttribute("title",question.getTitle());
+        model.addAttribute("description",question.getDescription());
+        model.addAttribute("tag",question.getTag());
         model.addAttribute("selectTags", TagCache.get());
-        if (title == null || title == "") {
-            model.addAttribute("error","标题不能为空！");
-            return "publish";
-        }
-        if (description == null || description == "") {
-            model.addAttribute("error","问题补充不能为空！");
-            return "publish";
-        }
-        if (tag == null || tag == "") {
-            model.addAttribute("error","标签不能为空！");
-            return "publish";
-        }
-        String s = TagCache.filterInvalid(tag);
+        model.addAttribute("status", question.getStatus());
+//        if (title == null || title == "") {
+//            model.addAttribute("error","标题不能为空！");
+//            return "publish";
+//        }
+//        if (description == null || description == "") {
+//            model.addAttribute("error","问题补充不能为空！");
+//            return "publish";
+//        }
+//        if (tag == null || tag == "") {
+//            model.addAttribute("error","标签不能为空！");
+//            return "publish";
+//        }
+        String s = TagCache.filterInvalid(question.getTag());
         System.out.println(s);
         if (StringUtils.isNotBlank(s)) {
             model.addAttribute("error","存在不合法标签！");
@@ -78,16 +75,8 @@ public class PublishController {
             model.addAttribute("error","用户未登录");
             return "publish";
         }
-        Question question=new Question();
-        question.setTitle(title);
-        question.setDescription(description);
-        question.setTag(tag);
         question.setCreator(user.getId());
-        question.setLikeCount(0);
-        question.setViewCount(0);
-        question.setCommentCount(0);
-        question.setId(id);
-        questionService.createOrUpdate(question);
-       return "redirect:/";
+        Question saveQuestion = questionService.createOrUpdate(question);
+        return ResultDTO.successOf(saveQuestion);
     }
 }

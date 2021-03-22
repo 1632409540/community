@@ -36,8 +36,20 @@ public class ProfileController {
         }
         if("questions".contains(section)){
             model.addAttribute("section","questions");
-            model.addAttribute("sectionName","我的提问");
-            PaginationDTO paginationDTO=questionService.list(user.getId(),page,size);
+            model.addAttribute("sectionName","发布的提问");
+            PaginationDTO paginationDTO=questionService.list(user.getId(),page,size,1);
+            model.addAttribute("paginationDTO",paginationDTO);
+        }
+        if("draft".contains(section)){
+            model.addAttribute("section","draft");
+            model.addAttribute("sectionName","草稿箱");
+            PaginationDTO paginationDTO=questionService.list(user.getId(),page,size,0);
+            model.addAttribute("paginationDTO",paginationDTO);
+        }
+        if("deleteLight".contains(section)){
+            model.addAttribute("section","deleteLight");
+            model.addAttribute("sectionName","回收站");
+            PaginationDTO paginationDTO=questionService.list(user.getId(),page,size,2);
             model.addAttribute("paginationDTO",paginationDTO);
         }
         if("replies".contains(section)){

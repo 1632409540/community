@@ -66,10 +66,12 @@ public class QuestionServiceImpl extends BaseService<QuestionMapper,Question> im
         return paginationDTO;
     }
 
-    public PaginationDTO list(Long id, Integer page, Integer size) {
+    public PaginationDTO list(Long userId, Integer page, Integer size,Integer status) {
         Integer offSize=size*(page-1);
         Wrapper<Question> wrapper = new EntityWrapper<>();
-        wrapper.orderBy("create_date", false);
+        wrapper.eq("creator",userId)
+                .eq("status",status)
+                .orderBy("create_date", false);
         List<Question> questionList = baseMapper.selectPage(new RowBounds(offSize,size),wrapper);
         List<QuestionDTO> questionDTOList=new LinkedList<>();
         PaginationDTO<QuestionDTO> paginationDTO=new PaginationDTO<QuestionDTO>();
@@ -98,7 +100,7 @@ public class QuestionServiceImpl extends BaseService<QuestionMapper,Question> im
         return questionDTO;
     }
 
-    public void createOrUpdate(Question question) {
+    public Question createOrUpdate(Question question) {
         Question dbQuestion= questionMapper.selectById(question.getId());
         if(dbQuestion!=null){
             Question updateQuestion=new Question();
@@ -106,10 +108,14 @@ public class QuestionServiceImpl extends BaseService<QuestionMapper,Question> im
             updateQuestion.setTitle(question.getTitle());
             updateQuestion.setDescription(question.getDescription());
             updateQuestion.setTag(question.getTag());
-            int update=questionMapper.updateById(updateQuestion);
-            if(update!=1){
+            try{
+                questionMapper.updateById(updateQuestion);
+            }catch (Exception e){
                 throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+            }finally {
+                return dbQuestion;
             }
+
         }else {
             question.setId(null);
             try{
@@ -117,6 +123,8 @@ public class QuestionServiceImpl extends BaseService<QuestionMapper,Question> im
             }catch (Exception e){
                 e.printStackTrace();
                 throw new CustomizeException(CustomizeErrorCode.QUESTION_INSERT_ERROR);
+            }finally {
+                return question;
             }
         }
     }

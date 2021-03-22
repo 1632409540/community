@@ -18,6 +18,8 @@ public class Question extends BaseEntity<Question> {
 
     private String description;
 
+    private Integer status;
+
     public String getTitle() {
         return title;
     }
@@ -72,5 +74,13 @@ public class Question extends BaseEntity<Question> {
 
     public void setDescription(String description) {
         this.description = description == null ? null : description.trim();
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 }
