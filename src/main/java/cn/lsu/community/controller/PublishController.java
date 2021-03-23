@@ -5,6 +5,7 @@ import cn.lsu.community.cache.TagCache;
 import cn.lsu.community.dto.ResultDTO;
 import cn.lsu.community.entity.Question;
 import cn.lsu.community.entity.User;
+import cn.lsu.community.exception.CustomizeErrorCode;
 import cn.lsu.community.service.Impl.QuestionServiceImpl;
 import cn.lsu.community.service.QuestionService;
 import org.apache.commons.lang3.StringUtils;
@@ -31,6 +32,7 @@ public class PublishController {
         model.addAttribute("description",question.getDescription());
         model.addAttribute("tag",question.getTag());
         model.addAttribute("id",question.getId());
+        model.addAttribute("status", question.getStatus());
         model.addAttribute("selectTags", TagCache.get());
         return "publish";
     }
@@ -47,36 +49,25 @@ public class PublishController {
             HttpServletRequest request,
             Model model
     ){
-        model.addAttribute("title",question.getTitle());
-        model.addAttribute("description",question.getDescription());
-        model.addAttribute("tag",question.getTag());
+        model.addAttribute("question",question);
         model.addAttribute("selectTags", TagCache.get());
-        model.addAttribute("status", question.getStatus());
-//        if (title == null || title == "") {
-//            model.addAttribute("error","标题不能为空！");
-//            return "publish";
-//        }
-//        if (description == null || description == "") {
-//            model.addAttribute("error","问题补充不能为空！");
-//            return "publish";
-//        }
-//        if (tag == null || tag == "") {
-//            model.addAttribute("error","标签不能为空！");
-//            return "publish";
-//        }
         String s = TagCache.filterInvalid(question.getTag());
-        System.out.println(s);
         if (StringUtils.isNotBlank(s)) {
-            model.addAttribute("error","存在不合法标签！");
-            return "publish";
+            return ResultDTO.errorOf(CustomizeErrorCode.ERROR_TAG);
         }
         User user= (User) request.getSession().getAttribute("user");
         if(user==null){
-            model.addAttribute("error","用户未登录");
-            return "publish";
+            return ResultDTO.errorOf(CustomizeErrorCode.NOT_LOGIN);
         }
         question.setCreator(user.getId());
         Question saveQuestion = questionService.createOrUpdate(question);
         return ResultDTO.successOf(saveQuestion);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/deleteQuestion/{id}", method = RequestMethod.GET)
+    public Object question(@PathVariable(name = "id")Long id){
+        questionService.deleteById(id);
+        return ResultDTO.successOf();
     }
 }

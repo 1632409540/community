@@ -103,13 +103,8 @@ public class QuestionServiceImpl extends BaseService<QuestionMapper,Question> im
     public Question createOrUpdate(Question question) {
         Question dbQuestion= questionMapper.selectById(question.getId());
         if(dbQuestion!=null){
-            Question updateQuestion=new Question();
-            updateQuestion.setId(dbQuestion.getId());
-            updateQuestion.setTitle(question.getTitle());
-            updateQuestion.setDescription(question.getDescription());
-            updateQuestion.setTag(question.getTag());
             try{
-                questionMapper.updateById(updateQuestion);
+                questionMapper.updateById(question);
             }catch (Exception e){
                 throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
             }finally {
@@ -176,5 +171,10 @@ public class QuestionServiceImpl extends BaseService<QuestionMapper,Question> im
                     .forEachOrdered(e -> result.put(e.getKey(), e.getValue()));
         }
         return result;
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        baseMapper.deleteById(id);
     }
 }

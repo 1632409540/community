@@ -262,31 +262,170 @@ function Map() {
 }
 
 /**
- * 发表
+ * 保存为草稿
  */
-function publish() {
-    var title = $('#title').val().trim();
-    var description = $('#description').val().trim();
-    var tag = $('#tag').val().trim();
+function publishDraft() {
+    var id = $('#id').val();
+    var title = $('#title').val();
+    var description = $('#description').val();
+    var tag = $('#tag').val();
     if (title == ''){
-        alert("警告,标题不能为空！");
+        alert("标题不能为空！");
+        return;
+    }
+    if (description == ''){
+        alert("请填写问题描述！");
+        return;
+    }
+    if (tag == ''){
+        alert("请给问题选择至少一个标签！");
         return;
     }
     $.ajax({
         type: "POST",
         url: "/publish",
         contentType: 'application/json',
-        data: JSON.stringify({title:title,description:description,tag:tag,status: 1}),
+        data: JSON.stringify({id:id,title:title,description:description,tag:tag,status: 0}),
+        dataType: "json",
+        success: function(response){
+            if (response.code == 200) {
+                alert("保存成功！你可以在草稿箱内找到问题");
+                window.location.reload();
+            } else{
+                alert(response.message);
+            }
+        }
+    });
+}
+
+/**
+ * 发表问题
+ */
+function publish() {
+    var id = $('#id').val();
+    var title = $('#title').val();
+    var description = $('#description').val();
+    var tag = $('#tag').val();
+    if (title == ''){
+        alert("标题不能为空！");
+        return;
+    }
+    if (description == ''){
+        alert("请填写问题描述！");
+        return;
+    }
+    if (tag == ''){
+        alert("请给问题选择至少一个标签！");
+        return;
+    }
+    $.ajax({
+        type: "POST",
+        url: "/publish",
+        contentType: 'application/json',
+        data: JSON.stringify({id:id,title:title,description:description,tag:tag,status: 1}),
         dataType: "json",
         success: function(response){
             if (response.code == 200) {
                 alert("发表成功！");
-                //window.location.reload();
+                window.location.reload();
                 console.log("response==>",response);
-                //window.location.href = "question/"+response.data.id;
             } else{
-                alert("出错啦, 服务器发生了一个错误");
+                alert(response.message);
             }
         }
     });
+}
+
+/**
+ * 更新问题
+ */
+function update() {
+    var id = $('#id').val();
+    var title = $('#title').val();
+    var description = $('#description').val();
+    var tag = $('#tag').val();
+    if (title == ''){
+        alert("标题不能为空！");
+        return;
+    }
+    if (description == ''){
+        alert("请填写问题描述！");
+        return;
+    }
+    if (tag == ''){
+        alert("请给问题选择至少一个标签！");
+        return;
+    }
+    console.log("id:",id);
+    $.ajax({
+        type: "POST",
+        url: "/publish",
+        contentType: 'application/json',
+        data: JSON.stringify({id:id,title:title,description:description,tag:tag}),
+        dataType: "json",
+        success: function(response){
+            if (response.code == 200) {
+                alert("更新成功！");
+                window.location.reload();
+            } else{
+                alert(response.message);
+            }
+        }
+    });
+}
+
+/**
+ * 删除问题到回收站
+ */
+function deleteLight() {
+    var id = $('#id').val();
+    var title = $('#title').val();
+    var description = $('#description').val();
+    var tag = $('#tag').val();
+    if (title == ''){
+        alert("标题不能为空！");
+        return;
+    }
+    if (description == ''){
+        alert("请填写问题描述！");
+        return;
+    }
+    if (tag == ''){
+        alert("请给问题选择至少一个标签！");
+        return;
+    }
+    $.ajax({
+        type: "POST",
+        url: "/publish",
+        contentType: 'application/json',
+        data: JSON.stringify({id:id,title:title,description:description,tag:tag,status: 2}),
+        dataType: "json",
+        success: function(response){
+            if (response.code == 200) {
+                alert("删除成功！你可以在回收站找回。");
+                window.location.reload();
+            } else{
+                alert(response.message);
+            }
+        }
+    });
+}
+
+/**
+ * 永久删除问题
+ */
+function permanentlyDelete() {
+    var id = $('#id').val();
+    var conf=confirm("你确定删除该问题相关的所有信息吗?");
+    if(conf == true){
+        $.getJSON("/deleteQuestion/"+id,function (response) {
+            if (response.code == 200) {
+                alert("该问题已永久删除。");
+                //window.location.reload();
+                window.location.href = "/profile/questions";
+            } else{
+                alert(response.message);
+            }
+        });
+    }
 }

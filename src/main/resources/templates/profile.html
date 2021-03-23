@@ -24,7 +24,6 @@
                     <div class="media-body">
                         <a th:href="@{'/question/'+${question.id}}"><h5 class="media-heading" th:text="${question.title}"></h5></a>
                         <span class="text-desc">
-                            <span th:text="${question.user.name}">0</span>发布了问题
                             • <span th:text="${question.getCommentCount()}">0</span> 个回复
                             • <span th:text="${question.getViewCount()}">0</span> 次浏览
                             • <span th:text="${question.getLikeCount()}">0</span> 人喜欢

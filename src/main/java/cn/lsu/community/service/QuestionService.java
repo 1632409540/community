@@ -18,4 +18,5 @@ public interface QuestionService {
 
     public HotTopicDTO getHotTopic();
 
+    void deleteById(Long id);
 }
