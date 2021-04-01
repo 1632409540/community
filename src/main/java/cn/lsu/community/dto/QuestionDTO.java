@@ -1,9 +1,11 @@
 package cn.lsu.community.dto;
 
+import cn.lsu.community.entity.Tag;
 import cn.lsu.community.entity.User;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class QuestionDTO {
@@ -16,7 +18,9 @@ public class QuestionDTO {
     private Integer commentCount;
     private Integer viewCount ;
     private Integer likeCount;
-    private String tag ;
+    private String tag;
+    private List<Tag> tags ;
     private User user;
     private Integer status;
+    private boolean myLike;
 }

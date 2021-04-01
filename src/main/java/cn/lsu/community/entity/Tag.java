@@ -8,6 +8,16 @@ public class Tag extends BaseEntity<Tag> {
 
     private String name;
 
+    private String imageUrl;
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
     public Long getTag_type_id() {
         return tag_type_id;
     }

@@ -18,5 +18,6 @@ public class CommentDTO {
     private Integer commentCount;
     private String content;
     private User user;
+    private boolean myLike;
 
 }

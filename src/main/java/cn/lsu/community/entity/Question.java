@@ -14,8 +14,6 @@ public class Question extends BaseEntity<Question> {
 
     private Integer likeCount;
 
-    private String tag;
-
     private String description;
 
     private Integer status;
@@ -58,14 +56,6 @@ public class Question extends BaseEntity<Question> {
 
     public void setLikeCount(Integer likeCount) {
         this.likeCount = likeCount;
-    }
-
-    public String getTag() {
-        return tag;
-    }
-
-    public void setTag(String tag) {
-        this.tag = tag == null ? null : tag.trim();
     }
 
     public String getDescription() {

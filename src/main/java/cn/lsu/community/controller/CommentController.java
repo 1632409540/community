@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -50,14 +51,18 @@ public class CommentController {
     @ResponseBody
     @RequestMapping(value = "/comment/{id}", method = RequestMethod.GET)
     public ResultDTO<List<CommentDTO>> comments(@PathVariable(name = "id")Long id){
-        List<CommentDTO> commentDTOS = commentService.findCommentsById(id, CommentTypeEnum.COMMENT);
+        List<CommentDTO> commentDTOS = commentService.findCommentsById(null,id, CommentTypeEnum.COMMENT);
         return ResultDTO.successOf(commentDTOS);
     }
 
     @ResponseBody
     @RequestMapping(value = "/commentThumbsUp/{id}", method = RequestMethod.GET)
-    public ResultDTO<Integer> question(@PathVariable(name = "id")Long id){
-        Integer likeCount=commentService.addLikeCount(id);
-        return ResultDTO.successOf(likeCount);
+    public ResultDTO<Integer> question(@PathVariable(name = "id")Long id,HttpServletRequest request){
+        User user= (User) request.getSession().getAttribute("user");
+        if(user==null){
+            return ResultDTO.errorOf(CustomizeErrorCode.NOT_LOGIN);
+        }
+        Integer count = commentService.changeLikeCount(user,id);
+        return ResultDTO.successOf(count);
     }
 }

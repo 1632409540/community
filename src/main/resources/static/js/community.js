@@ -144,6 +144,7 @@ function commentThumbsUp(e) {
         // console.log(data.data);
         var likeCount=data.data+"";
         $("#like-"+id).html(likeCount);
+        e.class("");
     });
 }
 /**
@@ -152,7 +153,7 @@ function commentThumbsUp(e) {
 function selectTag(e) {
     var tags=$("#tag").val();
     var tag=e.getAttribute("data-tag");
-    if(tags.indexOf(tag)==-1){
+    if(tags.indexOf(tag.name)==-1){
         if(tags){
             $("#tag").val(tags+","+tag);
         }else {

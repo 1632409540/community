@@ -9,6 +9,7 @@ import okhttp3.*;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 
 @Component
 public class GithubProvider {
@@ -24,13 +25,13 @@ public class GithubProvider {
                 .post(body)
                 .build();
         try (Response response = client.newCall(request).execute()) {
-//            System.out.println(response.body().string());
-//            access_token=9bdd22aa03daaa86e1feb8a3e9b082de87173e8c&scope=user&token_type=bearer
             String string = response.body().string();
             String[] split = string.split("&");
             String[] split1 = split[0].split("=");
             String token=split1[1];
             return token;
+        } catch (SocketTimeoutException se){
+            throw new CustomizeException(CustomizeErrorCode.READ_TIMED_OUT);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -52,7 +53,6 @@ public class GithubProvider {
             e.printStackTrace();
             throw new CustomizeException(CustomizeErrorCode.LOGIN_FAULT_ERROR);
         }
-        //return null;
     }
 
 }

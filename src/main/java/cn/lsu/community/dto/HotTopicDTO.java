@@ -1,14 +1,12 @@
 package cn.lsu.community.dto;
 
+import cn.lsu.community.entity.Tag;
 import lombok.Data;
 
 import java.util.LinkedList;
 
 @Data
-public class HotTopicDTO {
-
-    private LinkedList<HotTopicDTO> data;
-    private String tag;
+public class HotTopicDTO extends Tag{
     private int questionCount;
-    private int commentCount;
+    private int likeCount;
 }

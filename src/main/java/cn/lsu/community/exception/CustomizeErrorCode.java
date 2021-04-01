@@ -16,6 +16,7 @@ public enum CustomizeErrorCode implements ICustomizeErrorCode{
     COMMENT_IS_EMPTY(2012,"回复内容不能为空！"),
     NOTIFICATION_NOT_FOUND(2013,"回复似乎不翼而飞了！"),
     ERROR_TAG(2013,"存在不合法标签！"),
+    READ_TIMED_OUT(2015,"请求超时，请检查网络是否连接正常！"),
     NOTIFICATION_NOT_YOUR(2014,"兄弟，你在盗取信息吗？"),
     ;
     private String message;

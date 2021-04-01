@@ -10,7 +10,7 @@ import java.util.List;
 public interface CommentService {
     public void insert(Comment comment, User sessionUser);
 
-    public List<CommentDTO> findCommentsById(Long id, CommentTypeEnum type);
+    public List<CommentDTO> findCommentsById(User user,Long id, CommentTypeEnum type);
 
-    public Integer addLikeCount(Long id);
+    Integer changeLikeCount(User user, Long id);
 }

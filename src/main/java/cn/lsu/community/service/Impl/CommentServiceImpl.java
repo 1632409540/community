@@ -2,22 +2,18 @@ package cn.lsu.community.service.Impl;
 
 import cn.lsu.community.base.BaseService;
 import cn.lsu.community.dto.CommentDTO;
-import cn.lsu.community.entity.Comment;
-import cn.lsu.community.entity.Notification;
-import cn.lsu.community.entity.Question;
-import cn.lsu.community.entity.User;
+import cn.lsu.community.entity.*;
 import cn.lsu.community.exception.CustomizeErrorCode;
 import cn.lsu.community.exception.CustomizeException;
-import cn.lsu.community.mapper.CommentMapper;
-import cn.lsu.community.mapper.NotificationMapper;
-import cn.lsu.community.mapper.QuestionMapper;
+import cn.lsu.community.mapper.*;
 import cn.lsu.community.enums.CommentTypeEnum;
 import cn.lsu.community.enums.NotificationStatusEnum;
 import cn.lsu.community.enums.NotificationTypeEnum;
-import cn.lsu.community.mapper.UserMapper;
 import cn.lsu.community.service.CommentService;
+import cn.lsu.community.service.QuestionService;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,65 +24,75 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class CommentServiceImpl extends BaseService<CommentMapper,Comment> implements CommentService {
+public class CommentServiceImpl extends BaseService<CommentMapper, Comment> implements CommentService {
 
     @Resource
     private QuestionMapper questionMapper;
-
+    @Resource
+    private QuestionService questionService;
     @Resource
     private UserMapper userMapper;
 
     @Resource
     private NotificationMapper notificationMapper;
 
+    @Resource
+    private CommentMapper commentMapper;
+
+    @Resource
+    private CommentLikeMapper commentLikeMapper;
+
     @Transactional
     public void insert(Comment comment, User sessionUser) {
 
-        if(comment.getParentId()==null||comment.getParentId()==0){
+        if (comment.getParentId() == null || comment.getParentId() == 0) {
             throw new CustomizeException(CustomizeErrorCode.TARGET_PARAM_NOT_FOUNT);
         }
 
-        if(comment.getType()==null||!CommentTypeEnum.isExit(comment.getType())){
+        if (comment.getType() == null || !CommentTypeEnum.isExit(comment.getType())) {
             throw new CustomizeException(CustomizeErrorCode.TYPE_PARAM_WRONG);
         }
 
-        if(comment.getType()==CommentTypeEnum.COMMENT.getType()){
+        if (comment.getType() == CommentTypeEnum.COMMENT.getType()) {
             //回复评论
-            Comment dbComment= baseMapper.selectById(comment.getParentId());
-            if(dbComment==null){
+            Comment dbComment = baseMapper.selectById(comment.getParentId());
+            if (dbComment == null) {
                 throw new CustomizeException(CustomizeErrorCode.COMMENT_NOT_FOUND);
             }
+            comment.setCreateDate(new Date());
             baseMapper.insert(comment);
             dbComment.setCommentCount(1);
             baseMapper.addCommentCount(dbComment);
             //回复的问题
-            Question question=questionMapper.selectById(dbComment.getParentId());
+            Question question = questionMapper.selectById(dbComment.getParentId());
 
-            if(question==null){
+            if (question == null) {
                 throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
             }
             //创建通知
-            createNotify(comment,NotificationTypeEnum.REPLAY_COMMENT.getType(),dbComment.getCommentator(),sessionUser.getName(),question.getId(),question.getTitle());
+            createNotify(comment, NotificationTypeEnum.REPLAY_COMMENT.getType(), dbComment.getCommentator(), sessionUser.getName(), question.getId(), question.getTitle());
 
-        }else {
+        } else {
             //回复问题
-            Question question=questionMapper.selectById(comment.getParentId());
-            if(question==null){
+            Question question = questionMapper.selectById(comment.getParentId());
+            if (question == null) {
                 throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
             }
+            comment.setCreateDate(new Date());
             baseMapper.insert(comment);
             question.setCommentCount(1);
             questionMapper.addCommentCount(question);
             //创建通知
-            createNotify(comment,NotificationTypeEnum.REPLAY_QUESTION.getType(),question.getCreator(),sessionUser.getName(),question.getId(),question.getTitle());
+            createNotify(comment, NotificationTypeEnum.REPLAY_QUESTION.getType(), question.getCreator(), sessionUser.getName(), question.getId(), question.getTitle());
         }
 
     }
-    private void createNotify(Comment comment,Integer type,Long reciver,String notifier,Long questionId,String title){
-        if(comment.getCommentator().longValue()==reciver.longValue()){
+
+    private void createNotify(Comment comment, Integer type, Long reciver, String notifier, Long questionId, String title) {
+        if (comment.getCommentator().longValue() == reciver.longValue()) {
             return;
         }
-        Notification notification=new Notification();
+        Notification notification = new Notification();
         notification.setType(type);
         notification.setReceiver(reciver);
         notification.setNotifier(comment.getCommentator());
@@ -94,22 +100,21 @@ public class CommentServiceImpl extends BaseService<CommentMapper,Comment> imple
         notification.setNotifierName(notifier);
         notification.setOuterId(questionId);
         notification.setOuterTitle(title);
-
+        notification.setCreateDate(new Date());
         notificationMapper.insert(notification);
     }
-    public List<CommentDTO> findCommentsById(Long id, CommentTypeEnum type) {
+
+    public List<CommentDTO> findCommentsById(User currentUser,Long id, CommentTypeEnum type) {
 
         Wrapper<Comment> wrapper = new EntityWrapper<>();
-        wrapper.eq("parent_id", id)
-                .eq("type", type.getType())
-                .orderBy("create_date", false);
-        List<Comment> comments=baseMapper.selectList(wrapper);
-        if(comments.size()==0){
+        wrapper.eq("parent_id", id);
+        List<Comment> comments = baseMapper.selectList(wrapper);
+        if (ObjectUtils.isEmpty(comments)|| comments.size() == 0) {
             return new LinkedList<>();
         }
         //获取去重的评论人
         Set<Long> commentators = comments.stream().map(comment -> comment.getCommentator()).collect(Collectors.toSet());
-        List<Long> userIds=new ArrayList<>();
+        List<Long> userIds = new ArrayList<>();
         userIds.addAll(commentators);
 
         //获取评论人并转换为Map
@@ -117,22 +122,45 @@ public class CommentServiceImpl extends BaseService<CommentMapper,Comment> imple
         Map<Long, User> userMap = users.stream().collect(Collectors.toMap(user -> user.getId(), user -> user));
 
         //转换comment为commentDTO
-        List<CommentDTO> commentDTOS=comments.stream().map(comment -> {
-          CommentDTO commentDTO=new CommentDTO();
-          BeanUtils.copyProperties(comment,commentDTO);
-          commentDTO.setUser(userMap.get(comment.getCommentator()));
-          return commentDTO;
+        List<CommentDTO> commentDTOS = comments.stream().map(comment -> {
+            CommentDTO commentDTO = new CommentDTO();
+            BeanUtils.copyProperties(comment, commentDTO);
+            commentDTO.setUser(userMap.get(comment.getCommentator()));
+            Wrapper<Comment> commentWrapper = new EntityWrapper<>();
+            commentWrapper.eq("parent_id", comment.getId());
+            commentDTO.setCommentCount(commentMapper.selectCount(commentWrapper));
+            commentDTO.setMyLike(false);
+            if(ObjectUtils.isNotEmpty(currentUser)){
+                Wrapper<CommentLike> wrapper1 = new EntityWrapper<>();
+                wrapper1.eq("comment_id",comment.getId());
+                commentDTO.setLikeCount(commentLikeMapper.selectCount(wrapper1));
+                wrapper1.andNew().eq("user_id",currentUser.getId());
+                Integer count = commentLikeMapper.selectCount(wrapper1);
+                if(count>0){
+                    commentDTO.setMyLike(true);
+                }
+            }
+            return commentDTO;
         }).collect(Collectors.toList());
         return commentDTOS;
     }
 
-    public Integer addLikeCount(Long id) {
-        Comment comment = baseMapper.selectById(id);
-        if(comment!=null){
-            comment.setLikeCount(1);
-            baseMapper.addLikeCount(comment);
+    @Override
+    public Integer changeLikeCount(User user, Long id) {
+        Wrapper<CommentLike> wrapper1 = new EntityWrapper<>();
+        wrapper1.eq("comment_id",id)
+                .eq("user_id", user.getId());
+        Integer count = commentLikeMapper.selectCount(wrapper1);
+        if(count>0){
+            commentLikeMapper.delete(wrapper1);
+        }else {
+            CommentLike commentLike = new CommentLike();
+            commentLike.setCommentId(id);
+            commentLike.setUserId(user.getId());
+            commentLikeMapper.insert(commentLike);
         }
-        comment=baseMapper.selectById(id);
-        return comment.getLikeCount();
+        Wrapper<CommentLike> wrapper2 = new EntityWrapper<>();
+        wrapper1.eq("comment_id",id);
+        return commentLikeMapper.selectCount(wrapper2);
     }
 }

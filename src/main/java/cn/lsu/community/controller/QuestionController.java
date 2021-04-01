@@ -3,11 +3,19 @@ package cn.lsu.community.controller;
 import cn.lsu.community.dto.CommentDTO;
 import cn.lsu.community.dto.PaginationDTO;
 import cn.lsu.community.dto.QuestionDTO;
+import cn.lsu.community.entity.Question;
+import cn.lsu.community.entity.QuestionLike;
+import cn.lsu.community.entity.User;
 import cn.lsu.community.enums.CommentTypeEnum;
+import cn.lsu.community.exception.CustomizeErrorCode;
+import cn.lsu.community.exception.CustomizeException;
+import cn.lsu.community.mapper.QuestionLikeMapper;
 import cn.lsu.community.service.CommentService;
 import cn.lsu.community.service.Impl.CommentServiceImpl;
 import cn.lsu.community.service.Impl.QuestionServiceImpl;
 import cn.lsu.community.service.QuestionService;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +24,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -24,23 +34,54 @@ public class QuestionController {
     private QuestionService questionService;
     @Resource
     private CommentService commentService;
+    @Resource
+    private QuestionLikeMapper questionLikeMapper;
 
     @GetMapping("/question/{id}")
-    public String question(@PathVariable(name = "id")Long id,
-                           @RequestParam(name = "page",defaultValue = "1")Integer page,
-                           @RequestParam(name = "size",defaultValue = "11")Integer size,
-                            Model model){
+    public String question(@PathVariable(name = "id")Long id, Model model,HttpServletRequest request){
 
+        request.getSession().setAttribute("navbarStatus","");
         QuestionDTO questionDTO=questionService.findById(id);
-        List<CommentDTO> commentDTOList =commentService.findCommentsById(id, CommentTypeEnum.QUESTION);
+        if(questionDTO.getStatus()!=1){
+            throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+        }
+        User user= (User) request.getSession().getAttribute("user");
+        if(user!=null){
+            questionDTO.setMyLike(questionService.checkMyLike(user.getId(),questionDTO.getId()));
+        }
+
+        List<CommentDTO> commentDTOList =commentService.findCommentsById(user,id, CommentTypeEnum.QUESTION);
         model.addAttribute("question",questionDTO);
-        String[] tags=questionDTO.getTag().split(",");
-        model.addAttribute("tags",tags);
+        model.addAttribute("tags",questionDTO.getTags());
         model.addAttribute("comments",commentDTOList);
-        PaginationDTO paginationDTO= questionService.list(id, null,questionDTO.getTag(),page,size);
-        model.addAttribute("likeQuestions",paginationDTO);
+        List<Question> likeQuestions= questionService.listLikeQuestions(id,questionDTO.getTags());
+        model.addAttribute("likeQuestions",likeQuestions);
         questionService.addViewCount(id);
         return "question";
+    }
+
+    @GetMapping("/likeQuestion")
+    public String likeQuestion(@RequestParam(name ="questionId") Long questionId, HttpServletRequest request){
+        User user= (User) request.getSession().getAttribute("user");
+        QuestionLike questionLike = new QuestionLike();
+        questionLike.setQuestionId(questionId);
+        questionLike.setUserId(user.getId());
+        questionLike.setCreateDate(new Date());
+        questionLikeMapper.insert(questionLike);
+        questionService.addLikeCount(questionId);
+        return "redirect:/question/"+ questionId;
+    }
+
+    @GetMapping("/unLikeQuestion")
+    public String unLikeQuestion(@RequestParam(name ="questionId") Long questionId, HttpServletRequest request){
+        User user= (User) request.getSession().getAttribute("user");
+
+        Wrapper<QuestionLike> wrapper =new EntityWrapper<>();
+        wrapper.eq("question_id",questionId)
+                .eq("user_id",user.getId());
+        questionLikeMapper.delete(wrapper);
+        questionService.delLikeCount(questionId);
+        return "redirect:/question/"+ questionId;
     }
 
 }

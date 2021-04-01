@@ -29,12 +29,18 @@
                     <!--<a th:href="@{'/question/'+${question.id}}"><h3 class="media-heading question-title" th:text="${question.title}"></h3></a>-->
                     <h3 class="media-heading question-title" th:text="${question.title}"></h3>
                     <span class="text-desc">
-                        <a class="index-tag" th:href="@{/(tag=${tags[0]})}" th:text="${tags[0]}"></a>
+                        <a class="index-tag" th:href="@{/(tagId=${tags[0].id})}" th:text="${tags[0].name}"></a>
                         |作者：<span th:text="${question.user.name}"></span>
                         |发布时间：<span th:text="${#dates.format(question.createDate,'yyyy-MM-dd HH:mm:ss')}"></span>
                         |阅读数：<span th:text="${question.getViewCount()}"></span>
-                        </span>
-
+                    </span>
+                    <!--关注问题-->
+                    <a th:if="${session.user != null && !question.myLike}" th:text="'关注|'+${question.likeCount}"  class="btn-question-like" th:href="@{/likeQuestion/(questionId=${question.id})}">
+                            关注|0
+                    </a>
+                    <a th:if="${session.user != null && question.myLike}" th:text="'取消关注|'+${question.likeCount}" class="btn-question-unlike" th:href="@{/unLikeQuestion/(questionId=${question.id})}">
+                        取消关注|0
+                    </a>
                 </div>
                 <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12 tag-sp">
 
@@ -56,13 +62,13 @@
 
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
                     <span class="topic-tag" th:each="tag:${tags}">
-                        <a th:href="@{/(tag=${tag})}">
+                        <a th:href="@{/(tagId=${tag.id})}">
                             <span class="glyphicon glyphicon-tags icon-tag" aria-hidden="true"></span>
-                            <span class="text" th:text="${tag}">data</span>
+                            <span class="text" th:text="${tag.name}">data</span>
                         </a>
                     </span>
                 </div>
-                <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12 tag-sp"   th:if="${question.tag!=null&&question.tag!=''}">
+                <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12 tag-sp"   th:if="${question.tags!=null&&question.tags.size()>0}">
 
                 <h4><span th:text="${question.commentCount}">0</span>个回复</h4>
 
@@ -81,8 +87,11 @@
                         <div th:text="${comment.content}"></div>
                         <div class="menu">
                             <!--点赞-->
-                            <span class="glyphicon glyphicon-thumbs-up icon" onclick="commentThumbsUp(this)"
-                                  th:data-id="${comment.id}" aria-hidden="true"></span>
+                            <span class="glyphicon glyphicon-thumbs-up icon"
+                                  th:class="${comment.myLike==true}?'glyphicon glyphicon-thumbs-up active':'glyphicon glyphicon-thumbs-up icon'"
+                                  onclick="commentThumbsUp(this)"
+                                  th:data-id="${comment.id}" aria-hidden="true">
+                            </span>
                             <span th:text="${comment.likeCount}" th:id="'like-'+${comment.id}">0</span>
                             <!--点击打开二级回复-->
                             <span class="glyphicon glyphicon-comment icon" onclick="collapseComment(this)"
@@ -125,7 +134,7 @@
                 <h4>回复问题</h4>
                 <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12 comment-sp"/>
             </div>
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="comment_section">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" th:if="${session.user!=null}" id="comment_section">
                 <div class="media">
                     <div class="media-left">
                         <img class="media-object img-rounded" th:src="${session.user==null?'/images/user-default-avatar.jpg':session.user.getAvatarUrl()}">
@@ -139,6 +148,9 @@
                 <button type="button" class="btn btn-success btn-comment" onclick="send()">
                     回复
                 </button>
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" th:if="${session.user==null}" style="text-align: center;">
+                要回复问题请先<a>登录</a>或<a>注册</a>
             </div>
         </div>
         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12" >
@@ -163,14 +175,14 @@
             <hr class="col-lg-10 col-md-12 col-sm-12 col-xs-12 ">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" >
                 <h4>相关问题</h4>
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 related" th:each="question:${likeQuestions.data}">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 related" th:each="question:${likeQuestions}">
                     <a  th:href="@{'/question/'+${question.id}}" th:text="${question.title}"></a>
                 </div>
             </div>
             <hr class="col-lg-10 col-md-12 col-sm-12 col-xs-12 ">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" >
                 <h4>友情链接</h4>
-                <h4><a href="https://elasticsearch.cn/">--Elastic中文社区--</a></h4>
+                <h4 style="text-align: center;"><a href="https://www.baidu.com/">--百度--</a></h4>
 
             </div>
         </div>

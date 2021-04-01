@@ -2,4 +2,19 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.lsu.community.mapper.TagMapper">
 
+    <select id="selectHotTopic" resultType="cn.lsu.community.dto.HotTopicDTO">
+        select t.*,qt.id,count(qt.id) as questionCount from tag t
+        left join question_tag qt on qt.tag_id = t.id
+        left join question q on qt.question_id = q.id
+        where qt.tag_id = t.id and q.status = 1
+        group by t.id
+    </select>
+
+
+    <select id="selectByQuestionId" parameterType="java.lang.Long" resultType="cn.lsu.community.entity.Tag">
+        select t.* from tag t
+        left join question_tag qt on qt.tag_id= t.id
+        where qt.question_id=#{questionId} and qt.tag_id= t.id
+        order by create_date desc
+    </select>
 </mapper>

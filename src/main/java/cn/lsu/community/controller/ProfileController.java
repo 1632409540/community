@@ -28,8 +28,8 @@ public class ProfileController {
                           Model model,
                           HttpServletRequest request,
                           @RequestParam(name = "page",defaultValue = "1")Integer page,
-                          @RequestParam(name = "size",defaultValue = "7")Integer size){
-
+                          @RequestParam(name = "size",defaultValue = "10")Integer size){
+        request.getSession().setAttribute("navbarStatus","");
         User user= (User) request.getSession().getAttribute("user");
         if(user==null){
             return "redirect:/";
@@ -53,6 +53,7 @@ public class ProfileController {
             model.addAttribute("paginationDTO",paginationDTO);
         }
         if("replies".contains(section)){
+            request.getSession().setAttribute("navbarStatus","replies");
             model.addAttribute("section","replies");
             model.addAttribute("sectionName","最新回复");
             PaginationDTO paginationDTO=notificationService.list(user,page,size);

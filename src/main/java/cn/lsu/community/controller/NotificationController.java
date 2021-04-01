@@ -22,7 +22,7 @@ public class NotificationController {
     private NotificationService notificationService;
 
     @GetMapping("/notification/{id}")
-    public String question(@PathVariable(name = "id")Long id, HttpServletRequest request){
+    public String getNotificationById(@PathVariable(name = "id")Long id, HttpServletRequest request){
 
         User user= (User) request.getSession().getAttribute("user");
         if(user==null){
