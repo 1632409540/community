@@ -1,0 +1,107 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>LSU社区</title>
+    <script src="/js/jquery-3.4.1.js"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/css/community.css">
+    <script src="/js/bootstrap.min.js" type="application/javascript"></script>
+    <link rel="icon" type="image/x-icon" href="/images/logo.jpg" />
+    <script>
+        window.onload = function () {
+            var closable=window.localStorage.getItem("closable");
+            if(closable=="true"){
+                window.close();
+                window.localStorage.removeItem("closable");
+            }
+        }
+    </script>
+</head>
+<body>
+<div th:insert="~{navigation :: nav}"></div>
+<div class="container-fluid main">
+    <div class="row">
+        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 right-border">
+            <h2>
+                <div class="media-left" >
+                    <span class="glyphicon glyphicon-tags" style="margin-top: 10px;margin-left: 10px;" aria-hidden="true"></span>
+                </div>
+                <div class="media-body">
+                    <h2 class="index-title-tag">热门话题</h2>
+                </div>
+            </h2>
+            <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12 tag-sp">
+            <div class="media col-lg-6 col-md-6 col-sm-6 col-xs-6 tag-sp" th:each="topic,topicStart:${paginationDTO.getData()}">
+                <div class="media" >
+                    <div class="media-left">
+                        <a th:href="@{/(tagId=${topic.id})}">
+                            <img class="media-object img-rounded" th:src="${topic.imageUrl}" >
+                        </a>
+                    </div>
+                    <div class="media-body">
+                        <a th:href="@{/(tagId=${topic.id})}" class="index-topic-tag">
+                            <span class="text" th:text="${topic.name}">data</span>
+                        </a>
+                        <br/>
+                        <span class="text-desc">
+                            <span th:text="${topic.questionCount}">0</span> 个问题
+                                • <span th:text="${topic.likeCount}">0</span> 人关注
+                        </span>
+                        <br/>
+                        <!--<span class="text-desc">-->
+                            <!--<span th:text="${topic.questionCount}">0</span> 个问题-->
+                                <!--• <span th:text="${topic.likeCount}">0</span> 人关注-->
+                        <!--</span>-->
+                    </div>
+                </div>
+            </div>
+            <nav aria-label="Page navigation" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 tag-sp">
+                <ul class="pagination">
+                    <li th:if="${paginationDTO.getShowFirstPage()}">
+                        <a th:href="@{/tags/(page=${1},search=${search})}" >
+                            <span aria-hidden="true">&lt;&lt;</span>
+                        </a>
+                    </li >
+                    <li th:if="${paginationDTO.getShowPrevious()}">
+                        <a th:href="@{/tags/(page=${paginationDTO.getPage()-1},search=${search})}" >
+                            &lt;
+                        </a>
+                    </li >
+
+                    <li th:each="page:${paginationDTO.getPages()}" th:class="${paginationDTO.page==page}?'active':''">
+                        <a th:href="@{/tags/(page=${page},search=${search})}" >
+                            <span th:text="${page}"></span>
+                        </a>
+                    </li>
+                    <li th:if="${paginationDTO.getShowNextPage()}">
+                        <a th:href="@{/tags/(page=${paginationDTO.page+1},search=${search})}">
+                            &gt;
+                        </a>
+                    </li>
+                    <li th:if="${paginationDTO.getShowEndPage()}">
+                        <a th:href="@{/tags/(page=${paginationDTO.getTotalPage()},search=${search})}" >
+                            <span aria-hidden="true">&gt;&gt;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12" >
+            <h3>活动推荐</h3>
+            <a  href="https://developer.aliyun.com/topic/elasticsearch?ref=escn" target="_blank">
+                <img class="col-lg-12 col-md-12 col-sm-12 col-xs-12 related" src="/images/Elas.jpg" alt="..." >
+            </a>
+            <hr class="col-lg-10 col-md-12 col-sm-12 col-xs-12 ">
+            <h3>热门话题</h3>
+
+            <hr class="col-lg-10 col-md-12 col-sm-12 col-xs-12 ">
+            <a  href="https://www.ucloud.cn/site/global.html" target="_blank">
+                <img class="col-lg-12 col-md-12 col-sm-12 col-xs-12 related" src="/images/UCloud.jpg" alt="..." >
+            </a>
+        </div>
+    </div>
+</div>
+<!--<div th:insert="~{footer :: foot}"></div>-->
+</body>
+</html>

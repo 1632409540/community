@@ -9,4 +9,5 @@ import java.util.LinkedList;
 public class HotTopicDTO extends Tag{
     private int questionCount;
     private int likeCount;
+    private boolean myLike;
 }

@@ -72,7 +72,7 @@ public class QuestionController {
         return "redirect:/question/"+ questionId;
     }
 
-    @GetMapping("/unLikeQuestion")
+    @GetMapping("/cancelLikeQuestion")
     public String unLikeQuestion(@RequestParam(name ="questionId") Long questionId, HttpServletRequest request){
         User user= (User) request.getSession().getAttribute("user");
 

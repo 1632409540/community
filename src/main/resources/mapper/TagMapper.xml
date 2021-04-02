@@ -3,9 +3,10 @@
 <mapper namespace="cn.lsu.community.mapper.TagMapper">
 
     <select id="selectHotTopic" resultType="cn.lsu.community.dto.HotTopicDTO">
-        select t.*,qt.id,count(qt.id) as questionCount from tag t
+        select t.*,qt.id,count(qt.id) as questionCount,count(tl.id) as likeCount from tag t
         left join question_tag qt on qt.tag_id = t.id
         left join question q on qt.question_id = q.id
+        left join tag_like tl on t.id = tl.id
         where qt.tag_id = t.id and q.status = 1
         group by t.id
     </select>
@@ -16,5 +17,29 @@
         left join question_tag qt on qt.tag_id= t.id
         where qt.question_id=#{questionId} and qt.tag_id= t.id
         order by create_date desc
+    </select>
+
+    <select id="selectCountBySearch" resultType="java.lang.Integer">
+        select count(*) from tag t
+        <where>
+            <if test="search != null and search.length > 0">
+                and t.name regexp #{search}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectPageBySearch" resultType="cn.lsu.community.dto.HotTopicDTO">
+        select * from (
+            select t.*,count(q.id) as questionCount,count(tl.id) as likeCount,q.status from tag t
+            left join question_tag qt on qt.tag_id = t.id
+            left join question q on q.id = qt.question_id and q.status = 1
+            left join tag_like tl on tl.tag_id = t.id
+            <where>
+                <if test="search != null and search.length > 0">
+                    and t.name regexp #{search}
+                </if>
+            </where>
+            group by t.id
+        )tqt order by tqt.questionCount desc,tqt.likeCount desc limit #{offSize},#{size}
     </select>
 </mapper>

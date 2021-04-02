@@ -1,5 +1,7 @@
 package cn.lsu.community.service;
 
+import cn.lsu.community.dto.HotTopicDTO;
+import cn.lsu.community.dto.PaginationDTO;
 import cn.lsu.community.entity.Tag;
 import cn.lsu.community.entity.TagType;
 import cn.lsu.community.entity.User;
@@ -14,5 +16,9 @@ public interface TagService {
 
     Tag selectByName(String tag);
 
-    Tag selectById(Long tagId);
+    HotTopicDTO selectById(User user, Long tagId);
+
+    PaginationDTO list(String search, Integer page, Integer size);
+
+    void changeLikeTag(User user, Long tagId);
 }

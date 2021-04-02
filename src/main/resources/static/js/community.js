@@ -142,9 +142,9 @@ function commentThumbsUp(e) {
     $.getJSON("/commentThumbsUp/"+id,function (data) {
         //向html中展示数据
         // console.log(data.data);
-        var likeCount=data.data+"";
-        $("#like-"+id).html(likeCount);
-        e.class("");
+        // var likeCount=data.data+"";
+        // $("#like-"+id).html(likeCount);
+        window.location.reload();
     });
 }
 /**

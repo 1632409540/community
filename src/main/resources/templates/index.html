@@ -41,8 +41,14 @@
                     </a>
                 </div>
                 <div class="media-body">
-                    <h2 th:href="@{/(tagId=${tag.id})}" class="index-title-tag" th:text="${tag.name}">
-                    </h2>
+                    <h2 th:href="@{/(tagId=${tag.id})}" class="index-title-tag" th:text="${tag.name}"></h2>
+                    <!--关注话题-->
+                    <a th:if="${session.user != null && !tag.myLike}" th:text="'关注|'+${tag.likeCount}"  class="btn-question-like" th:href="@{/changeLikeTag/(tagId=${tag.id})}">
+                        关注|0
+                    </a>
+                    <a th:if="${session.user != null && tag.myLike}" th:text="'取消关注|'+${tag.likeCount}" class="btn-question-unlike" th:href="@{/changeLikeTag/(tagId=${tag.id})}">
+                        取消关注|0
+                    </a>
                 </div>
             </h2>
 
@@ -58,11 +64,11 @@
                     <span class="text-desc">
                         <!--<a class="index-tag" th:each="tag,tagStat:${question.getTag()}" th:href="@{/(tag=${tag.id})}" th:text="${tag.name}" th:if="${tagStat.index==0}"></a>-->
                         <a class="index-tag" th:each="tag,tagStat:${question.tags}" th:href="@{/(tagId=${tag.id})}" th:text="${tag.name}" th:if="${tagStat.index==0}"></a>
-                        • <span th:text="${question.user.name}">0</span>发起了问题
+                        • <span th:text="${question.user.name}">0</span>发布了问题
                         • <span th:text="${question.commentCount}">0</span> 个回复
                         • <span th:text="${question.likeCount}">0</span> 人关注
                         • <span th:text="${question.viewCount}">0</span> 次浏览
-                        • 发起于<span th:text="${#dates.format(question.createDate,'yyyy年MM月dd日 hh:mm')}">0</span></span>
+                        • 发起于<span th:text="${#dates.format(question.createDate,'yyyy-MM-dd hh:mm')}">0</span></span>
                         <!--•<span th:text="${question.createDate}">0</span></span>-->
                 </div>
             </div>
@@ -117,7 +123,7 @@
                     <br/>
                     <span class="text-desc">
                         <span th:text="${topic.questionCount}">0</span> 个问题
-                        <!--• <span th:text="${topic.commentCount}">0</span> 次回复-->
+                                • <span th:text="${topic.likeCount}">0</span> 人关注
                     </span>
                 </div>
             </div>

@@ -63,8 +63,7 @@ public class QuestionServiceImpl extends BaseService<QuestionMapper,Question> im
             questionDTO.setUser(user);
 
             Wrapper<Comment> commentWrapper = new EntityWrapper<>();
-            commentWrapper.eq("parent_id",question.getId())
-                    .eq("type", 1);
+            commentWrapper.eq("parent_id",question.getId());
             questionDTO.setCommentCount(commentMapper.selectCount(commentWrapper));
 
             Wrapper<QuestionLike> wrapper =new EntityWrapper<>();
@@ -126,7 +125,7 @@ public class QuestionServiceImpl extends BaseService<QuestionMapper,Question> im
             BeanUtils.copyProperties(questionDTO,dbQuestion);
             try{
                 questionMapper.updateById(dbQuestion);
-                this.createOrUpdateQuestionTag(questionDTO);
+                this.updateQuestionTag(questionDTO);
             }catch (Exception e){
                 throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
             }finally {
@@ -139,7 +138,7 @@ public class QuestionServiceImpl extends BaseService<QuestionMapper,Question> im
                 question.setCreateDate(new Date());
                 questionMapper.insert(question);
                 questionDTO.setId(question.getId());
-                this.createOrUpdateQuestionTag(questionDTO);
+                this.updateQuestionTag(questionDTO);
             }catch (Exception e){
                 e.printStackTrace();
                 throw new CustomizeException(CustomizeErrorCode.QUESTION_INSERT_ERROR);
@@ -149,19 +148,16 @@ public class QuestionServiceImpl extends BaseService<QuestionMapper,Question> im
         }
     }
 
-    private void createOrUpdateQuestionTag(QuestionDTO questionDTO) {
+    private void updateQuestionTag(QuestionDTO questionDTO) {
+        Wrapper<QuestionTag> wrapper = new EntityWrapper<>();
+        wrapper.eq("question_id",questionDTO.getId());
+        questionTagMapper.delete(wrapper);
         for (Tag tag: questionDTO.getTags()){
-            Wrapper<QuestionTag> wrapper = new EntityWrapper<>();
-            wrapper.eq("question_id",questionDTO.getId())
-                    .eq("tag_id", tag.getId());
-            Integer count = questionTagMapper.selectCount(wrapper);
-            if (count <= 0) {
                 QuestionTag questionTag = new QuestionTag();
                 questionTag.setQuestionId(questionDTO.getId());
                 questionTag.setTagId(tag.getId());
                 questionTag.setCreateDate(new Date());
                 questionTagMapper.insert(questionTag);
-            }
         }
     }
 

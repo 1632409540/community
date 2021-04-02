@@ -35,10 +35,10 @@
                         |阅读数：<span th:text="${question.getViewCount()}"></span>
                     </span>
                     <!--关注问题-->
-                    <a th:if="${session.user != null && !question.myLike}" th:text="'关注|'+${question.likeCount}"  class="btn-question-like" th:href="@{/likeQuestion/(questionId=${question.id})}">
+                    <a th:if="${session.user != null && session.user.id != question.creator && !question.myLike}" th:text="'关注|'+${question.likeCount}"  class="btn-question-like" th:href="@{/likeQuestion/(questionId=${question.id})}">
                             关注|0
                     </a>
-                    <a th:if="${session.user != null && question.myLike}" th:text="'取消关注|'+${question.likeCount}" class="btn-question-unlike" th:href="@{/unLikeQuestion/(questionId=${question.id})}">
+                    <a th:if="${session.user != null && session.user.id != question.creator && question.myLike}" th:text="'取消关注|'+${question.likeCount}" class="btn-question-unlike" th:href="@{/cancelLikeQuestion/(questionId=${question.id})}">
                         取消关注|0
                     </a>
                 </div>
