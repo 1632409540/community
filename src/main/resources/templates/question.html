@@ -163,7 +163,19 @@
                         </a>
                     </div>
                     <div class="media-body">
-                        <h4 th:text="${question.user.name}"></h4>
+                        <span th:text="${question.user.name}"></span>
+                        <!--关注用户-->
+                        <a class="btn-question-like" th:if="${session.user.id != question.user.id && !question.user.myLike}" th:href="@{/changeLikeUser/(questionId=${question.id},userId=${question.user.id})}">
+                            关注
+                        </a>
+                        <a class="btn-question-unlike" th:if="${session.user.id != question.user.id && question.user.myLike}" th:href="@{/changeLikeUser/(questionId=${question.id},userId=${question.user.id})}">
+                            取消关注
+                        </a>
+                        <br/>
+                        <span class="text-desc">
+                            发布了<span th:text="${question.user.questionCount}">0</span> 个问题
+                                    • 被<span th:text="${question.user.likeCount}">0</span> 人关注
+                        </span>
                     </div>
                 </div>
             </div>

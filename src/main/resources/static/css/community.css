@@ -222,3 +222,27 @@ a:active{text-decoration:none;}
     font-size: 30px;
 }
 .index-topic-tag:hover{background-color: #42b5fb;color: #fff;}
+
+.btn-user-like{
+    display: inline-block;
+    padding: 0 5px;
+    height: 20px;
+    line-height: 20px;
+    background-color: #5bbf5a;
+    font-size: 12px;
+    color: #ffffff;
+    border-radius:3px;
+    margin-right: 0px;
+}
+
+.btn-user-unlike{
+    display: inline-block;
+    padding: 0 5px;
+    height: 20px;
+    line-height: 20px;
+    background-color: #999999;
+    font-size: 12px;
+    color: #ffffff;
+    border-radius:3px;
+    margin-right: 1px;
+}

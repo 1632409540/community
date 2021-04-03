@@ -1,0 +1,9 @@
+alter table user add password varchar(100) null default null comment '密码';
+alter table user add salt varchar(100) null default null comment '加密盐';
+alter table user add sex varchar(100) null default '保密' comment '性别：男、女、保密';
+alter table user add birthday date NULL DEFAULT NULL COMMENT '出生年月日';
+alter table user add address varchar(256) null default null comment '所在地区';
+alter table user add email varchar(100) null default null comment '邮箱';
+alter table user add phone varchar(100) null default null comment '手机号码';
+alter table user add qq varchar(100) null default null comment 'qq';
+alter table user add career varchar(256) null default null comment '职业';

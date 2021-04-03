@@ -6,6 +6,8 @@ import cn.lsu.community.entity.Comment;
 import cn.lsu.community.entity.Tag;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,5 +18,6 @@ public interface TagMapper extends BaseMapper<Tag> {
 
     Integer selectCountBySearch(@Param("search") String search);
 
-    List<HotTopicDTO> selectPageBySearch(@Param("search") String search,@Param("offSize") Integer offSize,@Param("size") Integer size);
+    List<HotTopicDTO> selectPageBySearch(@Param("search") String search,
+                                         @Param("offSize") Integer offSize, @Param("size") Integer size);
 }

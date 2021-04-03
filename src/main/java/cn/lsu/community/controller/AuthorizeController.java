@@ -1,5 +1,6 @@
 package cn.lsu.community.controller;
 
+import cn.hutool.crypto.digest.MD5;
 import cn.lsu.community.dto.GithubUser;
 import cn.lsu.community.dto.AccessTokenDTO;
 import cn.lsu.community.entity.User;
@@ -34,8 +35,6 @@ public class AuthorizeController {
 
     @Autowired
     private UserService userService;
-    @Autowired
-    private NotificationService notificationService;
 
     @GetMapping("/callback")
     public String callback(@RequestParam(name = "code")String code,
@@ -57,6 +56,10 @@ public class AuthorizeController {
             user.setAccountId(String.valueOf(githubUser.getId()));
             user.setBio(githubUser.getBio());
             user.setAvatarUrl(githubUser.getAvatarUrl());
+            user.setSalt("8Brt4zTp3Pd");
+            // 获取Md5加密对象
+            MD5 md5 = new MD5(user.getSalt().getBytes());
+            user.setPassword(md5.digestHex16("123456"));
             userService.createOrUpdate(user);
             //登录成功
             response.addCookie(new Cookie("token",token));

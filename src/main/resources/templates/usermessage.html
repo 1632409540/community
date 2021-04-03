@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${sectionName}"></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script src="/js/jquery-3.4.1.js"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/css/community.css">
+    <link rel="stylesheet" href="/js/community.js">
+    <script src="/js/bootstrap.min.js"></script>
+    <link rel="icon" type="image/x-icon" href="/images/logo.jpg" />
+
+</head>
+<body>
+<div th:insert="~{navigation :: nav}"></div>
+<div class="container-fluid main profile">
+    <div class="row">
+        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 right-border">
+            <div th:insert="~{usersetting :: userSetting}"></div>
+        </div>
+        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12" >
+            <div class="list-group section">
+                <a href="/profile/questions" class="list-group-item " th:class="${section=='userMessage'}?'list-group-item active':'list-group-item'">
+                    <i class="fa fa-user bigfonts"></i>&nbsp;我的资料
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

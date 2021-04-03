@@ -113,7 +113,7 @@
             <div class="media" th:each="topic,topicStart:${hotTopics}" th:if="${topicStart.index<5}">
                 <div class="media-left" >
                     <a th:href="@{/(tagId=${topic.id})}">
-                        <img class="media-object img-rounded" th:src="${topic.imageUrl}" >
+                        <img class="media-object img-rounded" th:src="${topic.imageUrl}">
                     </a>
                 </div>
                 <div class="media-body">

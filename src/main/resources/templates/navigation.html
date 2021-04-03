@@ -60,7 +60,7 @@
                             <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a href="/profile/questions">我的</a></li>
+                            <li><a href="/userSetting/userMessage">用户设置</a></li>
                             <li><a href="/profile/questions">我的问题</a></li>
                             <li><a href="/logout">退出登录</a></li>
                         </ul>
@@ -70,9 +70,9 @@
                         <img class="index-avatar img-rounded" th:src="${session.user.getAvatarUrl()}">
                     </li>
                     <li th:if="${session.user == null}">
-                        <a th:href="@{https://github.com/login/oauth/authorize(client_id='b3f5fa1c25e7ecd68dd0',redirect_uri=${#httpServletRequest.getRequestURL()+'callback'},scope='user',state=1)}">登录</a>
+                        <!--<a th:href="@{https://github.com/login/oauth/authorize(client_id='b3f5fa1c25e7ecd68dd0',redirect_uri=${#httpServletRequest.getRequestURL()+'callback'},scope='user',state=1)}">登录</a>-->
+                        <a th:href="@{/toLogin}">登录</a>
                     </li>
-
                 </ul>
             </div>
         </div>

@@ -5,15 +5,14 @@ import cn.lsu.community.dto.HotTopicDTO;
 import cn.lsu.community.dto.PaginationDTO;
 import cn.lsu.community.dto.QuestionDTO;
 import cn.lsu.community.entity.*;
-import cn.lsu.community.enums.CommentTypeEnum;
 import cn.lsu.community.exception.CustomizeErrorCode;
 import cn.lsu.community.exception.CustomizeException;
 import cn.lsu.community.dto.QuestionQueryDTO;
 import cn.lsu.community.mapper.*;
-import cn.lsu.community.service.CommentService;
 import cn.lsu.community.service.QuestionService;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.BeanUtils;
@@ -37,6 +36,8 @@ public class QuestionServiceImpl extends BaseService<QuestionMapper,Question> im
     private CommentMapper commentMapper;
     @Resource
     private QuestionLikeMapper questionLikeMapper;
+    @Resource
+    private UserLikeMapper userLikeMapper;
 
     public PaginationDTO list(Long tagId, String search, Integer page, Integer size) {
 
@@ -100,7 +101,7 @@ public class QuestionServiceImpl extends BaseService<QuestionMapper,Question> im
         return paginationDTO;
     }
 
-    public QuestionDTO findById(Long id) {
+    public QuestionDTO findById(User loginUser, Long id) {
         Question question=questionMapper.selectById(id);
         if(question==null){
             throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
@@ -108,6 +109,25 @@ public class QuestionServiceImpl extends BaseService<QuestionMapper,Question> im
         QuestionDTO questionDTO=new QuestionDTO();
         BeanUtils.copyProperties(question,questionDTO);
         User user=userMapper.selectById(question.getCreator());
+        if(ObjectUtils.isNotEmpty(loginUser)){
+            Wrapper<UserLike> wrapper = new EntityWrapper<>();
+            wrapper.eq("user_id",loginUser.getId())
+                    .eq("liked_user_id", user.getId());
+            Integer count = userLikeMapper.selectCount(wrapper);
+            if(count>0){
+                user.setMyLike(true);
+            }else {
+                user.setMyLike(false);
+            }
+        }
+        Wrapper<UserLike> wrapper = new EntityWrapper<>();
+        wrapper.eq("liked_user_id", user.getId());
+        user.setLikeCount(userLikeMapper.selectCount(wrapper));
+
+        Wrapper<Question> questionWrapper = new EntityWrapper<>();
+        questionWrapper.eq("creator",user.getId())
+                .eq("status",1);
+        user.setQuestionCount(questionMapper.selectCount(questionWrapper));
         List<Tag> tags = tagMapper.selectByQuestionId(id);
         questionDTO.setTags(tags);
         String tag = tags.stream().map(Tag::getName).collect(Collectors.joining(","));

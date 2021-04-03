@@ -14,6 +14,7 @@ import cn.lsu.community.service.CommentService;
 import cn.lsu.community.service.Impl.CommentServiceImpl;
 import cn.lsu.community.service.Impl.QuestionServiceImpl;
 import cn.lsu.community.service.QuestionService;
+import cn.lsu.community.service.UserService;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,20 +37,20 @@ public class QuestionController {
     private CommentService commentService;
     @Resource
     private QuestionLikeMapper questionLikeMapper;
+    @Resource
+    private UserService userService;
 
     @GetMapping("/question/{id}")
     public String question(@PathVariable(name = "id")Long id, Model model,HttpServletRequest request){
-
+        User user= (User) request.getSession().getAttribute("user");
         request.getSession().setAttribute("navbarStatus","");
-        QuestionDTO questionDTO=questionService.findById(id);
+        QuestionDTO questionDTO=questionService.findById(user,id);
         if(questionDTO.getStatus()!=1){
             throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
         }
-        User user= (User) request.getSession().getAttribute("user");
         if(user!=null){
             questionDTO.setMyLike(questionService.checkMyLike(user.getId(),questionDTO.getId()));
         }
-
         List<CommentDTO> commentDTOList =commentService.findCommentsById(user,id, CommentTypeEnum.QUESTION);
         model.addAttribute("question",questionDTO);
         model.addAttribute("tags",questionDTO.getTags());
@@ -84,4 +85,10 @@ public class QuestionController {
         return "redirect:/question/"+ questionId;
     }
 
+    @GetMapping("/changeLikeUser")
+    public String likeQuestion(@RequestParam(name ="questionId") Long questionId,@RequestParam(name ="userId") Long userId, HttpServletRequest request){
+        User user= (User) request.getSession().getAttribute("user");
+        userService.changeLikeUser(user.getId(),userId);
+        return "redirect:/question/"+ questionId;
+    }
 }

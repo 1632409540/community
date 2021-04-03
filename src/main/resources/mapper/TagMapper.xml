@@ -30,7 +30,10 @@
 
     <select id="selectPageBySearch" resultType="cn.lsu.community.dto.HotTopicDTO">
         select * from (
-            select t.*,count(q.id) as questionCount,count(tl.id) as likeCount,q.status from tag t
+            select t.*,count(q.id) as questionCount,count(tl.id) as likeCount,q.status,
+            COUNT(if(q.create_date BETWEEN DATE_ADD(NOW(),INTERVAL -7 DAY) and DATE_ADD(NOW(),INTERVAL 0 DAY), 1, null)) as weekCount,
+            COUNT(if(q.create_date BETWEEN DATE_ADD(NOW(),INTERVAL -30 DAY) and DATE_ADD(NOW(),INTERVAL 0 DAY), 1, null)) as  monthCount
+            from tag t
             left join question_tag qt on qt.tag_id = t.id
             left join question q on q.id = qt.question_id and q.status = 1
             left join tag_like tl on tl.tag_id = t.id
@@ -40,6 +43,6 @@
                 </if>
             </where>
             group by t.id
-        )tqt order by tqt.questionCount desc,tqt.likeCount desc limit #{offSize},#{size}
+        )tqt order by tqt.questionCount desc,tqt.likeCount desc,tqt.weekCount desc,tqt.monthCount desc limit #{offSize},#{size}
     </select>
 </mapper>
