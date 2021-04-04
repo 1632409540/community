@@ -64,7 +64,7 @@ INSERT INTO `tag` VALUES ('59', '4', 'postgresql', '2021-03-30 11:11:09', '2021-
 INSERT INTO `tag` VALUES ('60', '4', 'sqlite', '2021-03-30 11:11:09', '2021-03-30 11:11:18', 'https://gitee.com/xiao-zhiyun/picture/raw/master/2021-04-01/a06112b3376c4965b31733608905c433.png');
 INSERT INTO `tag` VALUES ('61', '5', 'git', '2021-03-30 11:11:09', '2021-03-30 11:11:18', 'https://gitee.com/xiao-zhiyun/picture/raw/master/2021-04-01/a06112b3376c4965b31733608905c433.png');
 INSERT INTO `tag` VALUES ('62', '5', 'github', '2021-03-30 11:11:09', '2021-03-30 11:11:18', 'https://gitee.com/xiao-zhiyun/picture/raw/master/2021-04-01/a06112b3376c4965b31733608905c433.png');
-INSERT INTO `tag` VALUES ('63', '5', 'visual-studio-code', '2021-03-30 11:11:09', '2021-03-30 11:11:18', 'https://gitee.com/xiao-zhiyun/picture/raw/master/2021-04-01/a06112b3376c4965b31733608905c433.png');
+INSERT INTO `tag` VALUES ('63', '5', 'notepad++', '2021-03-30 11:11:09', '2021-03-30 11:11:18', 'https://gitee.com/xiao-zhiyun/picture/raw/master/2021-04-01/a06112b3376c4965b31733608905c433.png');
 INSERT INTO `tag` VALUES ('64', '5', 'vim', '2021-03-30 11:11:09', '2021-03-30 11:11:18', 'https://gitee.com/xiao-zhiyun/picture/raw/master/2021-04-01/a06112b3376c4965b31733608905c433.png');
 INSERT INTO `tag` VALUES ('65', '5', 'sublime-text', '2021-03-30 11:11:09', '2021-03-30 11:11:18', 'https://gitee.com/xiao-zhiyun/picture/raw/master/2021-04-01/a06112b3376c4965b31733608905c433.png');
 INSERT INTO `tag` VALUES ('66', '5', 'visual-stadio-code', '2021-03-30 11:11:09', '2021-03-30 11:11:18', 'https://gitee.com/xiao-zhiyun/picture/raw/master/2021-04-01/a06112b3376c4965b31733608905c433.png');

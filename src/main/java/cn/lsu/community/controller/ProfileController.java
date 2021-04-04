@@ -55,7 +55,7 @@ public class ProfileController {
         if("replies".contains(section)){
             request.getSession().setAttribute("navbarStatus","replies");
             model.addAttribute("section","replies");
-            model.addAttribute("sectionName","最新回复");
+            model.addAttribute("sectionName","最新通知");
             PaginationDTO paginationDTO=notificationService.list(user,page,size);
             model.addAttribute("paginationDTO",paginationDTO);
             Long unreadCount=notificationService.getUnReadCount(user.getId());

@@ -4,6 +4,7 @@ import cn.lsu.community.base.BaseEntity;
 import com.baomidou.mybatisplus.annotations.TableField;
 
 import java.util.Date;
+import java.util.List;
 
 public class User extends BaseEntity<User> {
 
@@ -74,6 +75,11 @@ public class User extends BaseEntity<User> {
      * 积分
      */
     private Integer integral;
+    /**
+     * 擅长话题
+     */
+    @TableField(exist = false)
+    private List<Tag> goodTags;
 
     public String getAccountId() {
         return accountId;
@@ -217,5 +223,13 @@ public class User extends BaseEntity<User> {
 
     public void setIntegral(Integer integral) {
         this.integral = integral;
+    }
+
+    public List<Tag> getGoodTags() {
+        return goodTags;
+    }
+
+    public void setGoodTags(List<Tag> goodTags) {
+        this.goodTags = goodTags;
     }
 }

@@ -45,4 +45,12 @@
             group by t.id
         )tqt order by tqt.questionCount desc,tqt.likeCount desc,tqt.weekCount desc,tqt.monthCount desc limit #{offSize},#{size}
     </select>
+
+    <select id="selectGoodTags" parameterType="java.lang.Long" resultType="cn.lsu.community.entity.Tag">
+        SELECT t.* from question
+        LEFT JOIN question_tag qt on qt.question_id = question.id
+        LEFT JOIN tag t on qt.tag_id = t.id
+        WHERE question.`status` = 1 and question.CREATOR = #{userId}
+        GROUP BY t.id ORDER BY count(t.id) desc LIMIT 0,5
+    </select>
 </mapper>

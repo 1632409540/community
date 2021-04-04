@@ -51,4 +51,10 @@ public class IndexController {
         }
         return "index";
     }
+
+    @GetMapping("/integral")
+    public String integral(HttpServletRequest request) {
+        request.getSession().setAttribute("navbarStatus","integral");
+        return "integral";
+    }
 }

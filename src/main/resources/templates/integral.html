@@ -1,0 +1,94 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>LSU社区 - 积分规则</title>
+    <script src="/js/jquery-3.4.1.js"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/css/community.css">
+    <script src="/js/bootstrap.min.js" type="application/javascript"></script>
+    <link rel="icon" type="image/x-icon" href="/images/logo.jpg" />
+    <script>
+        window.onload = function () {
+            var closable=window.localStorage.getItem("closable");
+            if(closable=="true"){
+                window.close();
+                window.localStorage.removeItem("closable");
+            }
+        }
+    </script>
+</head>
+<body>
+<div th:insert="~{navigation :: nav}"></div>
+<div class="container-fluid main">
+    <div class="row">
+        <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12 right-border">
+            <h2>
+                <div class="media-left" >
+                    <span class="glyphicon glyphicon-usd" style="margin-top: 10px;margin-left: 10px;" aria-hidden="true"></span>
+                </div>
+                <div class="media-body">
+                    <h2 class="index-title-tag">LSU社区 积分规则</h2>
+                </div>
+            </h2>
+            <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12 tag-sp">
+            <div class="row col-lg-12 col-md-12 col-sm-12 col-xs-12 tag-sp">
+                <table class="table table-hover">
+                     <tr>
+                         <td><h5>新用户注册默认拥有积分<span style="float: right;color: #00d95a">19 分</span></h5></td>
+                     </tr>
+                    <tr>
+                        <td><h5>用户完善资料获得积分（包括头像，邮箱，一句话介绍等资料）<span style="float: right;color: #00d95a">2000 分</span></h5></td>
+                    </tr>
+                    <tr>
+                        <td><h5>发起问题<span style="float: right;color: #FF0000">-20 分</span></h5></td>
+                    </tr>
+                    <tr>
+                        <td><h5>关注问题<span style="float: right;color: #FF0000">-20 分</span></h5></td>
+                    </tr>
+                    <tr>
+                        <td><h5>问题被关注<span style="float: right;color: #00d95a">20 分</span></h5></td>
+                    </tr>
+                    <tr>
+                        <td><h5>回复问题<span style="float: right;color: #FF0000">-10 分</span></h5></td>
+                    </tr>
+                    <tr>
+                        <td><h5>问题被回复<span style="float: right;color: #00d95a">10 分</span></h5></td>
+                    </tr>
+                    <tr>
+                        <td><h5>关注其他用户<span style="float: right;color: #FF0000">-10 分</span></h5></td>
+                    </tr>
+                    <tr>
+                        <td><h5>被其他用户关注<span style="float: right;color: #00d95a">10 分</span></h5></td>
+                    </tr>
+                    <tr>
+                        <td><h5>给回复点赞<span style="float: right;color: #FF0000">-5 分</span></h5></td>
+                    </tr>
+                    <tr>
+                        <td><h5>回复获得点赞<span style="float: right;color: #00d95a">5 分</span></h5></td>
+                    </tr>
+
+                    <tr>
+                        <td><h5></h5></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12" >
+            <h3>活动推荐</h3>
+            <a  href="https://developer.aliyun.com/topic/elasticsearch?ref=escn" target="_blank">
+                <img class="col-lg-12 col-md-12 col-sm-12 col-xs-12 related" src="/images/Elas.jpg" alt="..." >
+            </a>
+            <hr class="col-lg-10 col-md-12 col-sm-12 col-xs-12 ">
+            <h3>热门话题</h3>
+
+            <hr class="col-lg-10 col-md-12 col-sm-12 col-xs-12 ">
+            <a  href="https://www.ucloud.cn/site/global.html" target="_blank">
+                <img class="col-lg-12 col-md-12 col-sm-12 col-xs-12 related" src="/images/UCloud.jpg" alt="..." >
+            </a>
+        </div>
+    </div>
+</div>
+<!--<div th:insert="~{footer :: foot}"></div>-->
+</body>
+</html>

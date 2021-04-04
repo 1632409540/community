@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:text="${sectionName}"></title>
+    <title th:text="'LSU社区 - '+${sectionName}"></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <script src="/js/jquery-3.4.1.js"></script>
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -69,7 +69,7 @@
                             <a href="#">
                                 <span th:text="${notification.notifierName}">0</span>
                             </a>
-                            <span th:text="${notification.type}">0</span>
+                            <span th:text="${notification.type.name}">0</span>
                             <a th:href="@{'/notification/'+${notification.id}}">
                                 <span th:text="${notification.outerTitle}">0</span>
                             </a>
@@ -127,7 +127,7 @@
                     回收站
                 </a>
                 <a href="/profile/replies" class="list-group-item" th:class="${section=='replies'}?'list-group-item active':'list-group-item'">
-                    最新回复<span class="badge" th:text="${session.unreadCount}" th:if="${session.unreadCount>0}">3</span>
+                    最新通知<span class="badge" th:text="${session.unreadCount}" th:if="${session.unreadCount>0}">3</span>
                 </a>
             </div>
 

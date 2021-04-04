@@ -3,13 +3,14 @@ package cn.lsu.community.service.Impl;
 import cn.lsu.community.base.BaseService;
 import cn.lsu.community.dto.CommentDTO;
 import cn.lsu.community.entity.*;
+import cn.lsu.community.enums.NotificationType;
 import cn.lsu.community.exception.CustomizeErrorCode;
 import cn.lsu.community.exception.CustomizeException;
 import cn.lsu.community.mapper.*;
 import cn.lsu.community.enums.CommentTypeEnum;
 import cn.lsu.community.enums.NotificationStatusEnum;
-import cn.lsu.community.enums.NotificationTypeEnum;
 import cn.lsu.community.service.CommentService;
+import cn.lsu.community.service.NotificationService;
 import cn.lsu.community.service.QuestionService;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
@@ -41,6 +42,8 @@ public class CommentServiceImpl extends BaseService<CommentMapper, Comment> impl
 
     @Resource
     private CommentLikeMapper commentLikeMapper;
+    @Resource
+    private NotificationService notificationService;
 
     @Transactional
     public void insert(Comment comment, User sessionUser) {
@@ -69,8 +72,8 @@ public class CommentServiceImpl extends BaseService<CommentMapper, Comment> impl
             if (question == null) {
                 throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
             }
-            //创建通知
-            createNotify(comment, NotificationTypeEnum.REPLAY_COMMENT.getType(), dbComment.getCommentator(), sessionUser.getName(), question.getId(), question.getTitle());
+            //创建通知，回复评论
+            notificationService.createCommentNotify(comment, NotificationType.REPLAY_COMMENT.getType(), dbComment.getCommentator(), sessionUser.getName(), question.getId(), question.getTitle());
 
         } else {
             //回复问题
@@ -82,27 +85,13 @@ public class CommentServiceImpl extends BaseService<CommentMapper, Comment> impl
             baseMapper.insert(comment);
             question.setCommentCount(1);
             questionMapper.addCommentCount(question);
-            //创建通知
-            createNotify(comment, NotificationTypeEnum.REPLAY_QUESTION.getType(), question.getCreator(), sessionUser.getName(), question.getId(), question.getTitle());
+            //创建通知，回复评论
+            notificationService.createCommentNotify(comment, NotificationType.REPLAY_QUESTION.getType(), question.getCreator(), sessionUser.getName(), question.getId(), question.getTitle());
         }
 
     }
 
-    private void createNotify(Comment comment, Integer type, Long reciver, String notifier, Long questionId, String title) {
-        if (comment.getCommentator().longValue() == reciver.longValue()) {
-            return;
-        }
-        Notification notification = new Notification();
-        notification.setType(type);
-        notification.setReceiver(reciver);
-        notification.setNotifier(comment.getCommentator());
-        notification.setStatus(NotificationStatusEnum.UNRead.getStatus());
-        notification.setNotifierName(notifier);
-        notification.setOuterId(questionId);
-        notification.setOuterTitle(title);
-        notification.setCreateDate(new Date());
-        notificationMapper.insert(notification);
-    }
+
 
     public List<CommentDTO> findCommentsById(User currentUser,Long id, CommentTypeEnum type) {
 

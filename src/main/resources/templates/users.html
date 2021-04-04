@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>LSU社区</title>
+    <title>LSU社区 - 用户</title>
     <script src="/js/jquery-3.4.1.js"></script>
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
@@ -33,52 +33,39 @@
             </h2>
             <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12 tag-sp">
             <div class="row col-lg-6 col-md-12 col-sm-12 col-xs-12 tag-sp" th:each="user:${paginationDTO.getData()}">
-                <div>
+                <div style="margin-left: 20px;">
                     <div class="thumbnail">
-                        <img th:src="${user.avatarUrl}" style="height: 50px;width: 50px;">
+                        <img th:src="${user.avatarUrl}" style="height: 60px;width: 60px;">
                         <div class="caption">
-                            <h4 th:text="${user.name}" ></h4>
+
+                                <h4> <span th:text="${user.name}" ></span>
+                                    <a class="btn-user-like" th:if="${session.user.id != user.id && !user.myLike}" th:href="@{/likeUser/(page=${paginationDTO.getPage()},search=${search},userId=${user.id})}">
+                                        关注
+                                    </a>
+                                    <a class="btn-user-unlike" th:if="${session.user.id != user.id && user.myLike}" th:href="@{/likeUser/(page=${paginationDTO.getPage()},search=${search},userId=${user.id})}">
+                                        取消关注
+                                    </a>
+                                </h4>
+                                    <!--关注用户-->
+
+
+                            <p>积分：<span th:text="${user.integral}"></span></p>
+                            <p>职业：<span th:text="${user.career}"></span></p>
                             <p>个性签名：<span th:text="${user.bio}"></span></p>
                             <p>发布了<span th:text="${user.questionCount}"></span>个问题，<span th:text="${user.likeCount}"></span>人关注</p>
-                            <!--关注用户-->
-                            <div th:if="${session.user != null}">
-                                <!--关注用户-->
-                                <a class="btn-question-like" th:if="${session.user.id != question.user.id && !question.user.myLike}" th:href="@{/changeLikeUser/(questionId=${question.id},userId=${question.user.id})}">
-                                    关注
-                                </a>
-                                <a class="btn-question-unlike" th:if="${session.user.id != question.user.id && question.user.myLike}" th:href="@{/changeLikeUser/(questionId=${question.id},userId=${question.user.id})}">
-                                    取消关注
-                                </a>
-                            </div>
+                            <p>擅长话题：
+                                <span class="topic-tag" th:each="tag:${user.goodTags}">
+                                    <a th:href="@{/(tagId=${tag.id})}">
+                                        <span class="glyphicon glyphicon-tags icon-tag" aria-hidden="true"></span>
+                                        <span class="text" th:text="${tag.name}">data</span>
+                                    </a>
+                                </span>
+                            </p>
 
                         </div>
                     </div>
                 </div>
             </div>
-            <!--<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 tag-sp" >-->
-                <!--&lt;!&ndash;<div class="media" >&ndash;&gt;-->
-                    <!--&lt;!&ndash;&lt;!&ndash;<div class="media-left">&ndash;&gt;&ndash;&gt;-->
-                        <!--&lt;!&ndash;&lt;!&ndash;<a th:href="@{/(tagId=${topic.id})}">&ndash;&gt;&ndash;&gt;-->
-                            <!--&lt;!&ndash;&lt;!&ndash;<img class="media-object img-rounded" th:src="${topic.imageUrl}" >&ndash;&gt;&ndash;&gt;-->
-                        <!--&lt;!&ndash;&lt;!&ndash;</a>&ndash;&gt;&ndash;&gt;-->
-                    <!--&lt;!&ndash;&lt;!&ndash;</div>&ndash;&gt;&ndash;&gt;-->
-                    <!--&lt;!&ndash;&lt;!&ndash;<div class="media-body">&ndash;&gt;&ndash;&gt;-->
-                        <!--&lt;!&ndash;&lt;!&ndash;<a th:href="@{/(tagId=${topic.id})}" class="index-topic-tag">&ndash;&gt;&ndash;&gt;-->
-                            <!--&lt;!&ndash;&lt;!&ndash;<span class="text" th:text="${topic.name}">data</span>&ndash;&gt;&ndash;&gt;-->
-                        <!--&lt;!&ndash;&lt;!&ndash;</a>&ndash;&gt;&ndash;&gt;-->
-                        <!--&lt;!&ndash;&lt;!&ndash;<br/>&ndash;&gt;&ndash;&gt;-->
-                        <!--&lt;!&ndash;&lt;!&ndash;<span class="text-desc">&ndash;&gt;&ndash;&gt;-->
-                            <!--&lt;!&ndash;&lt;!&ndash;<span th:text="${topic.questionCount}">0</span> 个问题&ndash;&gt;&ndash;&gt;-->
-                                <!--&lt;!&ndash;&lt;!&ndash;• <span th:text="${topic.likeCount}">0</span> 人关注&ndash;&gt;&ndash;&gt;-->
-                        <!--&lt;!&ndash;&lt;!&ndash;</span>&ndash;&gt;&ndash;&gt;-->
-                        <!--&lt;!&ndash;&lt;!&ndash;<br/>&ndash;&gt;&ndash;&gt;-->
-                        <!--&lt;!&ndash;&lt;!&ndash;<span class="text-desc">&ndash;&gt;&ndash;&gt;-->
-                            <!--&lt;!&ndash;&lt;!&ndash;7 天新增 <span th:text="${topic.weekCount}">0</span> 个问题&ndash;&gt;&ndash;&gt;-->
-                            <!--&lt;!&ndash;&lt;!&ndash;• 30 天新增 <span th:text="${topic.monthCount}">0</span>个问题&ndash;&gt;&ndash;&gt;-->
-                        <!--&lt;!&ndash;&lt;!&ndash;</span>&ndash;&gt;&ndash;&gt;-->
-                    <!--&lt;!&ndash;&lt;!&ndash;</div>&ndash;&gt;&ndash;&gt;-->
-                <!--&lt;!&ndash;</div>&ndash;&gt;-->
-            <!--</div>-->
             <nav aria-label="Page navigation" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 tag-sp">
                 <ul class="pagination">
                     <li th:if="${paginationDTO.getShowFirstPage()}">

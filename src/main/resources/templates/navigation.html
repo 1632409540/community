@@ -44,6 +44,12 @@
                             &nbsp;用户
                         </a>
                     </li>
+                    <li class="active" th:class="${session.navbarStatus == 'integral'}?'active':''">
+                        <a href="/integral">
+                            <span class="glyphicon glyphicon-usd" aria-hidden="true"></span>
+                            &nbsp;积分
+                        </a>
+                    </li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li th:class="${session.navbarStatus == 'publish'}?'active':''"  th:if="${session.user !=null}">

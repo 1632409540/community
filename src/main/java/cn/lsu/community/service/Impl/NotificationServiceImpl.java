@@ -3,12 +3,13 @@ package cn.lsu.community.service.Impl;
 import cn.lsu.community.base.BaseService;
 import cn.lsu.community.dto.NotificationDTO;
 import cn.lsu.community.dto.PaginationDTO;
+import cn.lsu.community.entity.Comment;
 import cn.lsu.community.entity.Notification;
 import cn.lsu.community.entity.User;
+import cn.lsu.community.enums.NotificationType;
 import cn.lsu.community.exception.CustomizeErrorCode;
 import cn.lsu.community.exception.CustomizeException;
 import cn.lsu.community.enums.NotificationStatusEnum;
-import cn.lsu.community.enums.NotificationTypeEnum;
 import cn.lsu.community.mapper.NotificationMapper;
 import cn.lsu.community.mapper.UserMapper;
 import cn.lsu.community.service.NotificationService;
@@ -19,6 +20,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -43,7 +45,7 @@ public class NotificationServiceImpl extends BaseService<NotificationMapper,Noti
         for(Notification notification:notifications){
             NotificationDTO notificationDTO=new NotificationDTO();
             BeanUtils.copyProperties(notification,notificationDTO);
-            notificationDTO.setType(NotificationTypeEnum.getName(notification.getType()));
+            notificationDTO.setType(NotificationType.getNotificationType(notification.getType()));
             notificationDTOList.add(notificationDTO);
         }
         paginationDTO.setData(notificationDTOList);
@@ -72,5 +74,21 @@ public class NotificationServiceImpl extends BaseService<NotificationMapper,Noti
         notification.setStatus(NotificationStatusEnum.READ.getStatus());
         baseMapper.updateById(notification);
         return notification;
+    }
+
+    public void createCommentNotify(Comment comment, Integer type, Long reciver, String notifier, Long questionId, String title) {
+        if (comment.getCommentator().longValue() == reciver.longValue()) {
+            return;
+        }
+        Notification notification = new Notification();
+        notification.setType(type);
+        notification.setReceiver(reciver);
+        notification.setNotifier(comment.getCommentator());
+        notification.setStatus(NotificationStatusEnum.UNRead.getStatus());
+        notification.setNotifierName(notifier);
+        notification.setOuterId(questionId);
+        notification.setOuterTitle(title);
+        notification.setCreateDate(new Date());
+        baseMapper.insert(notification);
     }
 }

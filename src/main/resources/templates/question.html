@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:text="${question.title}"></title>
+    <title th:text="'LSU社区 - '+${question.title}"></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <script src="/js/jquery-3.4.1.js"></script>
 
@@ -165,10 +165,10 @@
                     <div class="media-body">
                         <span th:text="${question.user.name}"></span>
                         <!--关注用户-->
-                        <a class="btn-question-like" th:if="${session.user.id != question.user.id && !question.user.myLike}" th:href="@{/changeLikeUser/(questionId=${question.id},userId=${question.user.id})}">
+                        <a class="btn-user-like" th:if="${session.user.id != question.user.id && !question.user.myLike}" th:href="@{/changeLikeUser/(questionId=${question.id},userId=${question.user.id})}">
                             关注
                         </a>
-                        <a class="btn-question-unlike" th:if="${session.user.id != question.user.id && question.user.myLike}" th:href="@{/changeLikeUser/(questionId=${question.id},userId=${question.user.id})}">
+                        <a class="btn-user-unlike" th:if="${session.user.id != question.user.id && question.user.myLike}" th:href="@{/changeLikeUser/(questionId=${question.id},userId=${question.user.id})}">
                             取消关注
                         </a>
                         <br/>

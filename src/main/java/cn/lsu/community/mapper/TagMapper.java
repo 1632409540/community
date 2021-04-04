@@ -20,4 +20,6 @@ public interface TagMapper extends BaseMapper<Tag> {
 
     List<HotTopicDTO> selectPageBySearch(@Param("search") String search,
                                          @Param("offSize") Integer offSize, @Param("size") Integer size);
+
+    List<Tag> selectGoodTags(@Param("userId") Long userId);
 }

@@ -108,6 +108,11 @@
             <artifactId>flyway-core</artifactId>
             <version>5.2.1</version>
         </dependency>
+        <!--邮件插件-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

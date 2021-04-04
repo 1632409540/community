@@ -1,1 +1,1 @@
-alter table user add integral integer default 0 comment '积分';
+alter table user add integral integer default 19 comment '积分';

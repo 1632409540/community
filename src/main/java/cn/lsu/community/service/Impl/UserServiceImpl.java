@@ -2,7 +2,9 @@ package cn.lsu.community.service.Impl;
 
 import cn.lsu.community.base.BaseService;
 import cn.lsu.community.dto.PaginationDTO;
+import cn.lsu.community.entity.Tag;
 import cn.lsu.community.entity.UserLike;
+import cn.lsu.community.mapper.TagMapper;
 import cn.lsu.community.mapper.UserLikeMapper;
 import cn.lsu.community.mapper.UserMapper;
 import cn.lsu.community.entity.User;
@@ -24,6 +26,8 @@ public class UserServiceImpl extends BaseService<UserMapper,User> implements Use
 
     @Resource
     private UserLikeMapper userLikeMapper;
+    @Resource
+    private TagMapper tagMapper;
 
     @Override
     public void createOrUpdate(User user) {
@@ -85,6 +89,8 @@ public class UserServiceImpl extends BaseService<UserMapper,User> implements Use
             }else {
                 user.setMyLike(false);
             }
+            List<Tag> goodTags = tagMapper.selectGoodTags(user.getId());
+            user.setGoodTags(goodTags);
         });
         PaginationDTO<User> paginationDTO=new PaginationDTO<User>();
         paginationDTO.setData(users);

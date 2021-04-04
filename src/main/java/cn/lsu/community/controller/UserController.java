@@ -59,4 +59,15 @@ public class UserController {
         return "users";
     }
 
+    @GetMapping("/likeUser")
+    public String likeQuestion(@RequestParam(name ="search",required = false) String search,
+                               @RequestParam(name = "page",defaultValue = "1",required = false)Integer page,
+                               @RequestParam(name = "size",defaultValue = "6",required = false)Integer size,
+                               @RequestParam(name ="userId") Long userId,
+                               HttpServletRequest request){
+        User user= (User) request.getSession().getAttribute("user");
+        userService.changeLikeUser(user.getId(),userId);
+        return "redirect:/users?search="+search+"&page="+page;
+    }
+
 }
