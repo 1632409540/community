@@ -33,6 +33,7 @@ public class NotificationServiceImpl extends BaseService<NotificationMapper,Noti
 
         Wrapper<Notification> wrapper =new EntityWrapper<>();
         wrapper.eq("receiver",user.getId())
+                .orderBy("status",true)
                 .orderBy("create_date",false);
         List<Notification> notifications = baseMapper.selectPage(new RowBounds(offSize, size), wrapper);
         if(notifications.size()<=0){

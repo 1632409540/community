@@ -70,6 +70,10 @@ public class User extends BaseEntity<User> {
 
     @TableField(exist = false)
     private Integer likeCount;
+    /**
+     * 积分
+     */
+    private Integer integral;
 
     public String getAccountId() {
         return accountId;
@@ -205,5 +209,13 @@ public class User extends BaseEntity<User> {
 
     public void setLikeCount(Integer likeCount) {
         this.likeCount = likeCount;
+    }
+
+    public Integer getIntegral() {
+        return integral;
+    }
+
+    public void setIntegral(Integer integral) {
+        this.integral = integral;
     }
 }

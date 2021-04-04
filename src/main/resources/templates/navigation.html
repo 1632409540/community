@@ -38,6 +38,12 @@
                             &nbsp;话题
                         </a>
                     </li>
+                    <li class="active" th:class="${session.navbarStatus == 'users'}?'active':''">
+                        <a href="/users">
+                            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                            &nbsp;用户
+                        </a>
+                    </li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li th:class="${session.navbarStatus == 'publish'}?'active':''"  th:if="${session.user !=null}">

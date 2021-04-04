@@ -430,3 +430,24 @@ function permanentlyDelete() {
         });
     }
 }
+
+/**
+ * 关注用户
+ */
+function changeLikeUser(e) {
+    var id=e.getAttribute("data-id");
+    $.ajax({
+        type: "GET",
+        url: "changeLikeUser",
+        data: {id:id},
+        dataType: "json",
+        success: function(data){
+            console.log("data==",data);
+            if (data.code== 200){
+                window.location.reload();
+            }else {
+                xtip.msg(data.message);
+            }
+        }
+    });
+}

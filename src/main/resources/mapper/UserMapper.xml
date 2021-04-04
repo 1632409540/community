@@ -2,4 +2,27 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.lsu.community.mapper.UserMapper">
 
+    <select id="selectCountBySearch" resultType="java.lang.Integer">
+        select count(*) from user u
+        <where>
+            <if test="search != null and search.length > 0">
+                and u.name regexp #{search}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectPageBySearch" resultType="cn.lsu.community.entity.User">
+        select * from (
+            select u.*,count(q.id) as questionCount,count(ul.id) as likeCount  from user u
+            left join question q on q.creator = u.id and q.status = 1
+            left join user_like ul on ul.liked_user_id = u.id
+            <where>
+                <if test="search != null and search.length > 0">
+                    and t.name regexp #{search}
+                </if>
+            </where>
+            group by u.id
+        )tqt order by tqt.questionCount desc,tqt.likeCount desc,tqt.integral desc limit #{offSize},#{size}
+    </select>
+
 </mapper>

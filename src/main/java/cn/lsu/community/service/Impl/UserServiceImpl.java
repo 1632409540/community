@@ -1,6 +1,7 @@
 package cn.lsu.community.service.Impl;
 
 import cn.lsu.community.base.BaseService;
+import cn.lsu.community.dto.PaginationDTO;
 import cn.lsu.community.entity.UserLike;
 import cn.lsu.community.mapper.UserLikeMapper;
 import cn.lsu.community.mapper.UserMapper;
@@ -9,12 +10,14 @@ import cn.lsu.community.service.UserService;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import org.apache.commons.lang3.ObjectUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl extends BaseService<UserMapper,User> implements UserService {
@@ -61,5 +64,31 @@ public class UserServiceImpl extends BaseService<UserMapper,User> implements Use
         }else {
             return null;
         }
+    }
+
+    @Override
+    public PaginationDTO list(User loginUser, String search, Integer page, Integer size) {
+        Integer offSize=size*(page-1);
+        if(StringUtils.isNotEmpty(search)){
+            String[] searchs=search.split(" ");
+            search= Arrays.stream(searchs).collect(Collectors.joining("|"));
+        }
+        Integer totalCount= baseMapper.selectCountBySearch(search);
+        List<User> users= baseMapper.selectPageBySearch(search,offSize,size);
+        users.stream().forEach(user -> {
+            Wrapper<UserLike> wrapper = new EntityWrapper<>();
+            wrapper.eq("user_id",loginUser.getId())
+                    .eq("liked_user_id",user.getId());
+            Integer count = userLikeMapper.selectCount(wrapper);
+            if(count>0){
+                user.setMyLike(true);
+            }else {
+                user.setMyLike(false);
+            }
+        });
+        PaginationDTO<User> paginationDTO=new PaginationDTO<User>();
+        paginationDTO.setData(users);
+        paginationDTO.setPagination(totalCount,page,size);
+        return paginationDTO;
     }
 }

@@ -6,6 +6,7 @@ import cn.lsu.community.entity.QuestionLike;
 import cn.lsu.community.entity.User;
 import cn.lsu.community.service.NotificationService;
 import cn.lsu.community.service.QuestionService;
+import cn.lsu.community.service.TagService;
 import cn.lsu.community.service.UserService;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Controller;
@@ -20,6 +21,8 @@ import java.util.Date;
 public class UserController {
     @Resource
     private QuestionService questionService;
+    @Resource
+    private UserService userService;
 
     @GetMapping("/userSetting/{section}")
     public String profile(@PathVariable(name = "section")String section,
@@ -41,6 +44,19 @@ public class UserController {
         return "userSetting";
     }
 
+    @GetMapping("/users")
+    public String index(@RequestParam(name ="search",required = false) String search,
+                        @RequestParam(name = "page",defaultValue = "1",required = false)Integer page,
+                        @RequestParam(name = "size",defaultValue = "6",required = false)Integer size,
+                        HttpServletRequest request,
+                        Model model) {
 
+        User user= (User) request.getSession().getAttribute("user");
+        PaginationDTO paginationDTO=userService.list(user,search,page,size);
+        model.addAttribute("search", search);
+        model.addAttribute("paginationDTO",paginationDTO);
+        request.getSession().setAttribute("navbarStatus","users");
+        return "users";
+    }
 
 }
