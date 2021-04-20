@@ -1,5 +1,6 @@
 package cn.lsu.community.controller;
 
+import cn.lsu.community.base.BaseController;
 import cn.lsu.community.dto.HotTopicDTO;
 import cn.lsu.community.dto.PaginationDTO;
 import cn.lsu.community.entity.QuestionLike;
@@ -22,10 +23,7 @@ import java.util.Date;
 import java.util.List;
 
 @Controller
-public class TagController {
-
-    @Resource
-    private TagService tagService;
+public class TagController extends BaseController {
 
     @GetMapping("/tags")
     public String index(@RequestParam(name ="search",required = false) String search,

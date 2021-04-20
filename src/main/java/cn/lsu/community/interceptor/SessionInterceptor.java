@@ -1,9 +1,11 @@
 package cn.lsu.community.interceptor;
 
 
+import cn.lsu.community.entity.SystemSet;
 import cn.lsu.community.mapper.UserMapper;
 import cn.lsu.community.entity.User;
 import cn.lsu.community.service.Impl.NotificationServiceImpl;
+import cn.lsu.community.service.SystemSetService;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import org.apache.commons.lang3.ObjectUtils;
@@ -24,6 +26,8 @@ public class SessionInterceptor implements HandlerInterceptor {
     private UserMapper userMapper;
     @Resource
     private NotificationServiceImpl notificationService;
+    @Resource
+    private SystemSetService systemSetService;
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
@@ -42,7 +46,21 @@ public class SessionInterceptor implements HandlerInterceptor {
                         break;
                     }
                 }
+                if(cookie.getName().equals("adminToken")){
+                    String token=cookie.getValue();
+                    User userEntity = new User();
+                    userEntity.setToken(token);
+                    User user = userMapper.selectOne(userEntity);
+                    if(ObjectUtils.isNotEmpty(user)){
+                        request.getSession().setAttribute("admin",user);
+                        break;
+                    }
+                }
             }
+        }
+        SystemSet systemSet = (SystemSet) request.getSession().getAttribute("systemSet");
+        if(ObjectUtils.isEmpty(systemSet)){
+            request.getSession().setAttribute("systemSet",systemSetService.findSystemSet());
         }
         return true;
     }

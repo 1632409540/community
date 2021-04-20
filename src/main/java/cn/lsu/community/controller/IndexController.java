@@ -1,7 +1,9 @@
 package cn.lsu.community.controller;
 
+import cn.lsu.community.base.BaseController;
 import cn.lsu.community.dto.HotTopicDTO;
 import cn.lsu.community.dto.PaginationDTO;
+import cn.lsu.community.entity.SystemSet;
 import cn.lsu.community.entity.Tag;
 import cn.lsu.community.entity.User;
 import cn.lsu.community.service.QuestionService;
@@ -19,12 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Controller
-public class IndexController {
-
-    @Autowired
-    private QuestionService questionService;
-    @Resource
-    private TagService tagService;
+public class IndexController extends BaseController {
 
     @GetMapping("/")
     public String index(@RequestParam(name ="search",required = false) String search,
@@ -49,6 +46,8 @@ public class IndexController {
         }else{
             model.addAttribute("tag", null);
         }
+//        SystemSet systemSet = systemSetService.findSystemSet();
+//        request.getSession().setAttribute("systemSet",systemSet);
         return "index";
     }
 

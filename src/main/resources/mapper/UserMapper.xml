@@ -3,7 +3,7 @@
 <mapper namespace="cn.lsu.community.mapper.UserMapper">
 
     <select id="selectCountBySearch" resultType="java.lang.Integer">
-        select count(*) from user u
+        select count(*) from `user` u
         <where>
             <if test="search != null and search.length > 0">
                 and u.name regexp #{search}
@@ -13,7 +13,7 @@
 
     <select id="selectPageBySearch" resultType="cn.lsu.community.entity.User">
         select * from (
-            select u.*,count(q.id) as questionCount,count(ul.id) as likeCount  from user u
+            select u.*,count(q.id) as questionCount,count(ul.id) as likeCount  from `user` u
             left join question q on q.creator = u.id and q.status = 1
             left join user_like ul on ul.liked_user_id = u.id
             <where>

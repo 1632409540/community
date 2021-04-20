@@ -4,9 +4,8 @@ public enum NotificationType {
     REPLAY_QUESTION(1,"回复了你的问题"),
     REPLAY_COMMENT(2,"回复了你的评论"),
     LIKE_YOU(3,"关注了你"),
-    LIKE_YOUR_QUESTION(4,"关注了你发布的问题"),
-    YOUR_LIKED_QUESTION_HAVE_NEW_COMMENT(5,"你关注的问题有新的回复"),
-    YOUR_LIKED_TAG_HAVE_NEW_QUESTION(6,"你关注的话题有新的问题");
+    YOUR_LIKED_QUESTION_HAVE_NEW_COMMENT(4,"你关注的问题有新的回复"),
+    YOUR_LIKED_USER_HAVE_NEW_QUESTION(5,"你关注的用户发布了新的问题");
 
     private Integer type;
     private String name;

@@ -1,13 +1,13 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>LSU社区 - 积分规则</title>
+    <title>[[${session.systemSet.title}]]-积分规则</title>
     <script src="/js/jquery-3.4.1.js"></script>
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="/css/community.css">
     <script src="/js/bootstrap.min.js" type="application/javascript"></script>
-    <link rel="icon" type="image/x-icon" href="/images/logo.jpg" />
+    <link rel="icon" type="image/x-icon" href="/images/logo.jpg" th:href="${session.systemSet.systemLogo}"/>
     <script>
         window.onload = function () {
             var closable=window.localStorage.getItem("closable");
@@ -28,7 +28,7 @@
                     <span class="glyphicon glyphicon-usd" style="margin-top: 10px;margin-left: 10px;" aria-hidden="true"></span>
                 </div>
                 <div class="media-body">
-                    <h2 class="index-title-tag">LSU社区 积分规则</h2>
+                    <h2 class="index-title-tag">[[${session.systemSet.title}]] 积分规则</h2>
                 </div>
             </h2>
             <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12 tag-sp">
@@ -54,6 +54,12 @@
                     </tr>
                     <tr>
                         <td><h5>问题被回复<span style="float: right;color: #00d95a">10 分</span></h5></td>
+                    </tr>
+                    <tr>
+                        <td><h5>回复被其他用户的回复<span style="float: right;color: #FF0000">-10 分</span></h5></td>
+                    </tr>
+                    <tr>
+                        <td><h5>回复被其他用户回复<span style="float: right;color: #00d95a">10 分</span></h5></td>
                     </tr>
                     <tr>
                         <td><h5>关注其他用户<span style="float: right;color: #FF0000">-10 分</span></h5></td>

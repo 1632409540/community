@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:text="'LSU社区 - '+${question.title}"></title>
+    <title>[[${session.systemSet.title}]]-[[${question.title}]]</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <script src="/js/jquery-3.4.1.js"></script>
 
@@ -16,7 +16,7 @@
     <script src="/js/editormd.min.js"></script>
     <script src="/js/lib/marked.min.js"></script>
     <script src="/js/lib/prettify.min.js"></script>
-    <link rel="icon" type="image/x-icon" href="/images/logo.jpg" />
+    <link rel="icon" type="image/x-icon" href="/images/logo.jpg" th:href="${session.systemSet.systemLogo}"/>
 
 </head>
 <body>
@@ -103,31 +103,6 @@
                         <!--二级回复-->
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 collapse sub-comments"
                              th:id="${'comment-'+comment.id}">
-                            <!--<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 comments"-->
-                                 <!--th:if="${question.commentCount>0}" th:each="comment:${comments}">-->
-                                <!--<div class="media-left">-->
-                                    <!--<a href="#">-->
-                                        <!--<img class="media-object img-rounded" th:src="${comment.user.getAvatarUrl()}">-->
-                                    <!--</a>-->
-                                <!--</div>-->
-                                <!--<div class="media-body">-->
-                                    <!--<span class="text-desc">-->
-                                        <!--<span th:text="${comment.user.name}">0</span>-->
-                                    <!--</span>-->
-                                    <!--<div th:text="${comment.content}"></div>-->
-                                    <!--<div class="menu">-->
-                                        <!--<span class="pull-right" th:text="${#dates.format(comment.gmtCreate,'yyyy-MM-dd')}"></span>-->
-                                    <!--</div>-->
-                                <!--</div>-->
-                            <!--</div>-->
-                            <!--&lt;!&ndash;二级评论回复&ndash;&gt;-->
-                            <!--<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">-->
-                                <!--<input type="text" class="form-control" placeholder="评论一下......" th:id="${'input-'+comment.id}"/>-->
-                                <!--<div class="btn-comment">-->
-                                    <!--<button type="button" class="btn btn-success btn-sm" onclick="secondComment(this)" th:data-id="${comment.id}">回复</button>-->
-                                    <!--<button type="button" class="btn btn-default btn-sm" onclick="collapseComment(this)" th:data-id="${comment.id}">取消</button>-->
-                                <!--</div>-->
-                            <!--</div>-->
                         </div>
                     </div>
                 </div>
@@ -165,10 +140,10 @@
                     <div class="media-body">
                         <span th:text="${question.user.name}"></span>
                         <!--关注用户-->
-                        <a class="btn-user-like" th:if="${session.user.id != question.user.id && !question.user.myLike}" th:href="@{/changeLikeUser/(questionId=${question.id},userId=${question.user.id})}">
+                        <a class="btn-user-like" th:if="${session.user != null && session.user.id != question.user.id && !question.user.myLike}" th:href="@{/changeLikeUser/(questionId=${question.id},userId=${question.user.id})}">
                             关注
                         </a>
-                        <a class="btn-user-unlike" th:if="${session.user.id != question.user.id && question.user.myLike}" th:href="@{/changeLikeUser/(questionId=${question.id},userId=${question.user.id})}">
+                        <a class="btn-user-unlike" th:if="${session.user != null && session.user.id != question.user.id && question.user.myLike}" th:href="@{/changeLikeUser/(questionId=${question.id},userId=${question.user.id})}">
                             取消关注
                         </a>
                         <br/>
@@ -182,7 +157,7 @@
             <hr class="col-lg-10 col-md-12 col-sm-12 col-xs-12 ">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" >
                 <h4>官方微信公众号推荐</h4>
-                <img class="col-lg-12 col-md-12 col-sm-12 col-xs-12 related" src="/images/elastic.jpg" alt="..." >
+                <img class="col-lg-12 col-md-12 col-sm-12 col-xs-12 related" src="/images/elastic.jpg" alt="..." th:src="${session.systemSet.publicWechat}"/>
             </div>
             <hr class="col-lg-10 col-md-12 col-sm-12 col-xs-12 ">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" >

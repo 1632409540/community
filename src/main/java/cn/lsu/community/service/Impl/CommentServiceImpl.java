@@ -12,6 +12,7 @@ import cn.lsu.community.enums.NotificationStatusEnum;
 import cn.lsu.community.service.CommentService;
 import cn.lsu.community.service.NotificationService;
 import cn.lsu.community.service.QuestionService;
+import cn.lsu.community.service.UserService;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import org.apache.commons.lang3.ObjectUtils;
@@ -29,21 +30,21 @@ public class CommentServiceImpl extends BaseService<CommentMapper, Comment> impl
 
     @Resource
     private QuestionMapper questionMapper;
+
     @Resource
-    private QuestionService questionService;
+    private NotificationService notificationService;
+
+    @Resource
+    private UserService userService;
+
     @Resource
     private UserMapper userMapper;
 
     @Resource
-    private NotificationMapper notificationMapper;
+    private CommentLikeMapper commentLikeMapper;
 
     @Resource
     private CommentMapper commentMapper;
-
-    @Resource
-    private CommentLikeMapper commentLikeMapper;
-    @Resource
-    private NotificationService notificationService;
 
     @Transactional
     public void insert(Comment comment, User sessionUser) {
@@ -73,8 +74,9 @@ public class CommentServiceImpl extends BaseService<CommentMapper, Comment> impl
                 throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
             }
             //创建通知，回复评论
-            notificationService.createCommentNotify(comment, NotificationType.REPLAY_COMMENT.getType(), dbComment.getCommentator(), sessionUser.getName(), question.getId(), question.getTitle());
-
+            notificationService.createCommentNotify(comment, NotificationType.REPLAY_COMMENT.getType(), dbComment.getCommentator(), sessionUser.getName(), question.getId(), comment.getContent());
+            User addUser = userMapper.selectById(dbComment.getCommentator());
+            userService.updateUserIntegral(addUser,sessionUser,10);
         } else {
             //回复问题
             Question question = questionMapper.selectById(comment.getParentId());
@@ -85,8 +87,10 @@ public class CommentServiceImpl extends BaseService<CommentMapper, Comment> impl
             baseMapper.insert(comment);
             question.setCommentCount(1);
             questionMapper.addCommentCount(question);
-            //创建通知，回复评论
+            //创建通知，回复问题
             notificationService.createCommentNotify(comment, NotificationType.REPLAY_QUESTION.getType(), question.getCreator(), sessionUser.getName(), question.getId(), question.getTitle());
+            User addUser = userMapper.selectById(question.selectById());
+            userService.updateUserIntegral(addUser,sessionUser,10);
         }
 
     }
@@ -147,6 +151,9 @@ public class CommentServiceImpl extends BaseService<CommentMapper, Comment> impl
             commentLike.setCommentId(id);
             commentLike.setUserId(user.getId());
             commentLikeMapper.insert(commentLike);
+            Comment comment = commentMapper.selectById(id);
+            User addUser = userMapper.selectById(comment.getCommentator());
+            userService.updateUserIntegral(addUser,user,5);
         }
         Wrapper<CommentLike> wrapper2 = new EntityWrapper<>();
         wrapper1.eq("comment_id",id);

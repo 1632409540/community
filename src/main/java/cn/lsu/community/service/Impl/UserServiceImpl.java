@@ -4,6 +4,8 @@ import cn.lsu.community.base.BaseService;
 import cn.lsu.community.dto.PaginationDTO;
 import cn.lsu.community.entity.Tag;
 import cn.lsu.community.entity.UserLike;
+import cn.lsu.community.exception.CustomizeErrorCode;
+import cn.lsu.community.exception.CustomizeException;
 import cn.lsu.community.mapper.TagMapper;
 import cn.lsu.community.mapper.UserLikeMapper;
 import cn.lsu.community.mapper.UserMapper;
@@ -54,6 +56,9 @@ public class UserServiceImpl extends BaseService<UserMapper,User> implements Use
         }else {
             userLike.setCreateDate(new Date());
             userLikeMapper.insert(userLike);
+            User delUser = baseMapper.selectById(loginUserId);
+            User addUser = baseMapper.selectById(likedUserId);
+            this.updateUserIntegral(addUser,delUser,10);
         }
     }
 
@@ -79,15 +84,20 @@ public class UserServiceImpl extends BaseService<UserMapper,User> implements Use
         }
         Integer totalCount= baseMapper.selectCountBySearch(search);
         List<User> users= baseMapper.selectPageBySearch(search,offSize,size);
+
         users.stream().forEach(user -> {
-            Wrapper<UserLike> wrapper = new EntityWrapper<>();
-            wrapper.eq("user_id",loginUser.getId())
-                    .eq("liked_user_id",user.getId());
-            Integer count = userLikeMapper.selectCount(wrapper);
-            if(count>0){
-                user.setMyLike(true);
-            }else {
-                user.setMyLike(false);
+            if(ObjectUtils.isNotEmpty(loginUser)){
+                Wrapper<UserLike> wrapper = new EntityWrapper<>();
+                wrapper.eq("liked_user_id",user.getId());
+                Integer likeCount = userLikeMapper.selectCount(wrapper);
+                user.setLikeCount(likeCount);
+                wrapper.andNew().eq("user_id",loginUser.getId());
+                Integer count = userLikeMapper.selectCount(wrapper);
+                if(count>0){
+                    user.setMyLike(true);
+                }else {
+                    user.setMyLike(false);
+                }
             }
             List<Tag> goodTags = tagMapper.selectGoodTags(user.getId());
             user.setGoodTags(goodTags);
@@ -96,5 +106,45 @@ public class UserServiceImpl extends BaseService<UserMapper,User> implements Use
         paginationDTO.setData(users);
         paginationDTO.setPagination(totalCount,page,size);
         return paginationDTO;
+    }
+
+    @Override
+    public boolean updateById(User entity) {
+        return super.updateById(entity);
+    }
+
+    @Override
+    public void updateUserIntegral(User addUser,User delUser,Integer integral) {
+//        if(addUser.equals(delUser)){
+//            return;
+//        }
+        if(ObjectUtils.isNotEmpty(delUser)){
+            User del = new User();
+            del.setId(delUser.getId());
+            if(delUser.getIntegral()-integral<0){
+                throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+            }
+            del.setIntegral(delUser.getIntegral()-integral);
+            baseMapper.updateById(del);
+        }
+        if(ObjectUtils.isNotEmpty(addUser)){
+            User add = new User();
+            add.setId(addUser.getId());
+            add.setIntegral(addUser.getIntegral()+integral);
+            baseMapper.updateById(add);
+        }
+    }
+
+    @Override
+    public User findById(Long id) {
+        return baseMapper.selectById(id);
+    }
+
+    @Override
+    public void updateAvatarById(Long id, String imgPath) {
+        User user = new User();
+        user.setId(id);
+        user.setAvatarUrl(imgPath);
+        baseMapper.updateById(user);
     }
 }

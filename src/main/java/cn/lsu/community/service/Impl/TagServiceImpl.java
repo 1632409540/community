@@ -52,7 +52,7 @@ public class TagServiceImpl extends BaseService<TagMapper, Tag> implements TagSe
     @Override
     public  List<Tag> filterInvalid(String tagNames){
         List<Tag> tags = new ArrayList<>();
-        String[] names = tagNames.split(",");
+        String[] names = tagNames.split(";");
         for (String name: names) {
             Tag tag = this.selectByName(name);
             if(ObjectUtils.isNotEmpty(tag)){

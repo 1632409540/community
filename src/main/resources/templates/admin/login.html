@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <title>[[${session.systemSet.title}]]-登录</title>
+    <title>[[${session.systemSet.title}]]-后台登录</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="stylesheet" media="screen" href="login/css/style.css">
     <link rel="stylesheet" type="text/css" href="login/css/reset.css" />
@@ -13,7 +13,7 @@
 <div id="particles-js">
     <div class="login">
         <div class="login-top">
-            用户登录-[[${session.systemSet.title}]]
+            [[${session.systemSet.title}]]-后台登录
         </div>
         <div class="login-center clearfix">
             <div class="login-center-img"><img src="https://gitee.com/xiao-zhiyun/picture/raw/master/2021-04-03/0496be5ded684bae834efcd9dc75b030.png" /></div>
@@ -32,12 +32,6 @@
         <div class="login-button">
             登录
         </div>
-        <div class="login-github">
-            <a title="GitHub登录" th:href="@{https://github.com/login/oauth/authorize(client_id='b3f5fa1c25e7ecd68dd0',redirect_uri=${#httpServletRequest.getRequestURL().substring(0,#httpServletRequest.getRequestURL().length()-7)+'callback'},scope='user',state=1)}">
-                <img style="height: 40px;" src="https://gitee.com/xiao-zhiyun/picture/raw/master/2021-04-03/12f3379718174b3b92c910f655146817.png">
-            </a>
-        </div>
-        <div style="text-align: center;margin-top: 20px;"><a href="/">游客访问</a></div>
     </div>
     <div class="sk-rotating-plane"></div>
 </div>
@@ -89,15 +83,15 @@
                  */
                 $.ajax({
                     type: "POST",
-                    url: "login",
+                    url: "admin/login",
                     data: {name:name, password:password},
                     dataType: "json",
                     success: function(data){
                         console.log("data==",data);
                         if (data.code== 200){
                             var location = window.location.href;
-                            let strings = location.split("toLogin");
-                            window.location.href = strings[0];
+                            let strings = location.split("toAdminLogin");
+                            window.location.href = strings[0]+'admin/index';
                         }else {
                             xtip.confirm(data.message,'',{icon:'e',title:'登录失败',btn:[]});
                         }

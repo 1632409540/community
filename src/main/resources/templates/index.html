@@ -1,13 +1,13 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>LSU社区 - 发现</title>
+    <title>[[${session.systemSet.title}]]-发现</title>
     <script src="/js/jquery-3.4.1.js"></script>
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="/css/community.css">
     <script src="/js/bootstrap.min.js" type="application/javascript"></script>
-    <link rel="icon" type="image/x-icon" href="/images/logo.jpg" />
+    <link rel="icon" type="image/x-icon" href="/images/logo.jpg" th:href="${session.systemSet.systemLogo}"/>
     <script>
         window.onload = function () {
             var closable=window.localStorage.getItem("closable");
@@ -18,22 +18,14 @@
         }
     </script>
 </head>
-<body>
+<body th:style="'background-image: url('+${session.systemSet.background}+')'">
 <div th:insert="~{navigation :: nav}"></div>
 <div class="container-fluid main">
     <div class="row">
         <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 right-border">
             <!--<h2 th:if="${tag==null||tag==''}" ><span class="glyphicon glyphicon-list" aria-hidden="true"></span> &nbsp;发现</h2>-->
             <h2 th:if="${tag==null||tag==''}"><span class="glyphicon glyphicon-list" aria-hidden="true"></span> &nbsp;发现</h2>
-            <!--&lt;!&ndash; tab切换 &ndash;&gt;-->
-            <!--<ul class="nav nav-tabs aw-nav-tabs active hidden-xs">-->
-                <!--<li class="active"><a href="/">最新</a></li>-->
-                <!--<li><a href="/" id="sort_control_hot">热门</a></li>-->
-                <!--<li><a href="/">推荐</a></li>-->
-                <!--<li><a href="/"><span style="color: #E51C37">消灭零回复</span></a></li>-->
-                <!--&lt;!&ndash;<h2 class="hidden-xs"><i class="icon icon-list"></i> 发现</h2>&ndash;&gt;-->
-            <!--</ul>-->
-            <!--&lt;!&ndash; end tab切换 &ndash;&gt;-->
+
             <h2 th:if="${tag!=null&&tag!=''}" >
                 <div class="media-left" >
                     <a>
@@ -127,10 +119,14 @@
                     </span>
                 </div>
             </div>
-            <hr class="col-lg-10 col-md-12 col-sm-12 col-xs-12 ">
-            <a  href="https://www.ucloud.cn/site/global.html" target="_blank">
-                <img class="col-lg-12 col-md-12 col-sm-12 col-xs-12 related" src="/images/UCloud.jpg" alt="..." >
-            </a>
+            <hr/>
+            <div>
+                <h5 th:text="${session.systemSet.publicTitle}"></h5>
+                <img class="col-lg-4 col-md-4 col-sm-4 col-xs-4 " th:src="${session.systemSet.publicWechat}"/>
+                <img class="col-lg-4 col-md-4 col-sm-4 col-xs-4 " th:src="${session.systemSet.publicMicroblog}"/>
+                <img class="col-lg-4 col-md-4 col-sm-4 col-xs-4 " th:src="${session.systemSet.publicQq}"/>
+            </div>
+            <hr style="margin-top: 10px;"/>
         </div>
     </div>
 </div>

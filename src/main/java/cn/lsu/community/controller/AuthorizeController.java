@@ -1,6 +1,7 @@
 package cn.lsu.community.controller;
 
 import cn.hutool.crypto.digest.MD5;
+import cn.lsu.community.base.BaseController;
 import cn.lsu.community.dto.GithubUser;
 import cn.lsu.community.dto.AccessTokenDTO;
 import cn.lsu.community.entity.User;
@@ -23,7 +24,7 @@ import java.util.UUID;
 
 @Controller
 @Slf4j
-public class AuthorizeController {
+public class AuthorizeController extends BaseController {
     @Autowired
     private GithubProvider githubProvider;
     @Value("${github.client.id}")
@@ -32,9 +33,6 @@ public class AuthorizeController {
     private String clientSecret;
     @Value("${github.redirect.uri}")
     private String redirectUri;
-
-    @Autowired
-    private UserService userService;
 
     @GetMapping("/callback")
     public String callback(@RequestParam(name = "code")String code,
@@ -56,7 +54,9 @@ public class AuthorizeController {
             user.setAccountId(String.valueOf(githubUser.getId()));
             user.setBio(githubUser.getBio());
             user.setAvatarUrl(githubUser.getAvatarUrl());
-            user.setSalt("8Brt4zTp3Pd");
+            UUID uuid = UUID.randomUUID();
+            String substring = uuid.toString().substring(0, 8);
+            user.setSalt(substring);
             // 获取Md5加密对象
             MD5 md5 = new MD5(user.getSalt().getBytes());
             user.setPassword(md5.digestHex16("123456"));

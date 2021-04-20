@@ -1,5 +1,6 @@
 package cn.lsu.community.controller;
 
+import cn.lsu.community.base.BaseController;
 import cn.lsu.community.dto.CommentCreateDTO;
 import cn.lsu.community.dto.CommentDTO;
 import cn.lsu.community.dto.ResultDTO;
@@ -20,16 +21,12 @@ import java.util.Date;
 import java.util.List;
 
 @Controller
-public class CommentController {
-
-    @Resource
-    private CommentService commentService;
+public class CommentController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "/comment", method = RequestMethod.POST)
     public Object post(@RequestBody CommentCreateDTO commentCreateDTO,
                        HttpServletRequest request) {
-
         User user= (User) request.getSession().getAttribute("user");
         if(user==null){
             return ResultDTO.errorOf(CustomizeErrorCode.NOT_LOGIN);

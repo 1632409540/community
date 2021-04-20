@@ -155,7 +155,7 @@ function selectTag(e) {
     var tag=e.getAttribute("data-tag");
     if(tags.indexOf(tag.name)==-1){
         if(tags){
-            $("#tag").val(tags+","+tag);
+            $("#tag").val(tags+";"+tag);
         }else {
             $("#tag").val(tag);
         }
@@ -366,7 +366,8 @@ function update() {
         dataType: "json",
         success: function(response){
             if (response.code == 200) {
-                alert("更新成功！");
+                //alert("更新成功！");
+                swal("成功", "更新成功！", "success");
                 window.location.reload();
             } else{
                 alert(response.message);

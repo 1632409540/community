@@ -3,14 +3,13 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LSU社区 - 我的资料</title>
+    <title>[[${session.systemSet.title}]]-我的资料</title>
     <meta name="description" content="Free Bootstrap 4 Admin Theme | Pike Admin">
     <!-- Favicon -->
-    <link rel="shortcut icon" href="/background/images/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="/images/logo.jpg" th:href="${session.systemSet.systemLogo}"/>
     <!-- Switchery css -->
     <link href="/background/plugins/switchery/switchery.min.css" rel="stylesheet" />
-    <!-- Bootstrap CSS -->
-    <link href="/background/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+
     <!-- Font Awesome CSS -->
     <link href="/background/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
     <!-- Custom CSS -->
@@ -20,65 +19,79 @@
     <script src="/background/js/jquery.min.js"></script>
     <script src="/background/js/moment.min.js"></script>
 
+    <!-- Bootstrap CSS -->
+    <script src="js/jquery-3.4.1.js"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/css/community.css">
+    <script src="/js/bootstrap.min.js" type="application/javascript"></script>
     <!-- BEGIN CSS for this page -->
     <link href="/background/plugins/datetimepicker/css/daterangepicker.css" rel="stylesheet" />
     <!-- END CSS for this page -->
 </head>
-<body class="adminbody">
+<body>
 <div th:insert="~{navigation :: nav}"></div>
-<div th:fragment="userSetting">
-    <div id="main">
-
-        <div class="content-page">
-
+<div class="main">
+    <div class="row">
+        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 right-border">
             <!-- Start content -->
-            <div class="content">
-
+            <div th:if="${section=='userMessage'}" class="content">
                 <div class="container-fluid">
-
                     <div class="row">
-                        <div class="col-xl-12">
-                            <div class="breadcrumb-holder">
-                                <h1 class="main-title float-left"><i class="fa fa-user bigfonts"></i> 我的资料</h1>
-                            </div>
+                        <div style="margin-top: 10px;margin-left: 10px;font-size: 10px;">
+                            <h3 class="main-title float-left"><i class="fa fa-user bigfonts"></i> 我的资料</h3>
                         </div>
                     </div>
                     <!-- end row -->
-
                     <div class="row">
                         <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12 tag-sp">
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
 
-                            <div class="card mb-3">
-                                <div class="card-header">
-                                    <h3><i class="fa fa-edit"></i> 基本信息</h3>
+                            <div style="border:2px solid #5e5e5e; padding: 20px;margin: 5px;">
+                                <div>
+                                    <h4><i class="fa fa-edit"></i> 基本资料</h4>
                                 </div>
-
+                                <hr>
                                 <div class="card-body">
                                     <div class="form-group row">
                                         <label class="col-sm-2 col-form-label">头像</label>
                                         <div class="col-sm-4">
                                             <img th:src="${session.user.avatarUrl}" class="img-thumbnail" id="img_head" style="width: 150px;height:150px " alt="">
                                         </div>
-                                        <input type="file" name="image" onchange="uploadImg()" id="img" accept="image/jpeg,image/jpg,image/png">
+                                        <input type="file" name="image" onchange="uploadImg()" id="img" accept="image/jpeg,image/jpg,image/png">支持1M以下的 jpg、gif、png 等格式的图片
                                     </div>
                                     <hr>
                                     <div class="form-group row">
-                                        <label for="name" class="col-sm-2 col-form-label">作者昵称 <small class="form-text text-muted text-danger">必填项</small></label>
-                                        <input th:value="${session.user.name}" type="text" class="form-control col-sm-6" id="name" autocomplete="off">
+                                        <label style="float: left;" for="name" class="col-sm-2 col-form-label">用户名 <small class="form-text text-muted text-danger">必填项</small></label>
+                                        <input style="width:50%;float: left;" th:value="${session.user.name}" type="text" class="form-control col-sm-6" id="name" autocomplete="off">
+                                    </div>
+                                    <div class="form-group row">
+                                        <label style="float: left;" class="col-sm-2 col-form-label">性别 <small class="form-text text-muted text-danger">必填项</small></label>
+                                        <div style="float: left;margin-right: 10px;" class="form-check form-check-inline">
+                                            <input th:checked="${session.user.sex == '男'}" class="form-check-input" type="radio" name="sex" id="man" value="男">
+                                            <label class="form-check-label" for="man" > 男</label>
+                                        </div>
+                                        <div style="float: left;margin-right: 10px;" class="form-check form-check-inline">
+                                            <input th:checked="${session.user.sex == '女'}" class="form-check-input" type="radio" name="sex" id="woman" value="女">
+                                            <label class="form-check-label" for="woman"> 女</label>
+                                        </div>
+                                        <div style="float: left;margin-right: 10px;" class="form-check form-check-inline">
+                                            <input th:checked="${session.user.sex == '保密'}" class="form-check-input" type="radio" name="sex" id="secret" value="保密">
+                                            <label class="form-check-label" for="secret"> 保密</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label style="float: left;" for="career" class="col-sm-2 col-form-label">职业 <small class="form-text text-muted">可选项</small></label>
+                                        <input style="width:50%;float: left;" th:value="${session.user.career}" type="text" class="form-control col-sm-6" id="career" autocomplete="off">
+                                    </div>
+                                    <div class="form-group row">
+                                        <label style="float: left;" for="bio" class="col-sm-2 col-form-label">个性签名 <small class="form-text text-muted">可选项</small></label>
+                                        <input style="width:50%;float: left;" th:value="${session.user.bio}" type="text" class="form-control col-sm-6" id="bio" autocomplete="off">
                                     </div>
 
                                     <div class="form-group row">
-                                        <label for="address" class="col-sm-2 col-form-label">所在地区 <small class="form-text text-muted">可选项</small></label>
-                                        <input th:value="${session.user.address}" type="text" class="form-control col-sm-6" id="address" autocomplete="off">
-                                    </div>
-                                    <div class="form-group row">
-                                        <label for="career" class="col-sm-2 col-form-label">职业 <small class="form-text text-muted">可选项</small></label>
-                                        <input th:value="${session.user.career}" type="text" class="form-control col-sm-6" id="career" autocomplete="off">
-                                    </div>
-                                    <div class="form-group row">
-                                        <label for="address" class="col-sm-2 col-form-label">出生日期 <small class="form-text text-muted text-danger">必填项</small></label>
-                                        <input th:value="${#dates.format(session.user.birthday,'yyyy年MM月dd日')}" id="birthdayStr" type="text" class="form-control col-sm-6" />
+                                        <label style="float: left;" for="address" class="col-sm-2 col-form-label">出生日期 <small class="form-text text-muted text-danger">必填项</small></label>
+                                        <input style="width:50%;float: left;" th:value="${#dates.format(session.user.birthday,'yyyy年MM月dd日')}" id="birthdayStr" type="text" class="form-control col-sm-6" />
                                         <script>
                                             $(function() {
                                                 $('#birthdayStr').daterangepicker({
@@ -91,51 +104,39 @@
                                             });
                                         </script>
                                     </div>
-
                                     <div class="form-group row">
-                                        <label class="col-sm-2 col-form-label">性别 <small class="form-text text-muted text-danger">必填项</small></label>
-                                        <div class="form-check form-check-inline">
-                                            <input th:checked="${session.user.sex == '男'}" class="form-check-input" type="radio" name="sex" id="man" value="男">
-                                            <label class="form-check-label" for="man" > 男</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input th:checked="${session.user.sex == '女'}" class="form-check-input" type="radio" name="sex" id="woman" value="女">
-                                            <label class="form-check-label" for="woman"> 女</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input th:checked="${session.user.sex == '保密'}" class="form-check-input" type="radio" name="sex" id="secret" value="保密">
-                                            <label class="form-check-label" for="secret"> 保密</label>
-                                        </div>
+                                        <label style="float: left;" for="address" class="col-sm-2 col-form-label">所在地区 <small class="form-text text-muted">可选项</small></label>
+                                        <input style="width:50%;float: left;" th:value="${session.user.address}" type="text" class="form-control col-sm-6" id="address" autocomplete="off">
                                     </div>
-
-                                    <button onclick="updateBasic()" class="btn btn-primary">修改基本信息</button>
+                                    <hr>
+                                    <button onclick="updateBasic()" class="btn btn-success">修改基本信息</button>
                                 </div>
                                 <!-- end card-body -->
 
                             </div>
                             <!-- end card -->
-                            <div class="card mb-3">
-                                <div class="card-header">
-                                    <h3><i class="fa fa-edit"></i> 联系方式</h3>
+                            <div style="border:2px solid #5e5e5e; padding: 20px;margin: 5px;">
+                                <div>
+                                    <h4><i class="fa fa-edit"></i> 联系方式</h4>
                                 </div>
-
+                                <hr>
                                 <div class="card-body">
                                     <div class="form-group row">
-                                        <label for="email" class="col-sm-2 col-form-label">邮箱地址 <small class="form-text text-muted">可选项</small></label>
-                                        <input th:value="${session.user.email}" type="email" class="form-control col-sm-6" id="email" autocomplete="off" >
+                                        <label style="float: left;" for="email" class="col-sm-2 col-form-label">邮箱地址 <small class="form-text text-muted text-danger">必填项</small></label>
+                                        <input style="width:50%;float: left;" th:value="${session.user.email}" type="email" class="form-control col-sm-6" id="email" autocomplete="off" >
                                     </div>
 
                                     <div class="form-group row">
-                                        <label for="phone" class="col-sm-2 col-form-label">手机号码 <small class="form-text text-muted">可选项</small></label>
-                                        <input th:value="${session.user.phone}" type="number" class="form-control col-sm-6" id="phone" autocomplete="off" >
+                                        <label style="float: left;" for="phone" class="col-sm-2 col-form-label">手机号码 <small class="form-text text-muted">可选项</small></label>
+                                        <input style="width:50%;float: left;" th:value="${session.user.phone}" type="number" class="form-control col-sm-6" id="phone" autocomplete="off" >
                                     </div>
 
                                     <div class="form-group row">
-                                        <label for="qq" class="col-sm-2 col-form-label">QQ号码 <small class="form-text text-muted">可选项</small></label>
-                                        <input th:value="${session.user.qq}" type="number" class="form-control col-sm-6" id="qq" autocomplete="off" >
+                                        <label style="float: left;" for="qq" class="col-sm-2 col-form-label">QQ号码 <small class="form-text text-muted">可选项</small></label>
+                                        <input style="width:50%;float: left;" th:value="${session.user.qq}" type="number" class="form-control col-sm-6" id="qq" autocomplete="off" >
                                     </div>
                                     <hr>
-                                    <button onclick="updateContact()" class="btn btn-primary">修改联系方式</button>
+                                    <button onclick="updateContact()" class="btn btn-success">修改联系方式</button>
                                 </div>
                                 <!-- end card-body -->
 
@@ -147,11 +148,141 @@
                 </div>
                 <!-- END container-fluid -->
             </div>
-            <!-- END content -->
+            <div th:if="${section=='notifiSet'}" class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div style="margin-top: 10px;margin-left: 10px;font-size: 10px;">
+                            <h3 class="main-title float-left"><span class="glyphicon glyphicon-envelope"></span> 通知设置</h3>
+                        </div>
+                    </div>
+                    <!-- end row -->
+                    <div class="row">
+                        <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12 tag-sp">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+
+                            <div style="border:2px solid #5e5e5e; padding: 20px;margin: 5px;">
+                                <div class="card-body">
+                                    <h4><i class="fa fa-edit"></i>邮件设置<span>(什么情况下给我发邮件)<small class="form-text text-muted">多选项</small></span></h4>
+                                    <hr>
+                                    <div class="form-group row">
+                                    </div>
+                                    <div class="form-group row">
+                                        <div style="float: left;margin-right: 10px; margin-left: 15px;" class="form-check form-check-inline">
+                                            <input th:checked="${session.user.emailAnswer == 1}" class="form-check-input" type="checkbox" onclick="this.value=(this.value==0)?1:0" name="emailAnswer" id="emailAnswer" value="1">
+                                            <label class="form-check-label" for="man"> 有人回复了我的问题</label>
+                                        </div>
+                                        <div style="float: left;margin-right: 10px;" class="form-check form-check-inline">
+                                            <input th:checked="${session.user.emailComment == 1}" class="form-check-input" type="checkbox" onclick="this.value=(this.value==0)?1:0" name="emailComment" id="emailComment" value="1">
+                                            <label class="form-check-label" for="woman"> 有人回复了我的评论</label>
+                                        </div>
+                                        <div style="float: left;margin-right: 10px;" class="form-check form-check-inline">
+                                            <input th:checked="${session.user.emailLike == 1}" class="form-check-input" type="checkbox" onclick="this.value=(this.value==0)?1:0" name="emailLike" id="emailLike" value="1">
+                                            <label class="form-check-label" for="secret"> 有人关注了我</label>
+                                        </div>
+                                        <div style="float: left;margin-right: 10px;" class="form-check form-check-inline">
+                                            <input th:checked="${session.user.emailNewAnswer == 1}" class="form-check-input" type="checkbox" onclick="this.value=(this.value==0)?1:0" name="emailNewAnswer" id="emailNewAnswer" value="1">
+                                            <label class="form-check-label" for="secret"> 我关注的问题有新的回复</label>
+                                        </div>
+                                        <div style="float: left;margin-right: 10px;" class="form-check form-check-inline">
+                                            <input th:checked="${session.user.emailQuestion == 1}" class="form-check-input" type="checkbox" onclick="this.value=(this.value==0)?1:0" name="emailQuestion" id="emailQuestion" value="1">
+                                            <label class="form-check-label" for="secret"> 我关注的用户发布了新的问题</label>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <h4><i class="fa fa-edit"></i>通知设置<span>(什么情况下给我发送通知)<small class="form-text text-muted">多选项</small></span></h4>
+                                    <hr>
+                                    <div class="form-group row">
+                                    </div>
+                                    <div class="form-group row">
+                                        <div style="float: left;margin-right: 10px; margin-left: 15px;" class="form-check form-check-inline">
+                                            <input th:checked="${session.user.notifiAnswer == 1}" class="form-check-input" type="checkbox" onclick="this.value=(this.value==0)?1:0" name="notifiAnswer" id="notifiAnswer" value="1">
+                                            <label class="form-check-label" for="man"> 有人回复了我的问题</label>
+                                        </div>
+                                        <div style="float: left;margin-right: 10px;" class="form-check form-check-inline">
+                                            <input th:checked="${session.user.notifiComment == 1}" class="form-check-input" type="checkbox" onclick="this.value=(this.value==0)?1:0" name="notifiComment" id="notifiComment" value="1">
+                                            <label class="form-check-label" for="woman"> 有人回复了我的评论</label>
+                                        </div>
+                                        <div style="float: left;margin-right: 10px;" class="form-check form-check-inline">
+                                            <input th:checked="${session.user.notifiLike == 1}" class="form-check-input" type="checkbox" onclick="this.value=(this.value==0)?1:0" name="notifiLike" id="notifiLike" value="1">
+                                            <label class="form-check-label" for="secret"> 有人关注了我</label>
+                                        </div>
+                                        <div style="float: left;margin-right: 10px;" class="form-check form-check-inline">
+                                            <input th:checked="${session.user.notifiNewAnswer == 1}" class="form-check-input" type="checkbox" onclick="this.value=(this.value==0)?1:0" name="notifiNewAnswer" id="notifiNewAnswer" value="1">
+                                            <label class="form-check-label" for="secret"> 我关注的问题有新的回复</label>
+                                        </div>
+                                        <div style="float: left;margin-right: 10px;" class="form-check form-check-inline">
+                                            <input th:checked="${session.user.notifiQuestion == 1}" class="form-check-input" type="checkbox" onclick="this.value=(this.value==0)?1:0" name="notifiQuestion" id="notifiQuestion" value="1">
+                                            <label class="form-check-label" for="secret"> 我关注的用户发布了新的问题</label>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <button onclick="updateNotification()" class="btn btn-success">保存</button>
+                                </div>
+                                <!-- end card-body -->
+                            </div>
+                        </div>
+                        <!-- end col -->
+                    </div>
+                </div>
+                <!-- END container-fluid -->
+            </div>
+            <div th:if="${section=='updatePassword'}" class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div style="margin-top: 10px;margin-left: 10px;font-size: 10px;">
+                            <h3 class="main-title float-left"><span class="glyphicon glyphicon-lock"></span> 修改密码(新用户首次登陆密码是：123456)</h3>
+                        </div>
+                    </div>
+                    <!-- end row -->
+                    <div class="row">
+                        <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12 tag-sp">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+
+                            <div style="border:2px solid #5e5e5e; padding: 20px;margin: 5px;">
+                                <div class="card-body">
+                                    <div class="form-group row">
+                                        <label style="float: left;" for="bio" class="col-sm-2 col-form-label">当前密码 <small class="form-text text-muted text-danger">必填项</small></label>
+                                        <input style="width:50%;float: left;"  type="password" class="form-control col-sm-6" name="password" id="password" autocomplete="off">
+                                    </div>
+                                    <div class="form-group row">
+                                        <label style="float: left;" for="bio" class="col-sm-2 col-form-label">新的密码 <small class="form-text text-muted text-danger">必填项</small></label>
+                                        <input style="width:50%;float: left;"  type="password" class="form-control col-sm-6" name="newPassword1" id="newPassword1" autocomplete="off">
+                                    </div>
+                                    <div class="form-group row">
+                                        <label style="float: left;" for="bio" class="col-sm-2 col-form-label">确认密码 <small class="form-text text-muted text-danger">必填项</small></label>
+                                        <input style="width:50%;float: left;"  type="password" class="form-control col-sm-6" name="newPassword2" id="newPassword2" autocomplete="off">
+                                    </div>
+                                    <hr>
+                                    <button onclick="updatePassword()" class="btn btn-success">保存</button>
+                                </div>
+                                <!-- end card-body -->
+                            </div>
+                        </div>
+                        <!-- end col -->
+                    </div>
+                </div>
+                <!-- END container-fluid -->
+            </div>
         </div>
-        <!-- END content-page -->
+        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 left-border" >
+            <div style="margin-top: 10%; margin-right: 10%;margin-left: 10px;" class="list-group section">
+                <a href="/userSetting/userMessage" th:class="${section=='userMessage'}?'list-group-item active':'list-group-item'">
+                    基本资料
+                </a>
+                <a href="/userSetting/notifiSet" th:class="${section=='notifiSet'}?'list-group-item active':'list-group-item'">
+                    通知设置
+                </a>
+                <a href="/userSetting/updatePassword" th:class="${section=='updatePassword'}?'list-group-item active':'list-group-item'">
+                    修改密码
+                </a>
+            </div>
+        </div>
     </div>
 </div>
+
+</div>
+
+
 
 <!-- END main -->
 

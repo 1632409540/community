@@ -1,5 +1,6 @@
 package cn.lsu.community.controller;
 
+import cn.lsu.community.base.BaseController;
 import cn.lsu.community.dto.CommentDTO;
 import cn.lsu.community.dto.PaginationDTO;
 import cn.lsu.community.dto.QuestionDTO;
@@ -30,15 +31,10 @@ import java.util.Date;
 import java.util.List;
 
 @Controller
-public class QuestionController {
-    @Resource
-    private QuestionService questionService;
-    @Resource
-    private CommentService commentService;
+public class QuestionController extends BaseController {
+
     @Resource
     private QuestionLikeMapper questionLikeMapper;
-    @Resource
-    private UserService userService;
 
     @GetMapping("/question/{id}")
     public String question(@PathVariable(name = "id")Long id, Model model,HttpServletRequest request){
@@ -70,13 +66,15 @@ public class QuestionController {
         questionLike.setCreateDate(new Date());
         questionLikeMapper.insert(questionLike);
         questionService.addLikeCount(questionId);
+        QuestionDTO questionDTO = questionService.findById(null, questionId);
+        User addUser = userService.findById(questionDTO.getCreator());
+        userService.updateUserIntegral(addUser,user,20);
         return "redirect:/question/"+ questionId;
     }
 
     @GetMapping("/cancelLikeQuestion")
     public String unLikeQuestion(@RequestParam(name ="questionId") Long questionId, HttpServletRequest request){
         User user= (User) request.getSession().getAttribute("user");
-
         Wrapper<QuestionLike> wrapper =new EntityWrapper<>();
         wrapper.eq("question_id",questionId)
                 .eq("user_id",user.getId());

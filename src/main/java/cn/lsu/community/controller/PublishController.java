@@ -1,5 +1,6 @@
 package cn.lsu.community.controller;
 
+import cn.lsu.community.base.BaseController;
 import cn.lsu.community.dto.QuestionDTO;
 import cn.lsu.community.dto.ResultDTO;
 import cn.lsu.community.entity.Question;
@@ -19,13 +20,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Controller
-public class PublishController {
+public class PublishController extends BaseController {
 
-    @Resource
-    private QuestionService questionService;
-
-    @Resource
-    private TagService tagService;
 
     @GetMapping("/publish/{id}")
     public String editPublish(@PathVariable(name = "id")Long id, Model model){
@@ -70,6 +66,9 @@ public class PublishController {
         }
         question.setCreator(user.getId());
         Question saveQuestion = questionService.createOrUpdate(question);
+        if(question.getStatus()!=null && question.getStatus()==1){
+            userService.updateUserIntegral(null,user,20);
+        }
         return ResultDTO.successOf(saveQuestion);
     }
 

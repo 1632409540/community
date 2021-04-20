@@ -31,8 +31,10 @@ public class ImageUtils {
 
         String targetDir = "";
 
-        if ("a".equals(flag)){
+        if ("q".equals(flag)){
             targetDir = GiteeImgBedConfig.IMG_FILE_DEST_PATH + fileName;
+        }else if ("user".equals(flag)){
+            targetDir = "user-avatar/" + fileName;
         }else {
             targetDir = "other/" + fileName;
         }

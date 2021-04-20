@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>LSU社区 - 提问</title>
+    <title>[[${session.systemSet.title}]]-提问</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <script src="/js/jquery-3.4.1.js"></script>
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -11,7 +11,7 @@
     <script src="/js/community.js" type="application/javascript"></script>
     <link rel="stylesheet" href="/css/editormd.min.css">
     <script src="/js/editormd.min.js"></script>
-    <link rel="icon" type="image/x-icon" href="/images/logo.jpg" />
+    <link rel="icon" type="image/x-icon" href="/images/logo.jpg" th:href="${session.systemSet.systemLogo}"/>
 </head>
 <body>
 <div th:insert="~{navigation :: nav}"></div>
@@ -46,7 +46,7 @@
                             /**上传图片相关配置如下*/
                             imageUpload: true,
                             imageFormats: ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
-                            imageUploadURL: "/image/upload",//注意你后端的上传图片服务地址
+                            imageUploadURL: "/image/question",//注意你后端的上传图片服务地址
                             taskList: true,
                             tocm: true,         // Using [TOCM]
                             tex: true,                   // 开启科学公式TeX语言支持，默认关闭
@@ -90,7 +90,7 @@
                             };
                             var formData = new FormData();
                             formData.append("editormd-image-file", file);
-                            xhr.open('POST', '/image/upload', true);
+                            xhr.open('POST', '/image/question', true);
                             xhr.send(formData);
                             xhr.onreadystatechange = function () {
                                 if(xhr.readyState === 4){
@@ -170,14 +170,12 @@
             ●问题标题: 请用精简的语言描述您发布的问题，不超过25字<br/><br/>
 
             ●问题补充: 详细补充您的问题内容，并确保问题描述清晰直观, 并提供一些相关的资料：<br/><br/>
-
-            • 服务器运行环境信息；<br/>
-            • 软件版本；<br/>
             • 问题发生的上下文信息；<br/>
-            • 可以完整复现问题的代码（如可直接运行于 Kibana Console 的复现流程）；<br/>
+            • 可以完整复现问题的代码；<br/>
             • 补充完整的异常和错误信息；<br/>
-            • 注意阅读格式友好，代码和异常信息请用代码标签格式化张贴；<br/><br/>
-            ●选择标签: 选择一个或者多个合适的标签，不超过10个字<br/><br/>
+            • 注意阅读格式友好，代码和异常信息请用代码标签格式化张贴；<br/>
+            • 支持图片上传和图片剪贴上传，图片大小不能超过1M；<br/><br/>
+            ●选择标签: 只能选择一个或者多个合适的标签，不超过10个字<br/><br/>
 
             ●关于积分： 发起一个问题会消耗您 20 个积分, 每多一个回复你将获得 5 个积分的奖励 ,为了您的利益, 在发起问题的时候希望能够更好的描述您的问题以及多使用站内搜索功能.<br/>
         </div>

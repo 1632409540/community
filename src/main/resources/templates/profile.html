@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:text="'LSU社区 - '+${sectionName}"></title>
+    <title>[[${session.systemSet.title}]]-[[${sectionName}]]</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <script src="/js/jquery-3.4.1.js"></script>
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/css/community.css">
     <link rel="stylesheet" href="/js/community.js">
     <script src="/js/bootstrap.min.js" type="application/javascript"></script>
-    <link rel="icon" type="image/x-icon" href="/images/logo.jpg" />
+    <link rel="icon" type="image/x-icon" href="/images/logo.jpg" th:href="${session.systemSet.systemLogo}"/>
 
 </head>
 <body>

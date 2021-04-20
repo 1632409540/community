@@ -1,0 +1,11 @@
+alter table user add status tinyint(3) unsigned not null default 1 comment '状态。0：冻结，1：普通用户，2：管理员';
+alter table user add email_answer int(11) DEFAULT '1' comment '回复了问题发送邮件';
+alter table user add notifi_answer int(11) DEFAULT '1' comment '回复了问题发送通知';
+alter table user add email_comment int(11) DEFAULT '1' comment '回复了评论发送邮件';
+alter table user add notifi_comment int(11) DEFAULT '1' comment '回复了评论发送通知';
+alter table user add email_like int(11) DEFAULT '1' comment '关注了你发送邮件';
+alter table user add notifi_like int(11) DEFAULT '1' comment '关注了你发送通知';
+alter table user add email_new_answer int(11) DEFAULT '1' comment '关注的问题有新的回复发送邮件';
+alter table user add notifi_new_answer int(11) DEFAULT '1' comment '关注的问题有新的回复发送通知';
+alter table user add email_question int(11) DEFAULT '1' comment '关注的用户发布了新的问题发送邮件';
+alter table user add notifi_question int(11) DEFAULT '1' comment '关注的用户发布了新的问题发送通知';

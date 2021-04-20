@@ -14,6 +14,9 @@ public class User extends BaseEntity<User> {
 
     private String token;
 
+    /**
+     * 个性签名
+     */
     private String bio;
 
     private String avatarUrl;
@@ -71,6 +74,8 @@ public class User extends BaseEntity<User> {
 
     @TableField(exist = false)
     private Integer likeCount;
+
+    private Integer status;
     /**
      * 积分
      */
@@ -80,6 +85,29 @@ public class User extends BaseEntity<User> {
      */
     @TableField(exist = false)
     private List<Tag> goodTags;
+
+    /**
+     * 设置用户是否接收（邮件）通知
+     */
+    private Integer emailAnswer;
+
+    private Integer notifiAnswer;
+
+    private Integer emailComment;
+
+    private Integer notifiComment;
+
+    private Integer emailLike;
+
+    private Integer notifiLike;
+
+    private Integer emailNewAnswer;
+
+    private Integer notifiNewAnswer;
+
+    private Integer emailQuestion;
+
+    private Integer notifiQuestion;
 
     public String getAccountId() {
         return accountId;
@@ -231,5 +259,93 @@ public class User extends BaseEntity<User> {
 
     public void setGoodTags(List<Tag> goodTags) {
         this.goodTags = goodTags;
+    }
+
+    public Integer getEmailAnswer() {
+        return emailAnswer;
+    }
+
+    public void setEmailAnswer(Integer emailAnswer) {
+        this.emailAnswer = emailAnswer;
+    }
+
+    public Integer getNotifiAnswer() {
+        return notifiAnswer;
+    }
+
+    public void setNotifiAnswer(Integer notifiAnswer) {
+        this.notifiAnswer = notifiAnswer;
+    }
+
+    public Integer getEmailComment() {
+        return emailComment;
+    }
+
+    public void setEmailComment(Integer emailComment) {
+        this.emailComment = emailComment;
+    }
+
+    public Integer getNotifiComment() {
+        return notifiComment;
+    }
+
+    public void setNotifiComment(Integer notifiComment) {
+        this.notifiComment = notifiComment;
+    }
+
+    public Integer getEmailLike() {
+        return emailLike;
+    }
+
+    public void setEmailLike(Integer emailLike) {
+        this.emailLike = emailLike;
+    }
+
+    public Integer getNotifiLike() {
+        return notifiLike;
+    }
+
+    public void setNotifiLike(Integer notifiLike) {
+        this.notifiLike = notifiLike;
+    }
+
+    public Integer getEmailNewAnswer() {
+        return emailNewAnswer;
+    }
+
+    public void setEmailNewAnswer(Integer emailNewAnswer) {
+        this.emailNewAnswer = emailNewAnswer;
+    }
+
+    public Integer getNotifiNewAnswer() {
+        return notifiNewAnswer;
+    }
+
+    public void setNotifiNewAnswer(Integer notifiNewAnswer) {
+        this.notifiNewAnswer = notifiNewAnswer;
+    }
+
+    public Integer getEmailQuestion() {
+        return emailQuestion;
+    }
+
+    public void setEmailQuestion(Integer emailQuestion) {
+        this.emailQuestion = emailQuestion;
+    }
+
+    public Integer getNotifiQuestion() {
+        return notifiQuestion;
+    }
+
+    public void setNotifiQuestion(Integer notifiQuestion) {
+        this.notifiQuestion = notifiQuestion;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 }

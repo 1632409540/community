@@ -43,7 +43,7 @@
                 and title regexp #{search}
             </if>
         </where>
-        order by question.last_modified desc limit #{offSize},#{size}
+        order by question.create_date desc limit #{offSize},#{size}
     </select>
 
     <update id="addLikeCount" parameterType="cn.lsu.community.entity.Question">

@@ -69,7 +69,7 @@ public final class MailUtils {
 
     public static void main(String[] args) throws Exception { // 做测试用
         try {
-            MailUtils.sendMail("1632409540@qq.com","你好，这是一封测试邮件，无需回复。","测试邮件");
+            MailUtils.sendMail("228864725@qq.com","你好，这是一封测试邮件，无需回复。","测试邮件");
         }catch (Exception e){
             e.printStackTrace();
         }

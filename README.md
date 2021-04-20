@@ -1,4 +1,4 @@
-## Lsu社区
+## 校园博客系统
 
 ##部署  
 - Git
@@ -31,7 +31,7 @@
 [Github OAuth](https://developer.github.com/apps/building-oauth-apps/creating-an-oauth-app/)  
 [thymeleaf](https://www.thymeleaf.org/)  
 [H2](http://www.h2database.com/html/main.html)  
-[MyBatis Generator](http://mybatis.org/generator/)  
+[MyBatis-Plus](https://mp.baomidou.com/)  
 [MarkDown 使用](http://editor.md.ipandao.com/#download)
 
 ## 工具

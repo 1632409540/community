@@ -1,5 +1,6 @@
 package cn.lsu.community.controller;
 
+import cn.lsu.community.base.BaseController;
 import cn.lsu.community.dto.PaginationDTO;
 import cn.lsu.community.entity.User;
 import cn.lsu.community.service.Impl.NotificationServiceImpl;
@@ -17,11 +18,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
-public class ProfileController {
-    @Resource
-    private QuestionService questionService;
-    @Resource
-    private NotificationService notificationService;
+public class ProfileController extends BaseController {
+
 
     @GetMapping("/profile/{section}")
     public String profile(@PathVariable(name = "section")String section,

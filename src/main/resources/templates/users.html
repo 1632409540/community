@@ -1,13 +1,13 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>LSU社区 - 用户</title>
+    <title>[[${session.systemSet.title}]]-用户</title>
     <script src="/js/jquery-3.4.1.js"></script>
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="/css/community.css">
     <script src="/js/bootstrap.min.js" type="application/javascript"></script>
-    <link rel="icon" type="image/x-icon" href="/images/logo.jpg" />
+    <link rel="icon" type="image/x-icon" href="/images/logo.jpg" th:href="${session.systemSet.systemLogo}"/>
     <script>
         window.onload = function () {
             var closable=window.localStorage.getItem("closable");
@@ -32,34 +32,36 @@
                 </div>
             </h2>
             <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12 tag-sp">
-            <div class="row col-lg-6 col-md-12 col-sm-12 col-xs-12 tag-sp" th:each="user:${paginationDTO.getData()}">
-                <div style="margin-left: 20px;">
+            <div class="row col-lg-12 col-md-12 col-sm-12 col-xs-12 tag-sp" th:each="user,userIndex:${paginationDTO.getData()}">
+                <div style="margin-left: 40px;">
                     <div class="thumbnail">
-                        <img th:src="${user.avatarUrl}" style="height: 60px;width: 60px;">
+                        <span th:if="${userIndex.index == 0 && paginationDTO.page == 1}" class="glyphicon glyphicon-king" style="color: #FF0000;float: left;"></span>
+                        <span th:if="${userIndex.index == 1 && paginationDTO.page == 1}" class="glyphicon glyphicon-queen" style="color: #ffee15;float: left;"></span>
+                        <span th:if="${userIndex.index == 2 && paginationDTO.page == 1}" class="glyphicon glyphicon-pawn" style="color: #1940ff;float: left;"></span>
+                        <span th:if="${userIndex.index >2 && paginationDTO.page == 1}" class="glyphicon glyphicon-bishop" style="color: #5e5e5e;float: left;"></span>
+                        <span th:if="${paginationDTO.page > 1}" class="glyphicon glyphicon-bishop" style="color: #5e5e5e;float: left;"></span>
+                        <img th:src="${user.avatarUrl}" style="height: 60px;width: 60px;float: left;"/>
                         <div class="caption">
-
-                                <h4> <span th:text="${user.name}" ></span>
-                                    <a class="btn-user-like" th:if="${session.user.id != user.id && !user.myLike}" th:href="@{/likeUser/(page=${paginationDTO.getPage()},search=${search},userId=${user.id})}">
+                                <h4 style="margin-top: 0px;"> &nbsp;&nbsp;<span th:text="${user.name}" ></span>
+                                    <a class="btn-user-like" th:if="${session.user != null && session.user.id != user.id && !user.myLike}" th:href="@{/likeUser/(page=${paginationDTO.getPage()},search=${search},userId=${user.id})}">
                                         关注
                                     </a>
-                                    <a class="btn-user-unlike" th:if="${session.user.id != user.id && user.myLike}" th:href="@{/likeUser/(page=${paginationDTO.getPage()},search=${search},userId=${user.id})}">
+                                    <a class="btn-user-unlike" th:if="${session.user != null &&session.user.id != user.id && user.myLike}" th:href="@{/likeUser/(page=${paginationDTO.getPage()},search=${search},userId=${user.id})}">
                                         取消关注
                                     </a>
                                 </h4>
-                                    <!--关注用户-->
-
-
-                            <p>积分：<span th:text="${user.integral}"></span></p>
+                            <p>&nbsp;&nbsp;积分：<span th:text="${user.integral}"></span></p>
                             <p>职业：<span th:text="${user.career}"></span></p>
                             <p>个性签名：<span th:text="${user.bio}"></span></p>
                             <p>发布了<span th:text="${user.questionCount}"></span>个问题，<span th:text="${user.likeCount}"></span>人关注</p>
                             <p>擅长话题：
-                                <span class="topic-tag" th:each="tag:${user.goodTags}">
+                                <span th:if="${user.goodTags != null}" class="topic-tag" th:each="tag:${user.goodTags}">
                                     <a th:href="@{/(tagId=${tag.id})}">
                                         <span class="glyphicon glyphicon-tags icon-tag" aria-hidden="true"></span>
                                         <span class="text" th:text="${tag.name}">data</span>
                                     </a>
                                 </span>
+                                <span th:if="${user.goodTags == null}">无</span>
                             </p>
 
                         </div>

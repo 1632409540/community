@@ -1,5 +1,6 @@
 package cn.lsu.community.controller;
 
+import cn.lsu.community.base.BaseController;
 import cn.lsu.community.entity.Notification;
 import cn.lsu.community.entity.User;
 import cn.lsu.community.service.CommentService;
@@ -16,10 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
-public class NotificationController {
-
-    @Autowired
-    private NotificationService notificationService;
+public class NotificationController extends BaseController {
 
     @GetMapping("/notification/{id}")
     public String getNotificationById(@PathVariable(name = "id")Long id, HttpServletRequest request){

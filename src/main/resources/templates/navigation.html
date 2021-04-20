@@ -11,12 +11,14 @@
 </head>
 <body>
 <div th:fragment="nav">
-    <nav class="navbar navbar-default " >
+    <nav class="navbar navbar-default navbar-fixed-top" >
         <div class="container-fluid navigation">
-            <div class="navbar-header" >
-                <a class="navbar-brand" href="/">LSU社区</a>
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/">
+                    <img style="height: 35px;height: 35px;float: left;margin-top: -5px;" th:src="${session.systemSet.systemLogo}"/>&nbsp;
+                    <span style="float: left;margin-left: 10px;">[[${session.systemSet.title}]]</span>
+                </a>
             </div>
-
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <form class="navbar-form navbar-left" action="/" method="get">
                     <input type="hidden" name="tagId" id="tagId" th:value="${tagId}">
@@ -38,13 +40,13 @@
                             &nbsp;话题
                         </a>
                     </li>
-                    <li class="active" th:class="${session.navbarStatus == 'users'}?'active':''">
+                    <li th:if="${session.user != null}" class="active" th:class="${session.navbarStatus == 'users'}?'active':''">
                         <a href="/users">
                             <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
                             &nbsp;用户
                         </a>
                     </li>
-                    <li class="active" th:class="${session.navbarStatus == 'integral'}?'active':''">
+                    <li th:if="${session.user != null}" class="active" th:class="${session.navbarStatus == 'integral'}?'active':''">
                         <a href="/integral">
                             <span class="glyphicon glyphicon-usd" aria-hidden="true"></span>
                             &nbsp;积分

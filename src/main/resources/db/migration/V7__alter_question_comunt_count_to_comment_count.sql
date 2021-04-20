@@ -1,1 +1,1 @@
-alter table question change comunt_count comment_count int;
+alter table question change comunt_count comment_count int default 0;

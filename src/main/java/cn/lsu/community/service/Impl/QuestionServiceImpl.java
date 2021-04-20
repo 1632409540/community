@@ -96,7 +96,7 @@ public class QuestionServiceImpl extends BaseService<QuestionMapper,Question> im
             questionDTOList.add(questionDTO);
         }
         paginationDTO.setData(questionDTOList);
-        Integer totalCount=questionMapper.selectCount(new EntityWrapper<>());
+        Integer totalCount=questionMapper.selectCount(wrapper);
         paginationDTO.setPagination(totalCount,page,size);
         return paginationDTO;
     }
@@ -130,7 +130,7 @@ public class QuestionServiceImpl extends BaseService<QuestionMapper,Question> im
         user.setQuestionCount(questionMapper.selectCount(questionWrapper));
         List<Tag> tags = tagMapper.selectByQuestionId(id);
         questionDTO.setTags(tags);
-        String tag = tags.stream().map(Tag::getName).collect(Collectors.joining(","));
+        String tag = tags.stream().map(Tag::getName).collect(Collectors.joining(";"));
         questionDTO.setTag(tag);
         Wrapper<Comment> commentWrapper=new EntityWrapper<>();
         commentWrapper.eq("parent_id",id);
@@ -147,7 +147,7 @@ public class QuestionServiceImpl extends BaseService<QuestionMapper,Question> im
                 questionMapper.updateById(dbQuestion);
                 this.updateQuestionTag(questionDTO);
             }catch (Exception e){
-                throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+                throw new CustomizeException(CustomizeErrorCode.INTEGRAL_NOT_ENOUGH);
             }finally {
                 return dbQuestion;
             }

@@ -1,1 +1,1 @@
- alter table user add bio varchar(256) null;
+ alter table user add bio varchar(256) null default null comment '个性签名';

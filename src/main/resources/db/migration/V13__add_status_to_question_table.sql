@@ -1,1 +1,1 @@
-alter table question add status tinyint(3) UNSIGNED NOT NULL DEFAULT 1 COMMENT '状态。0：草稿，1：发布，2：回收站，3：加密';
+alter table question add status tinyint(3) UNSIGNED NOT NULL DEFAULT 1 COMMENT '状态。0：草稿，1：发布，2：回收站';
