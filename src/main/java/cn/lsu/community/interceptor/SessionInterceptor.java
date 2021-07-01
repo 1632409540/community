@@ -4,6 +4,8 @@ package cn.lsu.community.interceptor;
 import cn.lsu.community.entity.SystemSet;
 import cn.lsu.community.mapper.UserMapper;
 import cn.lsu.community.entity.User;
+import cn.lsu.community.redis.RedisKey;
+import cn.lsu.community.redis.RedisService;
 import cn.lsu.community.service.Impl.NotificationServiceImpl;
 import cn.lsu.community.service.SystemSetService;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
@@ -28,14 +30,24 @@ public class SessionInterceptor implements HandlerInterceptor {
     private NotificationServiceImpl notificationService;
     @Resource
     private SystemSetService systemSetService;
+    @Resource
+    private RedisService redisService;
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
         Cookie[] cookies = request.getCookies();
         if(cookies!=null&&cookies.length>0){
             for(Cookie cookie: cookies){
-                if(cookie.getName().equals("token")){
+                if(cookie.getName().equals("token")&& ObjectUtils.isNotEmpty(cookie.getValue())){
                     String token=cookie.getValue();
+                    RedisKey redisKey = new RedisKey(token);
+                    if(redisService.exists(redisKey,token)){
+                        redisService.expice(redisKey,token,60*10);
+                    }else {
+                        request.getSession().setAttribute("user",null);
+                        break;
+                    }
+
                     User userEntity = new User();
                     userEntity.setToken(token);
                     User user = userMapper.selectOne(userEntity);
@@ -46,8 +58,15 @@ public class SessionInterceptor implements HandlerInterceptor {
                         break;
                     }
                 }
-                if(cookie.getName().equals("adminToken")){
+                if(cookie.getName().equals("adminToken")&& ObjectUtils.isNotEmpty(cookie.getValue())){
                     String token=cookie.getValue();
+                    RedisKey redisKey = new RedisKey(token);
+                    if(redisService.exists(redisKey,token)){
+                        redisService.expice(redisKey,token,60*10);
+                    }else {
+                        request.getSession().setAttribute("admin",null);
+                        break;
+                    }
                     User userEntity = new User();
                     userEntity.setToken(token);
                     User user = userMapper.selectOne(userEntity);

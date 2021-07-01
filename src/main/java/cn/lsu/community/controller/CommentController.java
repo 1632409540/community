@@ -3,6 +3,7 @@ package cn.lsu.community.controller;
 import cn.lsu.community.base.BaseController;
 import cn.lsu.community.dto.CommentCreateDTO;
 import cn.lsu.community.dto.CommentDTO;
+import cn.lsu.community.dto.PaginationDTO;
 import cn.lsu.community.dto.ResultDTO;
 import cn.lsu.community.enums.CommentTypeEnum;
 import cn.lsu.community.exception.CustomizeErrorCode;
@@ -10,9 +11,14 @@ import cn.lsu.community.entity.Comment;
 import cn.lsu.community.entity.User;
 import cn.lsu.community.service.CommentService;
 import cn.lsu.community.service.Impl.CommentServiceImpl;
+import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import lombok.extern.slf4j.Slf4j;
 import org.h2.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -21,6 +27,7 @@ import java.util.Date;
 import java.util.List;
 
 @Controller
+@Slf4j
 public class CommentController extends BaseController {
 
     @ResponseBody
@@ -61,5 +68,29 @@ public class CommentController extends BaseController {
         }
         Integer count = commentService.changeLikeCount(user,id);
         return ResultDTO.successOf(count);
+    }
+
+    @RequestMapping("/admin/comments")
+    public String adminComment(Model model){
+        PaginationDTO paginationDTO = commentService.queryAll();
+        model.addAttribute("paginationDTO",paginationDTO);
+        return "/admin/comments";
+    }
+
+    /**
+     * 删除标签
+     */
+    @GetMapping("/admin/deleteComment")
+    @ResponseBody
+    public ResultDTO deleteComment(@JsonSerialize(using = ToStringSerializer.class) @RequestParam("id") Long id) {
+
+        if (commentService.deleteCommentById(id) > 0) {
+            log.warn("【成功】删除回复");
+            return ResultDTO.successOf();
+        } else {
+            log.warn("【失败】删除回复");
+            return ResultDTO.errorOf(500, "【失败】删除回复");
+        }
+
     }
 }

@@ -3,7 +3,11 @@ package cn.lsu.community.base;
 import cn.lsu.community.entity.Question;
 import cn.lsu.community.entity.SystemSet;
 import cn.lsu.community.entity.User;
+import cn.lsu.community.redis.RedisService;
 import cn.lsu.community.service.*;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
@@ -32,6 +36,12 @@ public class BaseController {
 
     @Resource
     protected SystemSetService systemSetService;
+
+    @Resource
+    protected RabbitTemplate rabbitTemplate;
+
+    @Autowired
+    protected RedisService redisService;
 
     protected User loginUser;
     protected User admin;

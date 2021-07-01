@@ -1,9 +1,14 @@
 package cn.lsu.community.entity;
 
 import cn.lsu.community.base.BaseEntity;
+import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
+@Document(indexName = "school_blog",type = "question")
 public class Question extends BaseEntity<Question> {
 
+    @Field(type = FieldType.Text,analyzer = "ik_max_word")
     private String title;
 
     private Long creator;
@@ -14,6 +19,7 @@ public class Question extends BaseEntity<Question> {
 
     private Integer likeCount;
 
+    @Field(type = FieldType.Text,analyzer = "ik_max_word")
     private String description;
 
     private Integer status;

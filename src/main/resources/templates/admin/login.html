@@ -91,7 +91,7 @@
                         if (data.code== 200){
                             var location = window.location.href;
                             let strings = location.split("toAdminLogin");
-                            window.location.href = strings[0]+'admin/index';
+                            window.location.href = strings[0]+'admin/userSet';
                         }else {
                             xtip.confirm(data.message,'',{icon:'e',title:'登录失败',btn:[]});
                         }

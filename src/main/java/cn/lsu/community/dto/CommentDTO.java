@@ -1,5 +1,6 @@
 package cn.lsu.community.dto;
 
+import cn.lsu.community.entity.Question;
 import cn.lsu.community.entity.User;
 import lombok.Data;
 
@@ -19,5 +20,7 @@ public class CommentDTO {
     private String content;
     private User user;
     private boolean myLike;
+    private Question question;
+    private Integer status;
 
 }

@@ -169,7 +169,7 @@
             <hr class="col-lg-10 col-md-12 col-sm-12 col-xs-12 ">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" >
                 <h4>友情链接</h4>
-                <h4 style="text-align: center;"><a href="https://www.baidu.com/">--百度--</a></h4>
+                <h4 style="text-align: center;" th:each="link:${links}"><a th:href="${link.url}">[[${link.name}]]</a></h4>
 
             </div>
         </div>

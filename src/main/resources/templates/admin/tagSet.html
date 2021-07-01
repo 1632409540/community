@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>话题管理-标签</title>
+    <meta name="description" content="Free Bootstrap 4 Admin Theme | Pike Admin">
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/images/logo.jpg" th:href="${session.systemSet.systemLogo}"/>
+    <!-- Switchery css -->
+    <link href="/background/plugins/switchery/switchery.min.css" rel="stylesheet" />
+    <!-- Bootstr/ap CSS -->
+    <link href="/background/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <!-- Font Aw/esome CSS -->
+    <link href="/background/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <!-- Custom /CSS -->
+    <link href="/background/css/style.css" rel="stylesheet" type="text/css" />
+    <!-- BEGIN CSS for this page -->
+    <link rel="stylesheet" type="text/css" href="/common/css/dataTables.bootstrap4.min.css"/>
+    <style>
+        td.details-control {
+            background: url('/background/plugins/datatables/img/details_open.png') no-repeat center center;
+            cursor: pointer;
+        }
+        tr.shown td.details-control {
+            background: url('/background/plugins/datatables/img/details_close.png') no-repeat center center;
+        }
+    </style>
+    <!-- END CSS for this page -->
+</head>
+<body class="adminbody">
+<div id="main">
+    <!-- top bar navigation -->
+    <div th:replace="admin/common/bar::#top"></div>
+    <!-- End Navigation -->
+
+
+    <!-- Left Sidebar -->
+    <div th:replace="admin/common/bar::#sidebar(currUri='tags',unRead=${unRead})"></div>
+    <!-- End Sidebar -->
+
+    <div class="content-page" style="margin-left: 16%;margin-top: 3%;">
+
+        <!-- Start content -->
+        <div class="content">
+
+            <div class="container-fluid">
+
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="breadcrumb-holder">
+                            <h1 class="main-title float-left">
+                                <i class="fa fa-tags bigfonts"></i> 标签 &ensp;
+                            </h1>
+                            <ol class="breadcrumb float-right">
+                                <li class="breadcrumb-item">标签</li>
+                                <li class="breadcrumb-item active">全部([[${paginationDTO.data.size()}]])</li>
+                            </ol>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- end row -->
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h3> 添加新标签</h3>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="name">名称</label>
+                                    <input type="text" class="form-control" id="name" autocomplete="off">
+                                    <small class="text-danger">注意：名称为必填项</small>
+                                </div>
+                                <div class="form-group">
+                                    <label for="name">选择所属话题类别</label>
+                                    <!--<input id="info" class="form-control" th:value="&#45;&#45;请选择&#45;&#45;"/>-->
+                                    <select id="tagType" class="form-control">
+                                        <option th:each="tagType:${tagTypes}" th:text="${tagType.name}" th:value="${tagType.id}"></option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" onclick="addTag()" class="btn btn-primary"><i class="fa fa-plus"></i> 添加新的标签</button>
+                                </div>
+                                <small class="text-danger">添加完成之后，你可以为此标签上传logo</small>
+                            </div>
+                        </div><!-- end card-->
+                    </div>
+
+                    <div class="col-xs-12 col-sm-8 col-md-8">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="example1" class="table table-bordered table-hover display" style="text-align: center">
+                                        <thead>
+                                        <tr>
+                                            <th style="width: 10%">ID</th>
+                                            <th style="width: 15%">名称</th>
+                                            <th style="width: 10%">logo</th>
+                                            <th style="width: 10%">所属话题类别</th>
+                                            <th style="width: 10%">问题总数</th>
+                                            <th style="width: 10%">操作</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody style="font-size: 13px">
+                                        <tr th:each="tag:${paginationDTO.data}">
+                                            <td th:text="${tag.id}"></td>
+                                            <td th:text="${tag.name}"></td>
+                                            <td>
+                                                <img style="width: 50px;height: 50px" th:src="${tag.imageUrl}" th:if="${tag.imageUrl != null}" alt="">
+                                            </td>
+                                            <td th:text="${tag.tagType.name}"></td>
+                                            <td>
+                                                <span th:if="${tag.questionCount == null}">0</span>
+                                                <span th:if="${tag.questionCount != null}" th:text="${tag.questionCount}"></span>
+                                            </td>
+                                            <td>
+                                                <a th:href="@{/admin/tag(id=${tag.id})}" class="btn btn-sm btn-success" title="编辑"><i class="fa fa-pencil"></i></a>
+                                                <button th:onclick="'javascript:deleteTag('+'\''+${tag.id}+'\''+')'" class="btn btn-sm btn-danger" title="删除"><i class="fa fa-trash"></i></button>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                        <thead>
+                                        </thead>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div><!-- end card-->
+                    </div>
+                </div>
+
+            </div>
+            <!-- END container-fluid -->
+
+        </div>
+        <!-- END content -->
+
+    </div>
+    <!-- END content-page -->
+
+    <div th:replace="admin/common/bar::#footer"></div>
+
+</div>
+<!-- END main -->
+
+<script src="/background/js/modernizr.min.js"></script>
+<script src="/background/js/jquery.min.js"></script>
+<script src="/background/js/moment.min.js"></script>
+
+<script src="/background/js/popper.min.js"></script>
+<script src="/background/js/bootstrap.min.js"></script>
+
+<script src="/background/js/detect.js"></script>
+<script src="/background/js/fastclick.js"></script>
+<script src="/background/js/jquery.blockUI.js"></script>
+<script src="/background/js/jquery.nicescroll.js"></script>
+<script src="/background/js/jquery.scrollTo.min.js"></script>
+<script src="/background/plugins/switchery/switchery.min.js"></script>
+
+<!-- App js -/->
+<script src="/background/js/pikeadmin.js"></script>
+
+<!-- BEGIN Java Script for this page -->
+<script src="/common/js/sweetalert.min.js"></script>
+<script src="/common/js/common.js"></script>
+<script src="/common/js/jquery.dataTables.min.js"></script>
+<script src="/common/js/dataTables.bootstrap4.min.js"></script>
+<script src="/common/js/tags.js"></script>
+
+<script>
+    // START CODE FOR BASIC DATA TABLE
+    $(document).ready(function() {
+        $('#example1').DataTable({
+            language: {
+                "sProcessing": "处理中...",
+                "sLengthMenu": "显示 _MENU_ 项结果",
+                "sZeroRecords": "没有匹配结果",
+                "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
+                "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                "sInfoPostFix": "",
+                "sSearch": "搜索:",
+                "sUrl": "",
+                "sEmptyTable": "表中数据为空",
+                "sLoadingRecords": "载入中...",
+                "sInfoThousands": ",",
+                "oPaginate": {
+                    "sFirst": "首页",
+                    "sPrevious": "上页",
+                    "sNext": "下页",
+                    "sLast": "末页"
+                },
+                "oAria": {
+                    "sSortAscending": ": 以升序排列此列",
+                    "sSortDescending": ": 以降序排列此列"
+                }
+            },
+            "aoColumnDefs": [ { "bSortable": false, "aTargets": [2,3,5] }],
+            "order": [ 0, "desc" ]
+        });
+    });
+    // END CODE FOR BASIC DATA TABLE
+
+
+    // START CODE FOR Child rows (show extra / detailed information) DATA TABLE
+
+
+</script>
+<!-- END Java Script for this page -->
+
+</body>
+</html>

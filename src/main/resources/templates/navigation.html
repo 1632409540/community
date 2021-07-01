@@ -20,7 +20,7 @@
                 </a>
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <form class="navbar-form navbar-left" action="/" method="get">
+                <form class="navbar-form navbar-left" action="/search" method="get">
                     <input type="hidden" name="tagId" id="tagId" th:value="${tagId}">
                     <div class="form-group">
                         <input type="text" th:value="${search !=null ? search: ''}" name="search" class="form-control" placeholder="搜索问题">

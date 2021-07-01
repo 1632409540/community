@@ -6,6 +6,7 @@ import cn.lsu.community.dto.HotTopicDTO;
 import cn.lsu.community.dto.PaginationDTO;
 import cn.lsu.community.dto.ResultDTO;
 import cn.lsu.community.entity.User;
+import cn.lsu.community.redis.RedisKey;
 import cn.lsu.community.service.QuestionService;
 import cn.lsu.community.service.TagService;
 import cn.lsu.community.service.UserService;
@@ -60,6 +61,9 @@ public class LoginController extends BaseController {
             //登录成功
             response.addCookie(new Cookie("token",user.getToken()));
             request.getSession().setAttribute("admin",user);
+            RedisKey redisKey = new RedisKey(user.getToken());
+            redisService.incr(redisKey,user.getToken());
+            redisService.expice(redisKey,user.getToken(),60*10);
             return ResultDTO.successOf();
         }else {
             return ResultDTO.errorOf(100,"你输入的密码错误!");
@@ -87,17 +91,33 @@ public class LoginController extends BaseController {
             //登录成功
             request.getSession().setAttribute("admin",user);
             response.addCookie(new Cookie("adminToken",user.getToken()));
+            RedisKey redisKey = new RedisKey(user.getToken());
+            redisService.incr(redisKey,user.getToken());
+            redisService.expice(redisKey,user.getToken(),60*10);
             return ResultDTO.successOf();
         }else {
             return ResultDTO.errorOf(100,"你输入的密码错误!");
         }
     }
 
-    @GetMapping("/admin/index")
-    public String toAdminIndex() {
-        if(ObjectUtils.isEmpty(admin)|| admin.getStatus() != 2){
-            return "admin/login";
-        }
-        return "admin/dashboard";
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request,
+                         HttpServletResponse response){
+        request.getSession().removeAttribute("user");
+        Cookie cookie = new Cookie("token", null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        return "redirect:/";
     }
+
+    @GetMapping("/admin/logout")
+    public String adminnLogout(HttpServletRequest request,
+                         HttpServletResponse response){
+        request.getSession().removeAttribute("admin");
+        Cookie cookie = new Cookie("adminToken", null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        return "redirect:/toAdminLogin";
+    }
+
 }

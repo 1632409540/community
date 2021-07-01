@@ -5,24 +5,39 @@ import cn.lsu.community.dto.HotTopicDTO;
 import cn.lsu.community.dto.PaginationDTO;
 import cn.lsu.community.dto.QuestionDTO;
 import cn.lsu.community.entity.*;
+import cn.lsu.community.enums.NotificationType;
 import cn.lsu.community.exception.CustomizeErrorCode;
 import cn.lsu.community.exception.CustomizeException;
 import cn.lsu.community.dto.QuestionQueryDTO;
 import cn.lsu.community.mapper.*;
+import cn.lsu.community.service.NotificationService;
 import cn.lsu.community.service.QuestionService;
+import cn.lsu.community.utils.MailUtils;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
+import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.io.IOException;
+import java.net.InetAddress;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class QuestionServiceImpl extends BaseService<QuestionMapper,Question> implements QuestionService {
     @Resource
     private UserMapper userMapper;
@@ -38,47 +53,183 @@ public class QuestionServiceImpl extends BaseService<QuestionMapper,Question> im
     private QuestionLikeMapper questionLikeMapper;
     @Resource
     private UserLikeMapper userLikeMapper;
+    @Resource
+    private NotificationService notificationService;
 
-    public PaginationDTO list(Long tagId, String search, Integer page, Integer size) {
+    //从ES中搜索结果并高亮显示
+    @Override
+    public List<Question> searchFromEs(String content) {
+        List<Question> result = new ArrayList<>();
+        // 创建搜索请求
+        SearchRequest searchRequest = new SearchRequest("school_blog");
+        // 创建搜索对象
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        // 设置查询条件
+        searchSourceBuilder.query(QueryBuilders.multiMatchQuery(content, "title", "description"))
+                .from(0)
+                .size((int) getEsDocCount())
+                .highlighter(new HighlightBuilder().field("*").requireFieldMatch(false).preTags("<span style='color:red;font-weight:500'>").postTags("</span>"));
 
-        Integer offSize=size*(page-1);
+        searchRequest.types("question").source(searchSourceBuilder);
 
-        QuestionQueryDTO questionQueryDTO=new QuestionQueryDTO();
-        questionQueryDTO.setSearch(search);
-        questionQueryDTO.setPage(offSize);
-        questionQueryDTO.setSize(size);
-        if(StringUtils.isNotEmpty(search)){
-            String[] searchs=search.split(" ");
-            search= Arrays.stream(searchs).collect(Collectors.joining("|"));
+        // 执行搜索
+        SearchResponse response = null;
+        try {
+            response = client.search(searchRequest, RequestOptions.DEFAULT);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        Integer totalCount= questionMapper.selectCountByTagAndSearch(tagId,search);
+        SearchHit[] hits = response.getHits().getHits();
+        for (SearchHit hit : hits) {
+            Map<String, Object> map = hit.getSourceAsMap();
+            Question question = new Question();
+            question.setId((Long) map.get("id"));
+            question.setTitle(map.get("title").toString());
+            question.setCreateDate(new Date((Long) map.get("createDate")));
+            question.setLastModified(new Date((Long) map.get("lastModified")));
+            question.setCreator((Long)map.get("creator"));
+            question.setCommentCount((Integer) map.get("commentCount"));
+            question.setViewCount((Integer) map.get("viewCount"));
+            question.setLikeCount((Integer) map.get("likeCount"));
+            question.setStatus((Integer) map.get("status"));
 
-        List<Question> questionList= questionMapper.selectPageByTagAndSearch(tagId,search,offSize,size);
-
-        List<QuestionDTO> questionDTOList=questionList.stream().map(question -> {
-            User user=userMapper.selectById(question.getCreator());
-            QuestionDTO questionDTO=new QuestionDTO();
-            BeanUtils.copyProperties(question,questionDTO);
-            questionDTO.setTags(tagMapper.selectByQuestionId(question.getId()));
-            questionDTO.setUser(user);
-
-            Wrapper<Comment> commentWrapper = new EntityWrapper<>();
-            commentWrapper.eq("parent_id",question.getId());
-            questionDTO.setCommentCount(commentMapper.selectCount(commentWrapper));
-
-            Wrapper<QuestionLike> wrapper =new EntityWrapper<>();
-            wrapper.eq("question_id",question.getId());
-            questionDTO.setLikeCount(questionLikeMapper.selectCount(wrapper));
-            return  questionDTO;
-        }).collect(Collectors.toList());
-
-        PaginationDTO<QuestionDTO> paginationDTO=new PaginationDTO<QuestionDTO>();
-        paginationDTO.setData(questionDTOList);
-        paginationDTO.setPagination(totalCount,page,size);
-        return paginationDTO;
+            Map<String, HighlightField> fields = hit.getHighlightFields();
+            // 设置标题高亮
+            if (fields.containsKey("title")) {
+                question.setTitle(fields.get("title").fragments()[0].toString());
+            }
+            // 设置摘要高亮
+            if (fields.containsKey("description")) {
+                question.setDescription(fields.get("description").fragments()[0].toString());
+            }
+            result.add(question);
+        }
+        return result;
     }
 
+    //初始化ES
+    @Override
+    public void initEs() {
+        // 先清空再添加
+        questionRespository.deleteAll();
+        Wrapper<Question> wrapper = new EntityWrapper<>();
+        wrapper.eq("status",1)
+                .orderBy("create_date", false);
+        List<Question> questions = baseMapper.selectList(wrapper);
+
+
+        for (Question question : questions) {
+            questionRespository.save(question);
+        }
+    }
+
+    //获取ES中文档的数量
+    @Override
+    public long getEsDocCount() {
+        // 创建搜索请求
+        SearchRequest searchRequest = new SearchRequest("school_blog");
+        // 创建搜索对象
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        // 设置查询条件
+        searchSourceBuilder.query(QueryBuilders.matchAllQuery());
+
+        searchRequest.types("question").source(searchSourceBuilder);
+
+        // 执行搜索
+        SearchResponse response = null;
+        try {
+            response = client.search(searchRequest, RequestOptions.DEFAULT);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return response.getHits().totalHits;
+    }
+
+    public PaginationDTO list(Long tagId, String search, Integer page, Integer size) {
+        if(ObjectUtils.isNotEmpty(search)){
+            // 初始化ES
+            if (this.getEsDocCount() == 0) {
+                log.warn("检测到【ElasticSearch为空】开始初始化..");
+                this.initEs();
+            }
+            List<Question> questions = this.searchFromEs(search);
+
+            List<QuestionDTO> questionDTOList=questions.stream().map(question -> {
+                User user=userMapper.selectById(question.getCreator());
+                QuestionDTO questionDTO=new QuestionDTO();
+                BeanUtils.copyProperties(question,questionDTO);
+                List<Tag> tags = tagMapper.selectByQuestionId(question.getId());
+                questionDTO.setTags(tags);
+                String tag = tags.stream().map(Tag::getName).collect(Collectors.joining(";"));
+                questionDTO.setTag(tag);
+                questionDTO.setUser(user);
+
+                Wrapper<Comment> commentWrapper = new EntityWrapper<>();
+                commentWrapper.eq("parent_id",question.getId());
+                questionDTO.setCommentCount(commentMapper.selectCount(commentWrapper));
+
+                Wrapper<QuestionLike> wrapper =new EntityWrapper<>();
+                wrapper.eq("question_id",question.getId());
+                questionDTO.setLikeCount(questionLikeMapper.selectCount(wrapper));
+                return  questionDTO;
+            }).collect(Collectors.toList());
+
+            if(ObjectUtils.isNotEmpty(tagId)){
+                Tag tag = tagMapper.selectById(tagId);
+                questionDTOList = questionDTOList.stream().filter(questionDTO->questionDTO.getTag().lastIndexOf(tag.getName())!=-1).collect(Collectors.toList());
+            }
+            Integer offSize=size*(page-1);
+            List<QuestionDTO> questionDTOS = new ArrayList<>();
+            if(questionDTOList.size()>0){
+                if((offSize + size)<=questionDTOList.size()-1){
+                    questionDTOS = questionDTOList.subList(offSize, (offSize + size));
+                }else {
+                    questionDTOS = questionDTOList.subList(offSize, questionDTOList.size()-1);
+                }
+            }
+            PaginationDTO<QuestionDTO> paginationDTO=new PaginationDTO<QuestionDTO>();
+            paginationDTO.setData(questionDTOS);
+            paginationDTO.setPagination(questionDTOList.size(),page,size);
+            return paginationDTO;
+        }else {
+            Integer offSize=size*(page-1);
+            QuestionQueryDTO questionQueryDTO=new QuestionQueryDTO();
+            questionQueryDTO.setSearch(search);
+            questionQueryDTO.setPage(offSize);
+            questionQueryDTO.setSize(size);
+            if(StringUtils.isNotEmpty(search)){
+                String[] searchs=search.split(" ");
+                search= Arrays.stream(searchs).collect(Collectors.joining("|"));
+            }
+            Integer totalCount= questionMapper.selectCountByTagAndSearch(tagId,search);
+            List<Question> questionList= questionMapper.selectPageByTagAndSearch(tagId,search,offSize,size);
+            List<QuestionDTO> questionDTOList=questionList.stream().map(question -> {
+                User user=userMapper.selectById(question.getCreator());
+                QuestionDTO questionDTO=new QuestionDTO();
+                BeanUtils.copyProperties(question,questionDTO);
+                List<Tag> tags = tagMapper.selectByQuestionId(question.getId());
+                questionDTO.setTags(tags);
+                String tag = tags.stream().map(Tag::getName).collect(Collectors.joining(";"));
+                questionDTO.setTag(tag);
+                questionDTO.setUser(user);
+
+                Wrapper<Comment> commentWrapper = new EntityWrapper<>();
+                commentWrapper.eq("parent_id",question.getId());
+                questionDTO.setCommentCount(commentMapper.selectCount(commentWrapper));
+
+                Wrapper<QuestionLike> wrapper =new EntityWrapper<>();
+                wrapper.eq("question_id",question.getId());
+                questionDTO.setLikeCount(questionLikeMapper.selectCount(wrapper));
+                questionDTO.setDescription(null);
+                return  questionDTO;
+            }).collect(Collectors.toList());
+            PaginationDTO<QuestionDTO> paginationDTO=new PaginationDTO<QuestionDTO>();
+            paginationDTO.setData(questionDTOList);
+            paginationDTO.setPagination(totalCount,page,size);
+            return paginationDTO;
+        }
+    }
     public PaginationDTO list(Long userId, Integer page, Integer size,Integer status) {
         Integer offSize=size*(page-1);
         Wrapper<Question> wrapper = new EntityWrapper<>();
@@ -156,9 +307,35 @@ public class QuestionServiceImpl extends BaseService<QuestionMapper,Question> im
             BeanUtils.copyProperties(questionDTO,question);
             try{
                 question.setCreateDate(new Date());
+                question.setLastModified(new Date());
                 questionMapper.insert(question);
                 questionDTO.setId(question.getId());
                 this.updateQuestionTag(questionDTO);
+                Wrapper<UserLike> userLikeWrapper = new EntityWrapper<>();
+                userLikeWrapper.eq("liked_user_id",question.getCreator());
+                List<UserLike> userLikes = userLikeMapper.selectList(userLikeWrapper);
+                User creator = userMapper.selectById(question.getCreator());
+                userLikes.stream().forEach(userLike -> {
+                    User user = userMapper.selectById(userLike.getUserId());
+                    if (user.getNotifiQuestion() == 1) {
+                        Comment comment = new Comment();
+                        comment.setCommentator(user.getId());
+                        notificationService.createCommentNotify(comment, NotificationType.YOUR_LIKED_USER_HAVE_NEW_QUESTION.getType(), user.getId(), creator.getName(), question.getId(), question.getTitle());
+                    }
+                    if ( user.getEmailQuestion() == 1) {
+                        try {
+                            //邮件发送正文
+                            InetAddress addr = null;
+                            String context = NotificationType.YOUR_LIKED_USER_HAVE_NEW_QUESTION.getName() + "<a href='http://" + addr.getHostAddress()
+                                    + ":8090/question/" + question.getId() + "'>" + question.getTitle() + "</a>";
+                            //发送邮件
+                            MailUtils.sendMail(user.getEmail(), context, "校园博客系统-通知");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
             }catch (Exception e){
                 e.printStackTrace();
                 throw new CustomizeException(CustomizeErrorCode.QUESTION_INSERT_ERROR);
@@ -274,5 +451,43 @@ public class QuestionServiceImpl extends BaseService<QuestionMapper,Question> im
             return true;
         }
         return false;
+    }
+
+    @Override
+    public PaginationDTO queryByStatus(Integer status) {
+        Wrapper<Question> wrapper = new EntityWrapper<>();
+        wrapper.eq("status",status)
+                .orderBy("create_date", false);
+        List<Question> questionList = baseMapper.selectList(wrapper);
+        List<QuestionDTO> questionDTOList=new LinkedList<>();
+        PaginationDTO<QuestionDTO> paginationDTO=new PaginationDTO<QuestionDTO>();
+        for(Question question:questionList){
+            User user=userMapper.selectById(question.getCreator());
+            QuestionDTO questionDTO=new QuestionDTO();
+            BeanUtils.copyProperties(question,questionDTO);
+            questionDTO.setUser(user);
+            List<Tag> tags = tagMapper.selectByQuestionId(question.getId());
+            questionDTO.setTags(tags);
+            String tag = tags.stream().map(Tag::getName).collect(Collectors.joining(";"));
+            questionDTO.setTag(tag);
+            Wrapper<Comment> commentWrapper = new EntityWrapper<>();
+            commentWrapper.eq("parent_id",question.getId());
+            questionDTO.setCommentCount(commentMapper.selectCount(commentWrapper));
+            questionDTOList.add(questionDTO);
+        }
+        paginationDTO.setData(questionDTOList);
+        Integer totalCount=questionMapper.selectCount(wrapper);
+        paginationDTO.setPagination(totalCount,1,1);
+        return paginationDTO;
+    }
+
+    @Override
+    public Question queryByQuesstion(Question question) {
+        return baseMapper.selectOne(question);
+    }
+
+    @Override
+    public Question queryById(long id) {
+        return baseMapper.selectById(id);
     }
 }

@@ -21,4 +21,6 @@ public interface TagService {
     PaginationDTO list(String search, Integer page, Integer size);
 
     void changeLikeTag(User user, Long tagId);
+
+    PaginationDTO queryAll();
 }

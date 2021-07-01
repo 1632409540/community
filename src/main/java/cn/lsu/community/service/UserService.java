@@ -20,4 +20,10 @@ public interface UserService {
     User findById(Long id);
 
     void updateAvatarById(Long id, String imgPath);
+
+    boolean insertUser(User user);
+
+    boolean judgeNameExist(String name);
+
+    PaginationDTO selectAll();
 }

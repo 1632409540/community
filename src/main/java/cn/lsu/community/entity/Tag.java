@@ -4,7 +4,7 @@ import cn.lsu.community.base.BaseEntity;
 
 public class Tag extends BaseEntity<Tag> {
 
-    private Long tag_type_id;
+    private Long tagTypeId;
 
     private String name;
 
@@ -18,12 +18,12 @@ public class Tag extends BaseEntity<Tag> {
         this.imageUrl = imageUrl;
     }
 
-    public Long getTag_type_id() {
-        return tag_type_id;
+    public Long getTagTypeId() {
+        return tagTypeId;
     }
 
-    public void setTag_type_id(Long tag_type_id) {
-        this.tag_type_id = tag_type_id;
+    public void setTagTypeId(Long tagTypeId) {
+        this.tagTypeId = tagTypeId;
     }
 
     public String getName() {

@@ -7,4 +7,6 @@ import cn.lsu.community.entity.User;
 public interface SystemSetService {
 
     SystemSet findSystemSet();
+
+    void updateBySystemSetId(SystemSet systemSet);
 }

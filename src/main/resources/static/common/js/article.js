@@ -213,6 +213,28 @@ function addComment(id) {
 }
 
 /**
+ * 管理问题
+ */
+function updateStatus(id) {
+        swal({
+            title: "确定将此问题永久删除?",
+            text: "注意此操作不可恢复！",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+            if (willDelete) {
+                var location = window.location.href;
+                var strings = location.split("admin");
+                window.location.href = strings[0]+"admin/updateStatus?id="+id+"&status="+-1;
+            }
+        });
+
+
+}
+
+/**
  * 刷新页面
  */
 function reload() {

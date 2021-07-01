@@ -24,21 +24,21 @@
     <div class="row">
         <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 right-border">
             <!--<h2 th:if="${tag==null||tag==''}" ><span class="glyphicon glyphicon-list" aria-hidden="true"></span> &nbsp;发现</h2>-->
-            <h2 th:if="${tag==null||tag==''}"><span class="glyphicon glyphicon-list" aria-hidden="true"></span> &nbsp;发现</h2>
+            <h2 th:if="${session.tag==null||session.tag==''}"><span class="glyphicon glyphicon-list" aria-hidden="true"></span> &nbsp;发现</h2>
 
-            <h2 th:if="${tag!=null&&tag!=''}" >
+            <h2 th:if="${session.tag!=null&&session.tag!=''}" >
                 <div class="media-left" >
                     <a>
-                        <img class="index-media-object img-rounded" th:src="${tag.imageUrl}" >
+                        <img class="index-media-object img-rounded" th:src="${session.tag.imageUrl}" >
                     </a>
                 </div>
                 <div class="media-body">
-                    <h2 th:href="@{/(tagId=${tag.id})}" class="index-title-tag" th:text="${tag.name}"></h2>
+                    <h2 th:href="@{/(tagId=${session.tag.id})}" class="index-title-tag" th:text="${session.tag.name}"></h2>
                     <!--关注话题-->
-                    <a th:if="${session.user != null && !tag.myLike}" th:text="'关注|'+${tag.likeCount}"  class="btn-question-like" th:href="@{/changeLikeTag/(tagId=${tag.id})}">
+                    <a th:if="${session.user != null && !session.tag.myLike}" th:text="'关注|'+${session.tag.likeCount}"  class="btn-question-like" th:href="@{/changeLikeTag/(tagId=${tag.id})}">
                         关注|0
                     </a>
-                    <a th:if="${session.user != null && tag.myLike}" th:text="'取消关注|'+${tag.likeCount}" class="btn-question-unlike" th:href="@{/changeLikeTag/(tagId=${tag.id})}">
+                    <a th:if="${session.user != null && session.tag.myLike}" th:text="'取消关注|'+${session.tag.likeCount}" class="btn-question-unlike" th:href="@{/changeLikeTag/(tagId=${tag.id})}">
                         取消关注|0
                     </a>
                 </div>
@@ -52,7 +52,8 @@
                     </a>
                 </div>
                 <div class="media-body">
-                    <a th:href="@{'/question/'+${question.id}}"><h4 class="media-heading" th:text="${question.title}"></h4></a>
+                    <a th:href="@{'/question/'+${question.id}}"><h4 class="media-heading">[(${question.title})]</h4></a>
+                    <span th:if="${question.description!=null}">[(${question.description})]</span><br th:if="${question.description!=null}"/>
                     <span class="text-desc">
                         <!--<a class="index-tag" th:each="tag,tagStat:${question.getTag()}" th:href="@{/(tag=${tag.id})}" th:text="${tag.name}" th:if="${tagStat.index==0}"></a>-->
                         <a class="index-tag" th:each="tag,tagStat:${question.tags}" th:href="@{/(tagId=${tag.id})}" th:text="${tag.name}" th:if="${tagStat.index==0}"></a>

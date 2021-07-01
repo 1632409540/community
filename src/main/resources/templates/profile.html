@@ -65,7 +65,7 @@
             <div th:if="${section=='replies'}">
                 <div class="media" th:each="notification:${paginationDTO.data}">
                     <div class="media-body">
-                        <h5>
+                        <h5 th:if="${notification.type.type==1 || notification.type.type==2}">
                             <a href="#">
                                 <span th:text="${notification.notifierName}">0</span>
                             </a>
@@ -73,6 +73,17 @@
                             <a th:href="@{'/notification/'+${notification.id}}">
                                 <span th:text="${notification.outerTitle}">0</span>
                             </a>
+                            <span class="label label-danger" th:if="${notification.status==0}">未读</span>
+                        </h5>
+                        <h5 th:if="${notification.type.type==3}">
+                            <a href="/users">
+                                <span th:text="${notification.notifierName}">0</span>
+                            </a>
+                            <span th:text="${notification.type.name}">0</span>
+                            <span class="label label-danger" th:if="${notification.status==0}">未读</span>
+                        </h5>
+                        <h5 th:if="${notification.type.type==4 || notification.type.type==5}">
+                            <span th:href="@{'/notification/'+${notification.id}}" th:text="${notification.type.name}">0</span>
                             <span class="label label-danger" th:if="${notification.status==0}">未读</span>
                         </h5>
                         <span class="text-desc">

@@ -6,6 +6,7 @@ import cn.lsu.community.dto.GithubUser;
 import cn.lsu.community.dto.AccessTokenDTO;
 import cn.lsu.community.entity.User;
 import cn.lsu.community.provider.GithubProvider;
+import cn.lsu.community.redis.RedisKey;
 import cn.lsu.community.service.Impl.NotificationServiceImpl;
 import cn.lsu.community.service.Impl.UserServiceImpl;
 import cn.lsu.community.service.NotificationService;
@@ -63,21 +64,14 @@ public class AuthorizeController extends BaseController {
             userService.createOrUpdate(user);
             //登录成功
             response.addCookie(new Cookie("token",token));
+            RedisKey redisKey = new RedisKey(user.getToken());
+            redisService.incr(redisKey,user.getToken());
+            redisService.expice(redisKey,user.getToken(),60*10);
             return "redirect:/";
         }else{
             //登录失败
             log.error("GithubUser login error",githubUser);
             return "redirect:/";
         }
-    }
-
-    @GetMapping("/logout")
-    public String logout(HttpServletRequest request,
-                         HttpServletResponse response){
-        request.getSession().removeAttribute("user");
-        Cookie cookie = new Cookie("token", null);
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
-        return "redirect:/";
     }
 }

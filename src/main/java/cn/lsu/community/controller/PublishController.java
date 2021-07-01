@@ -56,6 +56,9 @@ public class PublishController extends BaseController {
         model.addAttribute("question",question);
         model.addAttribute("selectTags", tagService.getTagTypes());
         List<Tag> tags= tagService.filterInvalid(question.getTag());
+        if(question.getTitle().length()>25){
+            return ResultDTO.errorOf(402,"标题长度不能超过25字！");
+        }
         if (ObjectUtils.isEmpty(tags)) {
             return ResultDTO.errorOf(CustomizeErrorCode.ERROR_TAG);
         }
@@ -68,6 +71,9 @@ public class PublishController extends BaseController {
         Question saveQuestion = questionService.createOrUpdate(question);
         if(question.getStatus()!=null && question.getStatus()==1){
             userService.updateUserIntegral(null,user,20);
+            rabbitTemplate.convertAndSend("es","question.save", saveQuestion.getId().toString());
+        }else if(question.getStatus()!=null){
+            rabbitTemplate.convertAndSend("es","question.delete", saveQuestion.getId().toString());
         }
         return ResultDTO.successOf(saveQuestion);
     }
@@ -76,6 +82,7 @@ public class PublishController extends BaseController {
     @RequestMapping(value = "/deleteQuestion/{id}", method = RequestMethod.GET)
     public Object question(@PathVariable(name = "id")Long id){
         questionService.deleteById(id);
+        rabbitTemplate.convertAndSend("es","question.delete", id.toString());
         return ResultDTO.successOf();
     }
 }

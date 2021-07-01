@@ -1,8 +1,12 @@
 package cn.lsu.community.controller;
 
+import cn.lsu.community.base.BaseController;
 import cn.lsu.community.dto.FileDTO;
 import cn.lsu.community.dto.ResultDTO;
+import cn.lsu.community.entity.SystemSet;
+import cn.lsu.community.entity.Tag;
 import cn.lsu.community.entity.User;
+import cn.lsu.community.mapper.TagMapper;
 import cn.lsu.community.service.UserService;
 import cn.lsu.community.utils.ImageUtils;
 import com.alibaba.fastjson.JSONObject;
@@ -18,19 +22,23 @@ import java.io.IOException;
 
 @Controller
 @Slf4j
-public class ImageController {
+public class ImageController extends BaseController {
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private TagMapper tagMapper;
     /**
      * 图片上传
      */
     @PostMapping("/image/upload")
     @ResponseBody
-    public ResultDTO upload(@RequestParam("image") MultipartFile file,@RequestParam("flag")Integer flag,Integer id,HttpServletRequest request) throws IOException {
-        User user = (User) request.getSession().getAttribute("user");
-        if(ObjectUtils.isEmpty(user)){
-            return ResultDTO.errorOf(501,"你未登录，请先登录！");
+    public ResultDTO upload(@RequestParam("image") MultipartFile file,@RequestParam("flag")Integer flag,Long id,HttpServletRequest request) throws IOException {
+        if(ObjectUtils.isEmpty(id)){
+            if(ObjectUtils.isEmpty(loginUser)){
+                return ResultDTO.errorOf(501,"你未登录，请先登录！");
+            }
         }
         if (!ImageUtils.checkFileSize(file.getSize(),1,"M")) {
             return ResultDTO.errorOf(502,"文件过大，请上传小于1M的图片");
@@ -38,7 +46,15 @@ public class ImageController {
         String imgPath = ImageUtils.upload(file,"user");
         if (flag != null){
             if (flag == 1){
-                userService.updateAvatarById(user.getId(),imgPath);
+                userService.updateAvatarById(loginUser.getId(),imgPath);
+            }
+            if(flag == 2){
+                userService.updateAvatarById(id,imgPath);
+            }
+            if(flag == 8){
+                Tag tag = tagMapper.selectById(id);
+                tag.setImageUrl(imgPath);
+                tagMapper.updateById(tag);
             }
         }
         // 返回结果
@@ -61,4 +77,35 @@ public class ImageController {
         }
         return fileDTO;
     }
+    /**
+     * 图片上传
+     */
+    @PostMapping("/admin/image/upload")
+    @ResponseBody
+    public ResultDTO adminUpload(@RequestParam("image") MultipartFile file,@RequestParam("flag")Integer flag) throws IOException {
+
+        if (!ImageUtils.checkFileSize(file.getSize(),1,"M")) {
+            return ResultDTO.errorOf(502,"文件过大，请上传小于1M的图片");
+        }
+        String imgPath = ImageUtils.upload(file,"admin");
+        if (flag != null){
+            SystemSet systemSet = (SystemSet) request.getSession().getAttribute("systemSet");
+            if (flag == 3){
+                systemSet.setSystemLogo(imgPath);
+            }else if(flag == 4){
+                systemSet.setBackground(imgPath);
+            }else if(flag == 5){
+                systemSet.setPublicWechat(imgPath);
+            }else if(flag == 6){
+                systemSet.setPublicMicroblog(imgPath);
+            }else if(flag == 7){
+                systemSet.setPublicQq(imgPath);
+            }
+            systemSetService.updateBySystemSetId(systemSet);
+            request.getSession().setAttribute("systemSet",null);
+        }
+        // 返回结果
+        return ResultDTO.successOf(imgPath);
+    }
+
 }

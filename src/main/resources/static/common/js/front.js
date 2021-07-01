@@ -1,22 +1,45 @@
 /**
- * 上传背景图片
+ * 上传系统logo图片
  */
-function uploadBackground() {
+function uploadSystemImg(flag) {
     var formdata=new FormData();
-    formdata.append("image",$("#background").get(0).files[0]);
-    formdata.append("flag",7);
+    if(flag ==3){
+        formdata.append("image",$("#systemLogo").get(0).files[0]);
+    }else if (flag == 4) {
+        formdata.append("image",$("#background").get(0).files[0]);
+    }else if (flag == 5) {
+        formdata.append("image",$("#public_wechat").get(0).files[0]);
+    }else if (flag == 6) {
+        formdata.append("image",$("#publicMicroblog").get(0).files[0]);
+    }else if (flag == 7) {
+        formdata.append("image",$("#publicQq").get(0).files[0]);
+    }
+
+    formdata.append("flag",flag);
     $.ajax({
         async: false,
         type: "POST",
-        url: "image/upload",
+        url: "/admin/image/upload",
         dataType: "json",
         data: formdata,
         contentType:false,//ajax上传图片需要添加
         processData:false,//ajax上传图片需要添加
         success: function (data) {
-            if (data['code']== 200){
-                $('#img_background').attr("src",data['data']);
+            if (data.code == 200){
+                if(flag ==3){
+                    $('#systemLogoImg').attr("src",data.data);
+                }else if (flag == 4) {
+                    $('#img_background').attr("src",data.data);
+                }else if (flag == 5) {
+                    $('#img_public_wechat').attr("src",data.data);
+                }else if (flag == 6) {
+                    $('#publicMicroblogImg').attr("src",data.data);
+                }else if (flag == 7) {
+                    $('#publicQqImg').attr("src",data.data);
+                }
                 swal("成功", "上传成功", "success");
+            }else if (data.code == 501){
+                swal("错误", data.message, "error");
             }else {
                 swal("错误", "文件过大，请上传小于1M的图片", "error");
             }
@@ -26,64 +49,25 @@ function uploadBackground() {
     });
 }
 
-/**
- * 上传公告图片
- */
-function uploadNotice() {
-    var formdata=new FormData();
-    formdata.append("image",$("#notice").get(0).files[0]);
-    formdata.append("flag",8);
-    $.ajax({
-        async: false,
-        type: "POST",
-        url: "image/upload",
-        dataType: "json",
-        data: formdata,
-        contentType:false,//ajax上传图片需要添加
-        processData:false,//ajax上传图片需要添加
-        success: function (data) {
-            if (data['code']== 200){
-                $('#img_notice').attr("src",data['data']);
-                swal("成功", "上传成功", "success");
-            }else {
-                swal("错误", "文件过大，请上传小于1M的图片", "error");
-            }
-        },
-        error: function (e) {
-        }
-    });
-}
 
 /**
  * 更新前台信息
  */
-function updateFront() {
-
+function updateSystemTitle() {
     var title = $('#title').val().trim();
-    var subTitle = $('#subTitle').val().trim();
-    var notice = $('#info').val().trim();
-    var target = $('#target').val().trim();
-
     if (title == ''){
         swal("警告", "标题不能为空", "warning");
         return;
     }
-    if (subTitle == ''){
-        swal("警告", "副标题不能为空", "warning");
-        return;
-    }
-    if (target == ''){
-        swal("警告", "链接地址不能为空", "warning");
-        return;
-    }
     $.ajax({
         type: "POST",
-        url: "updateFront",
+        url: "/admin/updateSystemTitle",
         dataType: "json",
-        data: {title:title,subTitle:subTitle,notice:notice,imgTarget:target},
+        data: {title:title},
         success: function (data) {
             if (data['code']== 200){
                 swal("更新成功", "", "success");
+
             }else {
                 swal("错误", "服务器发生了一个错误", "error");
             }
@@ -92,33 +76,23 @@ function updateFront() {
         }
     });
 }
-
 /**
- * 添加菜单
+ * 更新前台信息
  */
-function addMenu() {
-
-    var name = $('#name').val().trim();
-    let location = $('#location').find('option:selected').val();
-    var target = $('#target').val().trim();
-
-    if (name == ''){
-        swal("警告", "标题不能为空", "warning")
-        return;
-    }
-    if (target == ''){
-        swal("警告", "链接地址不能为空", "warning")
+function updateSystemPublicTitle() {
+    var title = $('#publicTitle').val().trim();
+    if (title == ''){
+        swal("警告", "标题不能为空", "warning");
         return;
     }
     $.ajax({
         type: "POST",
-        url: "addMenu",
+        url: "/admin/updateSystemPublicTitle",
         dataType: "json",
-        data: {name:name,url:target,location:location},
+        data: {title:title},
         success: function (data) {
             if (data['code']== 200){
-                swal("添加成功", "", "success");
-                setInterval(reload, 2000);
+                swal("更新成功", "", "success");
             }else {
                 swal("错误", "服务器发生了一个错误", "error");
             }
@@ -146,7 +120,7 @@ function addLink() {
     }
     $.ajax({
         type: "POST",
-        url: "addLink",
+        url: "/admin/addLink",
         dataType: "json",
         data: {name:name,url:target},
         success: function (data) {
@@ -160,40 +134,6 @@ function addLink() {
         error: function (e) {
         }
     });
-}
-
-/**
- * 删除菜单
- * @param id
- */
-function deleteMenu(id) {
-    swal({
-        title: "确定删除此菜单?",
-        text: "此操作不可恢复！",
-        icon: "warning",
-        buttons: true,
-        dangerMode: true,
-    })
-        .then((willDelete) => {
-            if (willDelete) {
-                $.ajax({
-                    type: "GET",
-                    url: "deleteMenu",
-                    dataType: "json",
-                    data: {id:id},
-                    success: function (data) {
-                        if (data['code']== 200){
-                            swal("删除成功", "", "success");
-                            setInterval(reload, 2000);
-                        }else {
-                            swal("错误", "服务器发生了一个错误", "error");
-                        }
-                    },
-                    error: function (e) {
-                    }
-                });
-            }
-        });
 }
 
 /**
@@ -212,7 +152,7 @@ function deleteLink(id) {
             if (willDelete) {
                 $.ajax({
                     type: "GET",
-                    url: "deleteLink",
+                    url: "/admin/deleteLink",
                     dataType: "json",
                     data: {id:id},
                     success: function (data) {

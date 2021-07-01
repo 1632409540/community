@@ -4,7 +4,7 @@
  */
 function deleteComment(id) {
     swal({
-        title: "确定删除此评论?",
+        title: "确定删除此回复?",
         text: "此操作不可恢复！",
         icon: "warning",
         buttons: true,
@@ -14,13 +14,13 @@ function deleteComment(id) {
             if (willDelete) {
                 $.ajax({
                     type: "GET",
-                    url: "deleteComment",
+                    url: "/admin/deleteComment",
                     dataType: "json",
                     data: {id:id},
                     success: function (data) {
                         if (data['code']== 200){
                             swal("删除成功", "", "success");
-                            setInterval(reload, 2000);
+                            setInterval(reload, 1000);
                         }else {
                             swal("错误", "服务器发生了一个错误", "error");
                         }

@@ -3,7 +3,9 @@ package cn.lsu.community.base;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.enums.FieldFill;
+import com.baomidou.mybatisplus.enums.IdType;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -14,6 +16,10 @@ public abstract class BaseEntity<T extends BaseEntity<?>> extends Model<T> imple
 	 */
 	private static final long serialVersionUID = 2049409488631452486L;
 
+	/**
+	 * 主键id
+	 */
+	@TableId(value = "id", type = IdType.AUTO)
 	private Long id;
 	
 	@JSONField(format = "yyyy-MM-dd HH:mm:ss")

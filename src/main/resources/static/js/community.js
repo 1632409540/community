@@ -155,9 +155,11 @@ function selectTag(e) {
     var tag=e.getAttribute("data-tag");
     if(tags.indexOf(tag.name)==-1){
         if(tags){
-            $("#tag").val(tags+";"+tag);
+            $('#tag').attr("value",tags+";"+tag);
+            //$("#tag").val(tags+";"+tag);
         }else {
-            $("#tag").val(tag);
+            $('#tag').attr("value",tag);
+            // $("#tag").val(tag);
         }
     }
 }
@@ -310,6 +312,9 @@ function publish() {
     if (title == ''){
         alert("标题不能为空！");
         return;
+    }
+    if(title.length>25){
+        alert("标题长度不能超过25字！");
     }
     if (description == ''){
         alert("请填写问题描述！");

@@ -33,4 +33,9 @@ public class SystemSetServiceImpl extends BaseService<SystemSetMapper, SystemSet
     public SystemSet findSystemSet() {
         return baseMapper.selectOne(new SystemSet());
     }
+
+    @Override
+    public void updateBySystemSetId(SystemSet systemSet) {
+        baseMapper.updateById(systemSet);
+    }
 }

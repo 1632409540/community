@@ -2,22 +2,28 @@ package cn.lsu.community.service.Impl;
 
 import cn.lsu.community.base.BaseService;
 import cn.lsu.community.dto.PaginationDTO;
+import cn.lsu.community.entity.Comment;
 import cn.lsu.community.entity.Tag;
 import cn.lsu.community.entity.UserLike;
+import cn.lsu.community.enums.NotificationType;
 import cn.lsu.community.exception.CustomizeErrorCode;
 import cn.lsu.community.exception.CustomizeException;
 import cn.lsu.community.mapper.TagMapper;
 import cn.lsu.community.mapper.UserLikeMapper;
 import cn.lsu.community.mapper.UserMapper;
 import cn.lsu.community.entity.User;
+import cn.lsu.community.service.NotificationService;
 import cn.lsu.community.service.UserService;
+import cn.lsu.community.utils.MailUtils;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -28,9 +34,12 @@ public class UserServiceImpl extends BaseService<UserMapper,User> implements Use
 
     @Resource
     private UserLikeMapper userLikeMapper;
+
     @Resource
     private TagMapper tagMapper;
 
+    @Resource
+    private NotificationService notificationService;
     @Override
     public void createOrUpdate(User user) {
        User userWrapper = new User();
@@ -59,6 +68,21 @@ public class UserServiceImpl extends BaseService<UserMapper,User> implements Use
             User delUser = baseMapper.selectById(loginUserId);
             User addUser = baseMapper.selectById(likedUserId);
             this.updateUserIntegral(addUser,delUser,10);
+            if (addUser.getNotifiLike() == 1) {
+                Comment comment = new Comment();
+                comment.setCommentator(delUser.getId());
+                notificationService.createCommentNotify(comment, NotificationType.LIKE_YOU.getType(), addUser.getId(), delUser.getName(), null, "");
+            }
+            if (addUser.getEmailLike() == 1) {
+                try {
+                    //邮件发送正文
+                    String context = delUser.getName() + NotificationType.LIKE_YOU.getName();
+                    //发送邮件
+                    MailUtils.sendMail(addUser.getEmail(), context, "校园博客系统-通知");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -110,6 +134,7 @@ public class UserServiceImpl extends BaseService<UserMapper,User> implements Use
 
     @Override
     public boolean updateById(User entity) {
+        entity.setLastModified(new Date());
         return super.updateById(entity);
     }
 
@@ -146,5 +171,42 @@ public class UserServiceImpl extends BaseService<UserMapper,User> implements Use
         user.setId(id);
         user.setAvatarUrl(imgPath);
         baseMapper.updateById(user);
+    }
+
+    @Override
+    public boolean insertUser(User user) {
+        user.setCreateDate(new Date());
+        user.setLastModified(new Date());
+        user.setIntegral(19);
+        Integer insert = baseMapper.insert(user);
+        if(insert>0){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean judgeNameExist(String name) {
+        User userWrapper = new User();
+        userWrapper.setName(name);
+        User dbUser = baseMapper.selectOne(userWrapper);
+        if(dbUser!=null){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    @Override
+    public PaginationDTO selectAll() {
+        Wrapper<User> wrapper = new EntityWrapper<>();
+        wrapper.orderBy("status",false);
+        Integer totalCount= baseMapper.selectCount(wrapper);
+        List<User> users= baseMapper.selectList(wrapper);
+        PaginationDTO<User> paginationDTO=new PaginationDTO<User>();
+        paginationDTO.setData(users);
+        paginationDTO.setPagination(totalCount,1,1);
+        return paginationDTO;
     }
 }

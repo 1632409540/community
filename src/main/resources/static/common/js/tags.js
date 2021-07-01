@@ -2,16 +2,16 @@
  * 添加新标签
  */
 function addTag() {
-    let name = $('#name').val().trim();
-    let introduce = $('#info').val().trim();
+    var name = $('#name').val();
+    var tagTypeId = $('#tagType').val();
     if (name == ''){
         swal("警告","名称不能为空！", "warning");
         return;
     }
     $.ajax({
         type: "POST",
-        url: "addTag",
-        data: {name:name,introduce:introduce},
+        url: "/admin/addTag",
+        data: {name:name,tagTypeId:tagTypeId},
         dataType: "json",
         success: function(data){
             if (data['code']== 200){
@@ -37,22 +37,22 @@ function reload() {
  * 更新标签
  */
 function updateTag() {
-    let name = $('#name').val().trim();
-    let id = $('#id').val().trim();
-    let introduce = $('#info').val().trim();
+    var name = $('#name').val().trim();
+    var id = $('#id').val().trim();
+    var tagTypeId = $('#tagType').val().trim();
     if (name == ''){
         swal("警告","名称不能为空！", "warning");
         return;
     }
     $.ajax({
         type: "POST",
-        url: "updateTag",
-        data: {name:name,introduce:introduce,id:id},
+        url: "/admin/updateTag",
+        data: {name:name,tagTypeId:tagTypeId,id:id},
         dataType: "json",
         success: function(data){
             if (data['code']== 200){
                 swal("更新成功", "你已经成功更新了这个标签", "success");
-                setInterval(reload, 2000);
+                setInterval(reload, 1000);
             }else if (data['code']== 501){
                 swal("提示", "你没有修改任何信息", "info");
             }else if (data['code']== 502){
@@ -65,18 +65,18 @@ function updateTag() {
 }
 
 /**
- * 上传标签封面
+ * 上传标签logo
  */
 function uploadImg() {
-    let id = $('#id').val().trim();
+    var id = $('#id').val().trim();
     var formdata=new FormData();
     formdata.append("image",$("#img").get(0).files[0]);
-    formdata.append("flag",5);
+    formdata.append("flag",8);
     formdata.append("id",id);
     $.ajax({
         async: false,
         type: "POST",
-        url: "image/upload",
+        url: "/image/upload",
         dataType: "json",
         data: formdata,
         contentType:false,//ajax上传图片需要添加
@@ -108,8 +108,8 @@ function deleteTag(id) {
         .then((willDelete) => {
             if (willDelete) {
                 var location = window.location.href;
-                let strings = location.split("moti-blog");
-                window.location.href = strings[0]+"moti-blog/deleteTag?id="+id;
+                var strings = location.split("admin");
+                window.location.href = strings[0]+"admin/deleteTag?id="+id;
             }
         });
 }

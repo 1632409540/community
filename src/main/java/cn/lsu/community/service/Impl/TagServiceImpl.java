@@ -8,6 +8,7 @@ import cn.lsu.community.dto.QuestionQueryDTO;
 import cn.lsu.community.entity.*;
 import cn.lsu.community.exception.CustomizeErrorCode;
 import cn.lsu.community.exception.CustomizeException;
+import cn.lsu.community.mapper.QuestionTagMapper;
 import cn.lsu.community.mapper.TagLikeMapper;
 import cn.lsu.community.mapper.TagMapper;
 import cn.lsu.community.mapper.TagTypeMapper;
@@ -37,6 +38,8 @@ public class TagServiceImpl extends BaseService<TagMapper, Tag> implements TagSe
     @Resource
     private TagMapper tagMapper;
 
+    @Resource
+    private QuestionTagMapper questionTagMapper;
     @Override
     public List<TagType> getTagTypes() {
         List<TagType> list=tagTypeMapper.selectList(new EntityWrapper<>());
@@ -124,5 +127,28 @@ public class TagServiceImpl extends BaseService<TagMapper, Tag> implements TagSe
             tagLike.setTagId(tagId);
             tagLikeMapper.insert(tagLike);
         }
+    }
+
+    @Override
+    public PaginationDTO queryAll() {
+        Wrapper<Tag> tagWrapper = new EntityWrapper<>();
+        tagWrapper.orderBy("create_date",false);
+        Integer totalCount= tagMapper.selectCount(tagWrapper);
+        List<Tag> tags = tagMapper.selectList(tagWrapper);
+        PaginationDTO<HotTopicDTO> paginationDTO=new PaginationDTO<HotTopicDTO>();
+        List<HotTopicDTO> tagDTOList = new ArrayList<>();
+        tags.stream().forEach(tag -> {
+            HotTopicDTO hotTopicDTO = new HotTopicDTO();
+            BeanUtils.copyProperties(tag,hotTopicDTO);
+            TagType tagType = tagTypeMapper.selectById(tag.getTagTypeId());
+            hotTopicDTO.setTagType(tagType);
+            Wrapper<QuestionTag> questionTagWrapper= new EntityWrapper<>();
+            questionTagWrapper.eq("tag_id",tag.getId());
+            hotTopicDTO.setQuestionCount(questionTagMapper.selectCount(questionTagWrapper));
+            tagDTOList.add(hotTopicDTO);
+        });
+        paginationDTO.setData(tagDTOList);
+        paginationDTO.setPagination(totalCount,1,1);
+        return paginationDTO;
     }
 }

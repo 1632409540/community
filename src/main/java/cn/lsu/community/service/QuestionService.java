@@ -31,4 +31,16 @@ public interface QuestionService {
     void delLikeCount(Long questionId);
 
     boolean checkMyLike(Long userId, Long questionId);
+
+    PaginationDTO queryByStatus(Integer status);
+
+    void initEs();
+
+    long getEsDocCount();
+
+    List<Question> searchFromEs(String content);
+
+    Question queryByQuesstion(Question question);
+
+    Question queryById(long id);
 }
